@@ -1,19 +1,16 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import AppLayout from "./_app/-components/layout";
 
-export const Route = createFileRoute('/_app')({
-     beforeLoad: ({ context, location }) => {
+export const Route = createFileRoute("/_app")({
+  beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
-        to: '/login',
+        to: "/login",
         search: {
           redirect: location.href,
         },
-      })
+      });
     }
   },
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/_app"!</div>
-}
+  component: AppLayout,
+});

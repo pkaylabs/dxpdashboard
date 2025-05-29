@@ -55,7 +55,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   touched = false,
   filePreview = false,
   acceptedFileTypes,
-  maxFileSize = 5, // 5MB default
+  maxFileSize = 5, 
   onFileChange,
   ...props
 }, ref) => {
@@ -106,12 +106,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
 
   // Variant classes
   const variantClasses = {
-    outlined: 'border border-gray-300 bg-white',
+    outlined: 'border border-[#06275A] bg-white',
     filled: 'border-0 bg-gray-100'
   };
 
   // Error state classes
-  const errorClasses = error || fileError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+  const errorClasses = error || fileError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-[#06275A] focus:border-blue-500 focus:ring-blue-500';
 
   // Base input classes
   const inputClasses = `
@@ -132,7 +132,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
     <div className={`${fullWidth ? 'w-full' : ''}`}>
       {/* Label */}
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-[#06275A] mb-2">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -192,7 +192,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
             onClick={togglePasswordVisibility}
             disabled={disabled}
           >
-            {showPassword ? <EyeSlash size="32" color="#FF8A65"/> : <Eye size="32" color="#FF8A65"/>}
+            {showPassword ? <EyeSlash size="22" color="#9CA3AF"/> : <Eye size="22" color="#9CA3AF"/>}
           </button>
         ) : endIcon ? (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">

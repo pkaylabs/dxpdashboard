@@ -1,7 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import LoginForm from "./-components/login-form";
+import { z } from "zod";
+
+export const fallback = "/dashboard" as const;
 
 export const Route = createFileRoute("/_auth/login")({
+  validateSearch: z.object({
+    redirect: z.string().optional().catch(""),
+  }),
+  beforeLoad: ({ context, search }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({ to: search.redirect || fallback });
+    }
+  },
   component: RouteComponent,
 });
 

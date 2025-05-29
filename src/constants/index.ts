@@ -1,3 +1,77 @@
+import { MdOutlineCalendarMonth, MdOutlineDashboard } from "react-icons/md";
+
+export const navigations = [
+  {
+    category: "Main",
+    tabs: [
+      {
+        name: "Dashboard",
+        href: "/dashboard",
+        icon: MdOutlineDashboard,
+      },
+    ],
+  },
+  {
+    category: "Management",
+    tabs: [
+      {
+        name: "Tourist  Attractions",
+        href: "/tourist-attraction",
+        icon: MdOutlineCalendarMonth,
+      },
+      {
+        name: "Hotels",
+        href: "/hotels",
+        icon: MdOutlineCalendarMonth,
+      },
+      {
+        name: "Political Sites",
+        href: "/political-sites",
+        icon: MdOutlineCalendarMonth,
+      },
+      {
+        name: "Travel Blogs",
+        href: "/travel-blogs",
+        icon: MdOutlineCalendarMonth,
+      },
+    ],
+  },
+  {
+    category: "Notification",
+    tabs: [
+      {
+        name: "Notifications",
+        href: "/notifications",
+        icon: MdOutlineDashboard,
+      },
+    ],
+  },
+  {
+    category: "Manage Users",
+    tabs: [
+      {
+        name: "Manage Users",
+        href: "/manage-users",
+        icon: MdOutlineDashboard,
+      },
+    ],
+  },
+  {
+    category: "Settings",
+    tabs: [
+      {
+        name: "Settings",
+        href: "/settings",
+        icon: MdOutlineDashboard,
+      },
+      {
+        name: "Log out",
+        icon: MdOutlineDashboard,
+      },
+    ],
+  },
+];
+
 export const supportTypes = [
   { label: "Aid", value: "AID" },
   { label: "Revolving fund", value: "REVOLVING_FUND" },
