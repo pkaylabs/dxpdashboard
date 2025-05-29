@@ -1,4 +1,17 @@
-import { MdOutlineCalendarMonth, MdOutlineDashboard } from "react-icons/md";
+import {
+  MdOutlineDashboard,
+  MdReceiptLong,
+  MdPhonelink,
+  MdOutlinePowerSettingsNew,
+} from "react-icons/md";
+import { GiCargoShip } from "react-icons/gi";
+import { IoIosBed } from "react-icons/io";
+import { ImBell, ImUsers } from "react-icons/im";
+import { IoSettings } from "react-icons/io5";
+import { DashboardCardProps } from "@/routes/_app/dashboard/-components/analytics-card";
+import { TbWorldPin } from "react-icons/tb";
+import { HiOutlineSquare3Stack3D, HiMiniUsers } from "react-icons/hi2";
+import { SiAirplayvideo } from "react-icons/si";
 
 export const navigations = [
   {
@@ -17,22 +30,22 @@ export const navigations = [
       {
         name: "Tourist  Attractions",
         href: "/tourist-attraction",
-        icon: MdOutlineCalendarMonth,
+        icon: GiCargoShip,
       },
       {
         name: "Hotels",
         href: "/hotels",
-        icon: MdOutlineCalendarMonth,
+        icon: IoIosBed,
       },
       {
         name: "Political Sites",
         href: "/political-sites",
-        icon: MdOutlineCalendarMonth,
+        icon: MdReceiptLong,
       },
       {
         name: "Travel Blogs",
         href: "/travel-blogs",
-        icon: MdOutlineCalendarMonth,
+        icon: MdPhonelink,
       },
     ],
   },
@@ -42,7 +55,7 @@ export const navigations = [
       {
         name: "Notifications",
         href: "/notifications",
-        icon: MdOutlineDashboard,
+        icon: ImBell,
       },
     ],
   },
@@ -52,7 +65,7 @@ export const navigations = [
       {
         name: "Manage Users",
         href: "/manage-users",
-        icon: MdOutlineDashboard,
+        icon: ImUsers,
       },
     ],
   },
@@ -62,13 +75,44 @@ export const navigations = [
       {
         name: "Settings",
         href: "/settings",
-        icon: MdOutlineDashboard,
+        icon: IoSettings,
       },
       {
         name: "Log out",
-        icon: MdOutlineDashboard,
+        icon: MdOutlinePowerSettingsNew,
       },
     ],
+  },
+];
+
+export const dashboardData: DashboardCardProps[] = [
+  {
+    icon: TbWorldPin,
+    title: "Content Upload",
+    value: 26,
+    progress: 60,
+    progressColor: "bg-[#0ECC44]",
+  },
+  {
+    icon: HiOutlineSquare3Stack3D,
+    title: "Blog Posts",
+    value: 1204,
+    progress: 85,
+    progressColor: "bg-[#FFCC00] ",
+  },
+  {
+    icon: SiAirplayvideo,
+    title: "Total Views",
+    value: 5847,
+    progress: 75,
+    progressColor: "bg-[#FF3B30] ",
+  },
+  {
+    icon: HiMiniUsers,
+    title: "Users",
+    value: 2300,
+    progress: 45,
+    progressColor: "bg-[#AF52DE] ",
   },
 ];
 

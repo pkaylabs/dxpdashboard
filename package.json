@@ -21,6 +21,7 @@
     "@mui/styled-engine": "^7.1.0",
     "@mui/styled-engine-sc": "^7.1.0",
     "@mui/x-date-pickers": "^8.4.0",
+    "@nivo/pie": "^0.99.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.7",
     "@tanstack/react-router": "^1.120.11",

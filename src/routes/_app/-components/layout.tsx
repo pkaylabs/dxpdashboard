@@ -10,7 +10,7 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { ArrowDown2, SearchNormal1 } from "iconsax-react";
+import { ArrowDown2, Element4, SearchNormal1 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
 import { Link, Outlet, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Route } from "@/routes/_app";
@@ -215,7 +215,8 @@ export default function AppLayout() {
               <div className="font-semibold  text-xl md:text-[1.75rem] text-gray-900 flex-1 flex items-center">
                 {!!matchRoute({ to: "/dashboard" }) ? (
                   <div className="w-full md:max-w-1/2 flex  items-center gap-2 ">
-                    <MdOutlineDashboard aria-hidden="true" className="size-10 text-[#06275A]" />
+                    <Element4 size="40" color="#06275A" variant="Bold"/>
+                    {/* <MdOutlineDashboard aria-hidden="true" className="size-10 " /> */}
                     <div className="w-full h-11 rounded-xl border border-[#06275A] flex items-center gap-1.5 px-2">
                       <input
                         type="search"
@@ -298,7 +299,7 @@ export default function AppLayout() {
           </div>
 
           <main className="font-poppins flex-1">
-            <div className="h-full pb-4 sm:pb-6 bg-[#F0F8FF] rounded-md">
+            <div className="h-full p-4 sm:p-6 bg-[#F0F8FF] rounded-md">
               <Outlet />
             </div>
           </main>
