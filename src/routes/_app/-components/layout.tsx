@@ -229,7 +229,7 @@ export default function AppLayout() {
                     </div>
                   </div>
                 ) : !!matchRoute({ to: "/tourist-attraction" }) ? (
-                  "My Applications"
+                  <h2 className="font-medium text-[#06275A] text-2xl ">Tourist Attraction</h2>
                 ) : !!matchRoute({ to: "/dashboard" }) ? (
                   "Progress Report"
                 ) : !!matchRoute({ to: "/dashboard" }) ? (
