@@ -8,7 +8,7 @@ import {
   MenuItems,
   TransitionChild,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { ArrowDown2, ArrowLeft, Element4, SearchNormal1 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
@@ -18,7 +18,6 @@ import { useAuth } from "@/services/auth";
 import classNames from "@/utils/classnames";
 import Avatar from "@/components/core/avatar";
 import { navigations } from "@/constants";
-import { MdOutlineDashboard } from "react-icons/md";
 
 const userNavigation = [
   { name: "Your profile", href: "#" },
@@ -216,7 +215,6 @@ export default function AppLayout() {
                 {!!matchRoute({ to: "/dashboard" }) ? (
                   <div className="w-full md:max-w-1/2 flex  items-center gap-2 ">
                     <Element4 size="40" color="#06275A" variant="Bold" />
-                    {/* <MdOutlineDashboard aria-hidden="true" className="size-10 " /> */}
                     <div className="w-full h-11 rounded-xl border border-[#06275A] flex items-center gap-1.5 px-2">
                       <input
                         type="search"
@@ -232,8 +230,10 @@ export default function AppLayout() {
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Tourist Attraction
                   </h2>
-                ) : !!matchRoute({ to: "/dashboard" }) ? (
-                  "Progress Report"
+                ) : !!matchRoute({ to: "/hotels" }) ? (
+                  <h2 className="font-medium text-[#06275A] text-2xl ">
+                    Hotels
+                  </h2>
                 ) : !!matchRoute({ to: "/dashboard" }) ? (
                   "Repayment Reconciliation"
                 ) : (

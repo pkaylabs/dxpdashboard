@@ -1,35 +1,26 @@
-import Input from "@/components/elements/input";
-import Select, { SelectOption } from "@/components/elements/select";
-import { ButtonLoader } from "@/components/loaders";
-import { sleep } from "@/utils";
 import {
   createFileRoute,
+  useNavigate,
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
-import { Formik, Form, Field } from "formik";
-import { useState } from "react";
+import { HotelSearch } from ".";
 import * as Yup from "yup";
-import { VenueSearch } from ".";
+import { useState } from "react";
+import { sleep } from "@/utils";
+import { Field, Form, Formik } from "formik";
+import Input from "@/components/elements/input";
+import { ButtonLoader } from "@/components/loaders";
 
-export const Route = createFileRoute("/_app/tourist-attraction/add")({
-  validateSearch: (search) => VenueSearch.parse(search),
+export const Route = createFileRoute("/_app/hotels/add")({
+  validateSearch: (search) => HotelSearch.parse(search),
   component: RouteComponent,
 });
-
-const categoryOptions: SelectOption[] = [
-  { label: "Leisure/Entertainment", value: "Leisure/Entertainment" },
-  { label: "Culture/Nature", value: "Culture/Nature" },
-  { label: "Entertainment", value: "Entertainment" },
-  { label: "Sports", value: "Sports" },
-  { label: "Business", value: "Business", disabled: true }, // Disabled option
-];
 
 const validationSchema = Yup.object({
   name: Yup.string()
     .min(3, "name must be at least 3 characters")
     .required("Username is required"),
-  category: Yup.string().required("Category is required"),
   address: Yup.string().required("Address is required"),
 });
 
@@ -42,7 +33,6 @@ function RouteComponent() {
 
   const initialValues = {
     name: search?.name ?? "",
-    category: search?.category ?? "",
     address: search?.address ?? "",
   };
 
@@ -67,9 +57,7 @@ function RouteComponent() {
   return (
     <div className="font-inter">
       <div className="mb-5">
-        <h1 className="font-medium text-2xl text-[#06275A] ">
-          Add/Edit Tourist Attraction
-        </h1>
+        <h1 className="font-medium text-2xl text-[#06275A] ">Add/Edit Hotel</h1>
       </div>
       <Formik
         initialValues={initialValues}
@@ -78,49 +66,18 @@ function RouteComponent() {
       >
         {({ errors, touched, setFieldValue, values }) => (
           <Form className="space-y-4">
-            <div className="flex justify-between items-start gap-6">
-              <div className="flex-1">
-                <Field name="name">
-                  {({ field }: any) => (
-                    <Input
-                      {...field}
-                      label="Name"
-                      placeholder="Enter name"
-                      error={
-                        touched.name && errors.name ? errors.name : undefined
-                      }
-                      required
-                      fullWidth
-                    />
-                  )}
-                </Field>
-              </div>
-
-              <div className="flex-1">
-                <Field name="category">
-                  {({ field }: any) => (
-                    <Select
-                      {...field}
-                      label="Category"
-                      name="category"
-                      placeholder="Select category"
-                      options={categoryOptions}
-                      value={values.category}
-                      onChange={(value, option) => {
-                        setFieldValue("category", value);
-                        console.log("Formik category:", option);
-                      }}
-                      error={
-                        touched.category && errors.category
-                          ? errors.category
-                          : undefined
-                      }
-                      required
-                    />
-                  )}
-                </Field>
-              </div>
-            </div>
+            <Field name="name">
+              {({ field }: any) => (
+                <Input
+                  {...field}
+                  label="Name"
+                  placeholder="Enter name"
+                  error={touched.name && errors.name ? errors.name : undefined}
+                  required
+                  fullWidth
+                />
+              )}
+            </Field>
 
             <Field name="address">
               {({ field }: any) => (

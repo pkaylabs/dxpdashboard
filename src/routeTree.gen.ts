@@ -17,13 +17,14 @@ import { Route as IndexImport } from './routes/index'
 import { Route as AuthResetPasswordImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings/route'
-import { Route as AppHotelsRouteImport } from './routes/_app/hotels/route'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard/route'
 import { Route as AppTouristAttractionIndexImport } from './routes/_app/tourist-attraction/index'
+import { Route as AppHotelsIndexImport } from './routes/_app/hotels/index'
 import { Route as AppTouristAttractionAddImport } from './routes/_app/tourist-attraction/add'
 import { Route as AppSettingsProfileImport } from './routes/_app/settings/profile'
 import { Route as AppSettingsPreferencesImport } from './routes/_app/settings/preferences'
 import { Route as AppSettingsPasswordImport } from './routes/_app/settings/password'
+import { Route as AppHotelsAddImport } from './routes/_app/hotels/add'
 
 // Create/Update Routes
 
@@ -61,12 +62,6 @@ const AppSettingsRouteRoute = AppSettingsRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
-const AppHotelsRouteRoute = AppHotelsRouteImport.update({
-  id: '/hotels',
-  path: '/hotels',
-  getParentRoute: () => AppRoute,
-} as any)
-
 const AppDashboardRouteRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -76,6 +71,12 @@ const AppDashboardRouteRoute = AppDashboardRouteImport.update({
 const AppTouristAttractionIndexRoute = AppTouristAttractionIndexImport.update({
   id: '/tourist-attraction/',
   path: '/tourist-attraction/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppHotelsIndexRoute = AppHotelsIndexImport.update({
+  id: '/hotels/',
+  path: '/hotels/',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -101,6 +102,12 @@ const AppSettingsPasswordRoute = AppSettingsPasswordImport.update({
   id: '/password',
   path: '/password',
   getParentRoute: () => AppSettingsRouteRoute,
+} as any)
+
+const AppHotelsAddRoute = AppHotelsAddImport.update({
+  id: '/hotels/add',
+  path: '/hotels/add',
+  getParentRoute: () => AppRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -135,13 +142,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppImport
     }
-    '/_app/hotels': {
-      id: '/_app/hotels'
-      path: '/hotels'
-      fullPath: '/hotels'
-      preLoaderRoute: typeof AppHotelsRouteImport
-      parentRoute: typeof AppImport
-    }
     '/_app/settings': {
       id: '/_app/settings'
       path: '/settings'
@@ -162,6 +162,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reset-password'
       preLoaderRoute: typeof AuthResetPasswordImport
       parentRoute: typeof AuthImport
+    }
+    '/_app/hotels/add': {
+      id: '/_app/hotels/add'
+      path: '/hotels/add'
+      fullPath: '/hotels/add'
+      preLoaderRoute: typeof AppHotelsAddImport
+      parentRoute: typeof AppImport
     }
     '/_app/settings/password': {
       id: '/_app/settings/password'
@@ -189,6 +196,13 @@ declare module '@tanstack/react-router' {
       path: '/tourist-attraction/add'
       fullPath: '/tourist-attraction/add'
       preLoaderRoute: typeof AppTouristAttractionAddImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/hotels/': {
+      id: '/_app/hotels/'
+      path: '/hotels'
+      fullPath: '/hotels'
+      preLoaderRoute: typeof AppHotelsIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/tourist-attraction/': {
@@ -220,17 +234,19 @@ const AppSettingsRouteRouteWithChildren =
 
 interface AppRouteChildren {
   AppDashboardRouteRoute: typeof AppDashboardRouteRoute
-  AppHotelsRouteRoute: typeof AppHotelsRouteRoute
   AppSettingsRouteRoute: typeof AppSettingsRouteRouteWithChildren
+  AppHotelsAddRoute: typeof AppHotelsAddRoute
   AppTouristAttractionAddRoute: typeof AppTouristAttractionAddRoute
+  AppHotelsIndexRoute: typeof AppHotelsIndexRoute
   AppTouristAttractionIndexRoute: typeof AppTouristAttractionIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRouteRoute: AppDashboardRouteRoute,
-  AppHotelsRouteRoute: AppHotelsRouteRoute,
   AppSettingsRouteRoute: AppSettingsRouteRouteWithChildren,
+  AppHotelsAddRoute: AppHotelsAddRoute,
   AppTouristAttractionAddRoute: AppTouristAttractionAddRoute,
+  AppHotelsIndexRoute: AppHotelsIndexRoute,
   AppTouristAttractionIndexRoute: AppTouristAttractionIndexRoute,
 }
 
@@ -252,14 +268,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
   '/dashboard': typeof AppDashboardRouteRoute
-  '/hotels': typeof AppHotelsRouteRoute
   '/settings': typeof AppSettingsRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/hotels/add': typeof AppHotelsAddRoute
   '/settings/password': typeof AppSettingsPasswordRoute
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/hotels': typeof AppHotelsIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
 }
 
@@ -267,14 +284,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
   '/dashboard': typeof AppDashboardRouteRoute
-  '/hotels': typeof AppHotelsRouteRoute
   '/settings': typeof AppSettingsRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/hotels/add': typeof AppHotelsAddRoute
   '/settings/password': typeof AppSettingsPasswordRoute
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/hotels': typeof AppHotelsIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
 }
 
@@ -284,14 +302,15 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRouteRoute
-  '/_app/hotels': typeof AppHotelsRouteRoute
   '/_app/settings': typeof AppSettingsRouteRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_app/hotels/add': typeof AppHotelsAddRoute
   '/_app/settings/password': typeof AppSettingsPasswordRoute
   '/_app/settings/preferences': typeof AppSettingsPreferencesRoute
   '/_app/settings/profile': typeof AppSettingsProfileRoute
   '/_app/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/_app/hotels/': typeof AppHotelsIndexRoute
   '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
 }
 
@@ -301,28 +320,30 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/dashboard'
-    | '/hotels'
     | '/settings'
     | '/login'
     | '/reset-password'
+    | '/hotels/add'
     | '/settings/password'
     | '/settings/preferences'
     | '/settings/profile'
     | '/tourist-attraction/add'
+    | '/hotels'
     | '/tourist-attraction'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | ''
     | '/dashboard'
-    | '/hotels'
     | '/settings'
     | '/login'
     | '/reset-password'
+    | '/hotels/add'
     | '/settings/password'
     | '/settings/preferences'
     | '/settings/profile'
     | '/tourist-attraction/add'
+    | '/hotels'
     | '/tourist-attraction'
   id:
     | '__root__'
@@ -330,14 +351,15 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/_app/dashboard'
-    | '/_app/hotels'
     | '/_app/settings'
     | '/_auth/login'
     | '/_auth/reset-password'
+    | '/_app/hotels/add'
     | '/_app/settings/password'
     | '/_app/settings/preferences'
     | '/_app/settings/profile'
     | '/_app/tourist-attraction/add'
+    | '/_app/hotels/'
     | '/_app/tourist-attraction/'
   fileRoutesById: FileRoutesById
 }
@@ -376,9 +398,10 @@ export const routeTree = rootRoute
       "filePath": "_app.tsx",
       "children": [
         "/_app/dashboard",
-        "/_app/hotels",
         "/_app/settings",
+        "/_app/hotels/add",
         "/_app/tourist-attraction/add",
+        "/_app/hotels/",
         "/_app/tourist-attraction/"
       ]
     },
@@ -391,10 +414,6 @@ export const routeTree = rootRoute
     },
     "/_app/dashboard": {
       "filePath": "_app/dashboard/route.tsx",
-      "parent": "/_app"
-    },
-    "/_app/hotels": {
-      "filePath": "_app/hotels/route.tsx",
       "parent": "/_app"
     },
     "/_app/settings": {
@@ -414,6 +433,10 @@ export const routeTree = rootRoute
       "filePath": "_auth/reset-password.tsx",
       "parent": "/_auth"
     },
+    "/_app/hotels/add": {
+      "filePath": "_app/hotels/add.tsx",
+      "parent": "/_app"
+    },
     "/_app/settings/password": {
       "filePath": "_app/settings/password.tsx",
       "parent": "/_app/settings"
@@ -428,6 +451,10 @@ export const routeTree = rootRoute
     },
     "/_app/tourist-attraction/add": {
       "filePath": "_app/tourist-attraction/add.tsx",
+      "parent": "/_app"
+    },
+    "/_app/hotels/": {
+      "filePath": "_app/hotels/index.tsx",
       "parent": "/_app"
     },
     "/_app/tourist-attraction/": {

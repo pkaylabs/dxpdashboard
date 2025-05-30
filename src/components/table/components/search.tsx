@@ -14,7 +14,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   disabled = false 
 }) => {
   return (
-    <div className={`flex-[0.8] flex items-center space-x-2 px-4 py-2.5 border border-gray-300 rounded-lg transition-all duration-200 ${
+    <div className={`flex-[0.8] max-w-96 flex items-center space-x-2 px-4 py-2.5 border border-gray-300 rounded-lg transition-all duration-200 ${
       disabled 
         ? 'bg-gray-50 cursor-not-allowed' 
         : 'bg-white focus-within:ring-2 focus-within:ring-primary focus-within:border-primary hover:border-gray-400'

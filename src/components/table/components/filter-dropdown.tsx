@@ -28,7 +28,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const allOptions = [`All ${name}`, ...options];
 
   return (
-    <div className="relative w-full md:flex-1">
+    <div className="relative w-full max-w-80 md:flex-1">
       <button
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}

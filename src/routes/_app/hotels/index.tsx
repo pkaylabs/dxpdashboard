@@ -5,50 +5,24 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
 
-export const VenueSearch = z.object({
+export const HotelSearch = z.object({
   name: z.string().catch("").optional(),
-  category: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
 });
 
-export const Route = createFileRoute("/_app/tourist-attraction/")({
-  validateSearch: (search) => VenueSearch.parse(search),
+export const Route = createFileRoute("/_app/hotels/")({
   component: RouteComponent,
 });
 
-const CategoryBadge = ({ category }: { category: string }) => {
-  const getCategoryColor = (category: string) => {
-    switch (category.toLowerCase()) {
-      case "leisure/entertainment":
-        return "bg-blue-100 text-[blue-800] border-blue-200";
-      case "culture/nature":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "entertainment":
-        return "bg-purple-100 text-purple-800 border-purple-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  return (
-    <span
-      className={`px-3 py-1 rounded-full text-xs border ${getCategoryColor(category)}`}
-    >
-      {category}
-    </span>
-  );
-};
-
 function RouteComponent() {
-  const venueData = generateVenueData();
+  const hotelData = generateVenueData();
   const navigate = useNavigate();
 
   const handleEdit = (item: any) => {
     navigate({
-      to: "/tourist-attraction/add",
+      to: "/hotels/add",
       search: {
         name: item.name,
-        category: item.category,
         address: item.address,
       },
     });
@@ -69,7 +43,7 @@ function RouteComponent() {
           try {
             Swal.fire({
               title: "Deleted!",
-              text: "Venue has been deleted.",
+              text: "Hotel has been deleted.",
               icon: "success",
             });
           } catch (error: any) {
@@ -94,7 +68,7 @@ function RouteComponent() {
     }
   };
 
-  const tableData = venueData.map((item) => ({
+  const tableData = hotelData.map((item) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -103,7 +77,6 @@ function RouteComponent() {
         </span>
       </div>
     ),
-    category: <CategoryBadge category={item.category} />,
     address: (
       <span className="text-[#06275A] text-base text-nowrap">
         {item.address}
@@ -122,14 +95,11 @@ function RouteComponent() {
     ),
     // Raw data for filtering
     _rawName: item.name,
-    _rawCategory: item.category,
     _rawAddress: item.address,
-    Category: item.category,
   }));
 
   const headers = [
     { name: "Name", value: "name", sortable: true, width: "300px" },
-    { name: "Category", value: "category", sortable: true, width: "200px" },
     { name: "Address", value: "address", sortable: true, width: "300px" },
     {
       name: "Last Updated",
@@ -140,69 +110,29 @@ function RouteComponent() {
     { name: "Actions", value: "actions", width: "200px" },
   ];
 
-  // Filter options
-  const filters = [
-    {
-      name: "Category",
-      fields: ["Leisure/Entertainment", "Culture/Nature", "Entertainment"],
-    },
-  ];
-
   const handleAddVenue = () => {
-    navigate({ to: "/tourist-attraction/add" });
+    navigate({ to: "/hotels/add" });
   };
 
   const handleRowClick = (row: any, index: number) => {
-    console.log("Row clicked:", row, "Index:", index);
+    console.log("Row clicked: ", row, "Index:", index);
   };
 
   return (
-    <div className="">
-      {/* Statistics Cards */}
-      <div className="mb-5 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Total Venues
-          </h3>
-          <p className="text-3xl font-bold text-[#06275A] ">
-            {venueData.length}
-          </p>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Entertainment
-          </h3>
-          <p className="text-3xl font-bold text-purple-600">
-            {venueData.filter((v) => v.category === "Entertainment").length}
-          </p>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Culture/Nature
-          </h3>
-          <p className="text-3xl font-bold text-green-600">
-            {venueData.filter((v) => v.category === "Culture/Nature").length}
-          </p>
-        </div>
-      </div>
-
-   
+    <div>
       <Table
         headers={headers}
         rows={tableData}
         searchable={true}
-        searchableFields={["_rawName", "_rawAddress", "_rawCategory"]}
-        filters={filters}
+        searchableFields={["_rawName", "_rawAddress"]}
         showAddButton={true}
-        addButtonText="Add Venue"
+        addButtonText="Add Hotel"
         onAddButtonClick={handleAddVenue}
         onRowClick={handleRowClick}
         maxRows={10}
         striped={true}
         stickyHeader={false}
-        emptyStateMessage="No venues found. Start by adding your first venue!"
+        emptyStateMessage="No Hotels found. Start by adding your first hotel!"
       />
     </div>
   );
