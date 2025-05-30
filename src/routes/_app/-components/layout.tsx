@@ -238,6 +238,18 @@ export default function AppLayout() {
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Travel Blogs
                   </h2>
+                ) : !!matchRoute({ to: "/notifications" }) ? (
+                  <h2 className="font-medium text-[#06275A] text-2xl ">
+                    Notifications
+                  </h2>
+                ) : !!matchRoute({ to: "/user-management" }) ? (
+                  <h2 className="font-medium text-[#06275A] text-2xl ">
+                    User Management
+                  </h2>
+                ) : !!matchRoute({ to: "/settings" }) ? (
+                  <h2 className="font-medium text-[#06275A] text-2xl ">
+                    Settings
+                  </h2>
                 ) : (
                   <Link
                     to=".."

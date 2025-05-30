@@ -220,14 +220,21 @@ const Table: React.FC<TableProps> = ({
               <tbody>
                 {paginatedRows.map((row, index) =>
                   renderRow ? (
-                    <motion.div
+                    <motion.tr
                       key={index}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: index * 0.05 }}
+                      onClick={() => onRowClick?.(row, index)}
+                      className={`border-b border-gray-100 transition-colors duration-150 ${
+                        striped && index % 2 === 1 ? "bg-gray-50" : "bg-white"
+                      } ${onRowClick ? "hover:bg-blue-50 cursor-pointer" : ""}`}
                     >
-                      {renderRow(row, index)}
-                    </motion.div>
+                      {/* ✅ Single td that spans all columns */}
+                      <td colSpan={headers.length} className="p-0">
+                        {renderRow(row, index)}
+                      </td>
+                    </motion.tr>
                   ) : (
                     <motion.tr
                       key={index}
@@ -240,10 +247,7 @@ const Table: React.FC<TableProps> = ({
                       } ${onRowClick ? "hover:bg-blue-50 cursor-pointer" : ""}`}
                     >
                       {headers.map((header) => (
-                        <td
-                          key={header.value}
-                          className="px-6 py-2.5 text-sm "
-                        >
+                        <td key={header.value} className="px-6 py-2.5 text-sm ">
                           {row[header.value]}
                         </td>
                       ))}

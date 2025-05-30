@@ -18,10 +18,13 @@ import { Route as AuthResetPasswordImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings/route'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard/route'
+import { Route as AppUserManagementIndexImport } from './routes/_app/user-management/index'
 import { Route as AppTravelBlogsIndexImport } from './routes/_app/travel-blogs/index'
 import { Route as AppTouristAttractionIndexImport } from './routes/_app/tourist-attraction/index'
 import { Route as AppPoliticalSitesIndexImport } from './routes/_app/political-sites/index'
+import { Route as AppNotificationsIndexImport } from './routes/_app/notifications/index'
 import { Route as AppHotelsIndexImport } from './routes/_app/hotels/index'
+import { Route as AppUserManagementAddImport } from './routes/_app/user-management/add'
 import { Route as AppTravelBlogsAddImport } from './routes/_app/travel-blogs/add'
 import { Route as AppTouristAttractionAddImport } from './routes/_app/tourist-attraction/add'
 import { Route as AppSettingsProfileImport } from './routes/_app/settings/profile'
@@ -72,6 +75,12 @@ const AppDashboardRouteRoute = AppDashboardRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppUserManagementIndexRoute = AppUserManagementIndexImport.update({
+  id: '/user-management/',
+  path: '/user-management/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppTravelBlogsIndexRoute = AppTravelBlogsIndexImport.update({
   id: '/travel-blogs/',
   path: '/travel-blogs/',
@@ -90,9 +99,21 @@ const AppPoliticalSitesIndexRoute = AppPoliticalSitesIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppNotificationsIndexRoute = AppNotificationsIndexImport.update({
+  id: '/notifications/',
+  path: '/notifications/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppHotelsIndexRoute = AppHotelsIndexImport.update({
   id: '/hotels/',
   path: '/hotels/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppUserManagementAddRoute = AppUserManagementAddImport.update({
+  id: '/user-management/add',
+  path: '/user-management/add',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -240,11 +261,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTravelBlogsAddImport
       parentRoute: typeof AppImport
     }
+    '/_app/user-management/add': {
+      id: '/_app/user-management/add'
+      path: '/user-management/add'
+      fullPath: '/user-management/add'
+      preLoaderRoute: typeof AppUserManagementAddImport
+      parentRoute: typeof AppImport
+    }
     '/_app/hotels/': {
       id: '/_app/hotels/'
       path: '/hotels'
       fullPath: '/hotels'
       preLoaderRoute: typeof AppHotelsIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/notifications/': {
+      id: '/_app/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsIndexImport
       parentRoute: typeof AppImport
     }
     '/_app/political-sites/': {
@@ -266,6 +301,13 @@ declare module '@tanstack/react-router' {
       path: '/travel-blogs'
       fullPath: '/travel-blogs'
       preLoaderRoute: typeof AppTravelBlogsIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/user-management/': {
+      id: '/_app/user-management/'
+      path: '/user-management'
+      fullPath: '/user-management'
+      preLoaderRoute: typeof AppUserManagementIndexImport
       parentRoute: typeof AppImport
     }
   }
@@ -295,10 +337,13 @@ interface AppRouteChildren {
   AppPoliticalSitesAddRoute: typeof AppPoliticalSitesAddRoute
   AppTouristAttractionAddRoute: typeof AppTouristAttractionAddRoute
   AppTravelBlogsAddRoute: typeof AppTravelBlogsAddRoute
+  AppUserManagementAddRoute: typeof AppUserManagementAddRoute
   AppHotelsIndexRoute: typeof AppHotelsIndexRoute
+  AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppPoliticalSitesIndexRoute: typeof AppPoliticalSitesIndexRoute
   AppTouristAttractionIndexRoute: typeof AppTouristAttractionIndexRoute
   AppTravelBlogsIndexRoute: typeof AppTravelBlogsIndexRoute
+  AppUserManagementIndexRoute: typeof AppUserManagementIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -308,10 +353,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppPoliticalSitesAddRoute: AppPoliticalSitesAddRoute,
   AppTouristAttractionAddRoute: AppTouristAttractionAddRoute,
   AppTravelBlogsAddRoute: AppTravelBlogsAddRoute,
+  AppUserManagementAddRoute: AppUserManagementAddRoute,
   AppHotelsIndexRoute: AppHotelsIndexRoute,
+  AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppPoliticalSitesIndexRoute: AppPoliticalSitesIndexRoute,
   AppTouristAttractionIndexRoute: AppTouristAttractionIndexRoute,
   AppTravelBlogsIndexRoute: AppTravelBlogsIndexRoute,
+  AppUserManagementIndexRoute: AppUserManagementIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -342,10 +390,13 @@ export interface FileRoutesByFullPath {
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
   '/travel-blogs/add': typeof AppTravelBlogsAddRoute
+  '/user-management/add': typeof AppUserManagementAddRoute
   '/hotels': typeof AppHotelsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/political-sites': typeof AppPoliticalSitesIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
   '/travel-blogs': typeof AppTravelBlogsIndexRoute
+  '/user-management': typeof AppUserManagementIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -362,10 +413,13 @@ export interface FileRoutesByTo {
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
   '/travel-blogs/add': typeof AppTravelBlogsAddRoute
+  '/user-management/add': typeof AppUserManagementAddRoute
   '/hotels': typeof AppHotelsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/political-sites': typeof AppPoliticalSitesIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
   '/travel-blogs': typeof AppTravelBlogsIndexRoute
+  '/user-management': typeof AppUserManagementIndexRoute
 }
 
 export interface FileRoutesById {
@@ -384,10 +438,13 @@ export interface FileRoutesById {
   '/_app/settings/profile': typeof AppSettingsProfileRoute
   '/_app/tourist-attraction/add': typeof AppTouristAttractionAddRoute
   '/_app/travel-blogs/add': typeof AppTravelBlogsAddRoute
+  '/_app/user-management/add': typeof AppUserManagementAddRoute
   '/_app/hotels/': typeof AppHotelsIndexRoute
+  '/_app/notifications/': typeof AppNotificationsIndexRoute
   '/_app/political-sites/': typeof AppPoliticalSitesIndexRoute
   '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
   '/_app/travel-blogs/': typeof AppTravelBlogsIndexRoute
+  '/_app/user-management/': typeof AppUserManagementIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -406,10 +463,13 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/tourist-attraction/add'
     | '/travel-blogs/add'
+    | '/user-management/add'
     | '/hotels'
+    | '/notifications'
     | '/political-sites'
     | '/tourist-attraction'
     | '/travel-blogs'
+    | '/user-management'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -425,10 +485,13 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/tourist-attraction/add'
     | '/travel-blogs/add'
+    | '/user-management/add'
     | '/hotels'
+    | '/notifications'
     | '/political-sites'
     | '/tourist-attraction'
     | '/travel-blogs'
+    | '/user-management'
   id:
     | '__root__'
     | '/'
@@ -445,10 +508,13 @@ export interface FileRouteTypes {
     | '/_app/settings/profile'
     | '/_app/tourist-attraction/add'
     | '/_app/travel-blogs/add'
+    | '/_app/user-management/add'
     | '/_app/hotels/'
+    | '/_app/notifications/'
     | '/_app/political-sites/'
     | '/_app/tourist-attraction/'
     | '/_app/travel-blogs/'
+    | '/_app/user-management/'
   fileRoutesById: FileRoutesById
 }
 
@@ -491,10 +557,13 @@ export const routeTree = rootRoute
         "/_app/political-sites/add",
         "/_app/tourist-attraction/add",
         "/_app/travel-blogs/add",
+        "/_app/user-management/add",
         "/_app/hotels/",
+        "/_app/notifications/",
         "/_app/political-sites/",
         "/_app/tourist-attraction/",
-        "/_app/travel-blogs/"
+        "/_app/travel-blogs/",
+        "/_app/user-management/"
       ]
     },
     "/_auth": {
@@ -553,8 +622,16 @@ export const routeTree = rootRoute
       "filePath": "_app/travel-blogs/add.tsx",
       "parent": "/_app"
     },
+    "/_app/user-management/add": {
+      "filePath": "_app/user-management/add.tsx",
+      "parent": "/_app"
+    },
     "/_app/hotels/": {
       "filePath": "_app/hotels/index.tsx",
+      "parent": "/_app"
+    },
+    "/_app/notifications/": {
+      "filePath": "_app/notifications/index.tsx",
       "parent": "/_app"
     },
     "/_app/political-sites/": {
@@ -567,6 +644,10 @@ export const routeTree = rootRoute
     },
     "/_app/travel-blogs/": {
       "filePath": "_app/travel-blogs/index.tsx",
+      "parent": "/_app"
+    },
+    "/_app/user-management/": {
+      "filePath": "_app/user-management/index.tsx",
       "parent": "/_app"
     }
   }

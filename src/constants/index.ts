@@ -64,7 +64,7 @@ export const navigations = [
     tabs: [
       {
         name: "Manage Users",
-        href: "/manage-users",
+        href: "/user-management",
         icon: ImUsers,
       },
     ],
@@ -116,36 +116,6 @@ export const dashboardData: DashboardCardProps[] = [
   },
 ];
 
-export const supportTypes = [
-  { label: "Aid", value: "AID" },
-  { label: "Revolving fund", value: "REVOLVING_FUND" },
-];
-
-export const bankNames = [
-  { label: "Fidelity Bank", value: "fidelity" },
-  { label: "Cal Bank", value: "calbank" },
-  { label: "Zenith Bank", value: "zenith" },
-  { label: "Standard Chartered Bank", value: "stanchart" },
-  { label: "Other", value: "other" },
-];
-
-export const churchProjectTypes = [
-  {
-    label: " Regional headquarters church",
-    value: "REGIONAL HEADQUARTERS CHURCH",
-  },
-  {
-    label: "Divisional headquarters church",
-    value: "DIVISIONAL HEADQUARTERS CHURCH",
-  },
-  {
-    label: "Group of districts headquarters church",
-    value: "GROUP OF DISTRICTS HEADQUARTERS CHURCH",
-  },
-  { label: "District church", value: "DISTRICT CHURCH" },
-  { label: "Location church", value: "LOCATION CHURCH" },
-];
-
 export const tooltipStyle = {
   fontSize: "12px",
   fontWeight: "300",
@@ -154,34 +124,6 @@ export const tooltipStyle = {
   borderRadius: "8px",
   marginTop: "10px",
 };
-
-export const statuses = [
-  // { label: "DRAFT", value: "DRAFT" },
-  { label: "PENDING REVIEW", value: "PENDING REVIEW" },
-  { label: "APPROVED", value: "APPROVED" },
-  { label: "REJECTED", value: "REJECTED" },
-  { label: "UNDER REVIEW", value: "UNDER REVIEW" },
-  { label: "WAITING NO'S APPROVAL", value: "WAITING NO'S APPROVAL" },
-];
-
-export const ghanaRegions = [
-  { label: "Greater Accra", value: "greater_accra" },
-  { label: "Ashanti", value: "ashanti" },
-  { label: "Western", value: "western" },
-  { label: "Eastern", value: "eastern" },
-  { label: "Central", value: "central" },
-  { label: "Volta", value: "volta" },
-  { label: "Northern", value: "northern" },
-  { label: "Upper East", value: "upper_east" },
-  { label: "Upper West", value: "upper_west" },
-  { label: "Bono", value: "bono" },
-  { label: "Bono East", value: "bono_east" },
-  { label: "Ahafo", value: "ahafo" },
-  { label: "Western North", value: "western_north" },
-  { label: "Oti", value: "oti" },
-  { label: "North East", value: "north_east" },
-  { label: "Savannah", value: "savannah" },
-];
 
 export const generateVenueData = () => {
   const venues = [
@@ -575,4 +517,281 @@ export const generateTravelData = () => {
   ];
 
   return blogs;
+};
+
+export const generateNotificationData = () => {
+  const notifications = [
+    {
+      id: 1,
+      title: "New Tourist Attraction Added",
+      message: "Kontiki Park & Resort has been successfully added to the system.",
+      date: "May 30th, 2025",
+      time: "2:15pm",
+      type: "success",
+      read: false
+    },
+    {
+      id: 2,
+      title: "Venue Update Required",
+      message: "Please update the contact information for Golden Tulip Hotel.",
+      date: "May 30th, 2025",
+      time: "11:30am",
+      type: "warning",
+      read: false
+    },
+    {
+      id: 3,
+      title: "New Blog Post Published",
+      message: "James M. Bracket published 'A Trip to Brass Island' - 245 views so far.",
+      date: "May 29th, 2025",
+      time: "4:22pm",
+      type: "info",
+      read: true
+    },
+    {
+      id: 4,
+      title: "System Maintenance Scheduled",
+      message: "Scheduled maintenance on June 1st, 2025 from 2:00am - 4:00am GMT.",
+      date: "May 29th, 2025",
+      time: "9:45am",
+      type: "info",
+      read: true
+    },
+    {
+      id: 5,
+      title: "High Traffic Alert",
+      message: "Unusual high traffic detected on Cape Coast Castle page - 1,250 visitors in the last hour.",
+      date: "May 28th, 2025",
+      time: "6:30pm",
+      type: "warning",
+      read: false
+    },
+    {
+      id: 6,
+      title: "Content Approval Needed",
+      message: "Sarah K. Williams submitted 'Exploring Hidden Gems of Cape Coast' for review.",
+      date: "May 28th, 2025",
+      time: "3:18pm",
+      type: "action",
+      read: true
+    },
+    {
+      id: 7,
+      title: "User Registration Spike",
+      message: "25 new users registered today. Consider reviewing onboarding process.",
+      date: "May 28th, 2025",
+      time: "10:15am",
+      type: "info",
+      read: true
+    },
+    {
+      id: 8,
+      title: "Venue Deletion Request",
+      message: "Request to remove 'Old Conference Center' from listings - requires admin approval.",
+      date: "May 27th, 2025",
+      time: "8:40pm",
+      type: "error",
+      read: false
+    },
+    {
+      id: 9,
+      title: "Weekly Analytics Report",
+      message: "Your weekly performance report is ready. Total page views: 12,450 (+15% from last week).",
+      date: "May 27th, 2025",
+      time: "7:00am",
+      type: "success",
+      read: true
+    },
+    {
+      id: 10,
+      title: "Database Backup Completed",
+      message: "Automated database backup completed successfully at 3:00am GMT.",
+      date: "May 26th, 2025",
+      time: "3:05am",
+      type: "success",
+      read: true
+    },
+    {
+      id: 11,
+      title: "New Feature Available",
+      message: "Advanced search filters are now available for tourist attractions.",
+      date: "May 25th, 2025",
+      time: "11:20am",
+      type: "info",
+      read: true
+    },
+    {
+      id: 12,
+      title: "Photo Upload Failed",
+      message: "Failed to upload gallery images for Elmina Beach Resort. Please retry.",
+      date: "May 25th, 2025",
+      time: "9:33am",
+      type: "error",
+      read: false
+    },
+    {
+      id: 13,
+      title: "Review Submission",
+      message: "New 5-star review submitted for Labadi Beach Hotel by verified traveler.",
+      date: "May 24th, 2025",
+      time: "5:47pm",
+      type: "success",
+      read: true
+    },
+    {
+      id: 14,
+      title: "API Rate Limit Warning",
+      message: "Third-party integration approaching rate limit. Consider upgrading plan.",
+      date: "May 24th, 2025",
+      time: "2:15pm",
+      type: "warning",
+      read: true
+    },
+    {
+      id: 15,
+      title: "Content Moderation Alert",
+      message: "Blog post flagged for review: 'Controversial Views on Local Tourism'.",
+      date: "May 23rd, 2025",
+      time: "7:22pm",
+      type: "warning",
+      read: false
+    },
+    {
+      id: 16,
+      title: "Server Response Time",
+      message: "Average server response time improved by 23% after recent optimizations.",
+      date: "May 23rd, 2025",
+      time: "1:10pm",
+      type: "success",
+      read: true
+    },
+    {
+      id: 17,
+      title: "Monthly Newsletter Sent",
+      message: "Tourism newsletter delivered to 5,847 subscribers with 32% open rate.",
+      date: "May 22nd, 2025",
+      time: "8:00am",
+      type: "info",
+      read: true
+    },
+    {
+      id: 18,
+      title: "Security Alert",
+      message: "Multiple failed login attempts detected from IP 192.168.1.100.",
+      date: "May 21st, 2025",
+      time: "11:45pm",
+      type: "error",
+      read: false
+    },
+    {
+      id: 19,
+      title: "Event Reminder",
+      message: "Tourism board meeting scheduled for tomorrow at 10:00am in Conference Room A.",
+      date: "May 21st, 2025",
+      time: "4:30pm",
+      type: "info",
+      read: true
+    },
+    {
+      id: 20,
+      title: "Data Export Completed",
+      message: "Tourist attraction data export completed. Download link expires in 7 days.",
+      date: "May 20th, 2025",
+      time: "6:15am",
+      type: "success",
+      read: true
+    },
+    {
+      id: 21,
+      title: "User Feedback Received",
+      message: "Anonymous feedback: 'Love the new mobile interface! Much easier to navigate.'",
+      date: "May 19th, 2025",
+      time: "3:28pm",
+      type: "info",
+      read: true
+    },
+    {
+      id: 22,
+      title: "Seasonal Update Required",
+      message: "Update operating hours for 12 venues for summer season starting June 1st.",
+      date: "May 19th, 2025",
+      time: "9:00am",
+      type: "action",
+      read: false
+    },
+    {
+      id: 23,
+      title: "Partnership Opportunity",
+      message: "Ghana Tourism Authority interested in collaboration. Contact details in admin panel.",
+      date: "May 18th, 2025",
+      time: "12:45pm",
+      type: "info",
+      read: true
+    },
+    {
+      id: 24,
+      title: "Storage Space Warning",
+      message: "Image storage 85% full. Consider upgrading storage plan or archiving old content.",
+      date: "May 17th, 2025",
+      time: "7:20am",
+      type: "warning",
+      read: false
+    },
+    {
+      id: 25,
+      title: "Mobile App Update",
+      message: "New mobile app version 2.1.3 released with improved map functionality.",
+      date: "May 16th, 2025",
+      time: "10:30am",
+      type: "info",
+      read: true
+    },
+    {
+      id: 26,
+      title: "Comment Moderation",
+      message: "15 new comments awaiting moderation on recent blog posts.",
+      date: "May 15th, 2025",
+      time: "5:55pm",
+      type: "action",
+      read: true
+    },
+    {
+      id: 27,
+      title: "Performance Milestone",
+      message: "Congratulations! The platform reached 50,000 total unique visitors this month.",
+      date: "May 14th, 2025",
+      time: "1:15pm",
+      type: "success",
+      read: true
+    },
+    {
+      id: 28,
+      title: "Backup Verification Failed",
+      message: "Backup verification failed for May 13th backup. Manual check required.",
+      date: "May 13th, 2025",
+      time: "8:45pm",
+      type: "error",
+      read: false
+    },
+    {
+      id: 29,
+      title: "Social Media Integration",
+      message: "Instagram posts automatically synced. 8 new posts featuring local attractions.",
+      date: "May 12th, 2025",
+      time: "11:00am",
+      type: "success",
+      read: true
+    },
+    {
+      id: 30,
+      title: "User Session Timeout",
+      message: "Updated session timeout to 2 hours for improved security.",
+      date: "May 11th, 2025",
+      time: "4:10pm",
+      type: "info",
+      read: true
+    }
+  ];
+
+  return notifications;
 };
