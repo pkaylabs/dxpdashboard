@@ -329,3 +329,250 @@ export const generateVenueData = () => {
 
   return venues;
 };
+
+export const generateTravelData = () => {
+  const blogs = [
+    {
+      id: 1,
+      writer: "James M. Bracket",
+      title: "A Trip to Brass Island",
+      datePosted: "25th May, 2025",
+    },
+    {
+      id: 2,
+      writer: "Sarah K. Williams",
+      title: "Exploring the Hidden Gems of Cape Coast",
+      datePosted: "23rd May, 2025",
+    },
+    {
+      id: 3,
+      writer: "Michael A. Thompson",
+      title: "Adventures in Kakum National Park",
+      datePosted: "20th May, 2025",
+    },
+    {
+      id: 4,
+      writer: "Emily R. Johnson",
+      title: "Cultural Immersion at Elmina Castle",
+      datePosted: "18th May, 2025",
+    },
+    {
+      id: 5,
+      writer: "David L. Martinez",
+      title: "Wildlife Safari at Mole National Park",
+      datePosted: "15th May, 2025",
+    },
+    {
+      id: 6,
+      writer: "Jessica N. Brown",
+      title: "Beach Hopping Along Ghana's Golden Coast",
+      datePosted: "12th May, 2025",
+    },
+    {
+      id: 7,
+      writer: "Robert C. Anderson",
+      title: "The Vibrant Markets of Kumasi",
+      datePosted: "10th May, 2025",
+    },
+    {
+      id: 8,
+      writer: "Amanda P. Davis",
+      title: "Hiking Through the Aburi Botanical Gardens",
+      datePosted: "8th May, 2025",
+    },
+    {
+      id: 9,
+      writer: "Christopher J. Wilson",
+      title: "A Cultural Journey to Tamale",
+      datePosted: "5th May, 2025",
+    },
+    {
+      id: 10,
+      writer: "Michelle S. Garcia",
+      title: "Sunset Views from Labadi Beach",
+      datePosted: "3rd May, 2025",
+    },
+    {
+      id: 11,
+      writer: "Steven T. Rodriguez",
+      title: "Traditional Crafts in Bolgatanga",
+      datePosted: "1st May, 2025",
+    },
+    {
+      id: 12,
+      writer: "Nicole F. Lee",
+      title: "Food Adventures in Accra's Street Markets",
+      datePosted: "28th April, 2025",
+    },
+    {
+      id: 13,
+      writer: "Brian K. Taylor",
+      title: "Discovering the Wli Waterfalls",
+      datePosted: "25th April, 2025",
+    },
+    {
+      id: 14,
+      writer: "Rachel M. White",
+      title: "Art and History at the National Museum",
+      datePosted: "22nd April, 2025",
+    },
+    {
+      id: 15,
+      writer: "Kevin D. Miller",
+      title: "Island Life on Lake Volta",
+      datePosted: "20th April, 2025",
+    },
+    {
+      id: 16,
+      writer: "Stephanie H. Clark",
+      title: "The Mystical Caves of Paga",
+      datePosted: "18th April, 2025",
+    },
+    {
+      id: 17,
+      writer: "Anthony G. Lewis",
+      title: "Traditional Music and Dance in Ho",
+      datePosted: "15th April, 2025",
+    },
+    {
+      id: 18,
+      writer: "Lauren B. Walker",
+      title: "Canopy Walk Adventures in Kakum",
+      datePosted: "12th April, 2025",
+    },
+    {
+      id: 19,
+      writer: "Jonathan R. Hall",
+      title: "Fishing Villages of the Volta Region",
+      datePosted: "10th April, 2025",
+    },
+    {
+      id: 20,
+      writer: "Samantha L. Young",
+      title: "Spiritual Journey to the Shai Hills",
+      datePosted: "8th April, 2025",
+    },
+    {
+      id: 21,
+      writer: "Matthew P. King",
+      title: "Colonial Architecture in Cape Coast",
+      datePosted: "5th April, 2025",
+    },
+    {
+      id: 22,
+      writer: "Ashley C. Wright",
+      title: "The Festivals of Northern Ghana",
+      datePosted: "3rd April, 2025",
+    },
+    {
+      id: 23,
+      writer: "Daniel J. Scott",
+      title: "Eco-Tourism in the Ankasa Conservation Area",
+      datePosted: "1st April, 2025",
+    },
+    {
+      id: 24,
+      writer: "Megan E. Green",
+      title: "Gold Mining History in Obuasi",
+      datePosted: "28th March, 2025",
+    },
+    {
+      id: 25,
+      writer: "Tyler W. Adams",
+      title: "River Rafting on the White Volta",
+      datePosted: "25th March, 2025",
+    },
+    {
+      id: 26,
+      writer: "Brittany K. Baker",
+      title: "Sacred Groves and Traditional Beliefs",
+      datePosted: "22nd March, 2025",
+    },
+    {
+      id: 27,
+      writer: "Cameron M. Nelson",
+      title: "Modern Art Scene in Accra",
+      datePosted: "20th March, 2025",
+    },
+    {
+      id: 28,
+      writer: "Hannah L. Carter",
+      title: "Textile Traditions in Kente Country",
+      datePosted: "18th March, 2025",
+    },
+    {
+      id: 29,
+      writer: "Zachary R. Mitchell",
+      title: "Mountain Climbing in the Eastern Region",
+      datePosted: "15th March, 2025",
+    },
+    {
+      id: 30,
+      writer: "Alexis N. Perez",
+      title: "Coastal Conservation Efforts",
+      datePosted: "12th March, 2025",
+    },
+    {
+      id: 31,
+      writer: "Jordan T. Roberts",
+      title: "Urban Exploration in Tema",
+      datePosted: "10th March, 2025",
+    },
+    {
+      id: 32,
+      writer: "Kayla S. Turner",
+      title: "Traditional Healing Practices",
+      datePosted: "8th March, 2025",
+    },
+    {
+      id: 33,
+      writer: "Austin F. Phillips",
+      title: "Birdwatching in Ankasa Forest",
+      datePosted: "5th March, 2025",
+    },
+    {
+      id: 34,
+      writer: "Morgan D. Campbell",
+      title: "The Slave Route: A Historical Journey",
+      datePosted: "3rd March, 2025",
+    },
+    {
+      id: 35,
+      writer: "Blake H. Parker",
+      title: "Local Brews and Traditional Drinks",
+      datePosted: "1st March, 2025",
+    },
+    {
+      id: 36,
+      writer: "Taylor J. Evans",
+      title: "Sustainable Tourism in Rural Communities",
+      datePosted: "26th February, 2025",
+    },
+    {
+      id: 37,
+      writer: "Sierra A. Edwards",
+      title: "Photography Safari in the Northern Savanna",
+      datePosted: "24th February, 2025",
+    },
+    {
+      id: 38,
+      writer: "Dakota L. Collins",
+      title: "Ancient Traditions of the Dagara People",
+      datePosted: "22nd February, 2025",
+    },
+    {
+      id: 39,
+      writer: "Peyton M. Stewart",
+      title: "Coastal Erosion and Environmental Impact",
+      datePosted: "20th February, 2025",
+    },
+    {
+      id: 40,
+      writer: "Casey R. Sanchez",
+      title: "Weekend Getaway to Busua Beach",
+      datePosted: "18th February, 2025",
+    },
+  ];
+
+  return blogs;
+};

@@ -18,9 +18,11 @@ import { Route as AuthResetPasswordImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings/route'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard/route'
+import { Route as AppTravelBlogsIndexImport } from './routes/_app/travel-blogs/index'
 import { Route as AppTouristAttractionIndexImport } from './routes/_app/tourist-attraction/index'
 import { Route as AppPoliticalSitesIndexImport } from './routes/_app/political-sites/index'
 import { Route as AppHotelsIndexImport } from './routes/_app/hotels/index'
+import { Route as AppTravelBlogsAddImport } from './routes/_app/travel-blogs/add'
 import { Route as AppTouristAttractionAddImport } from './routes/_app/tourist-attraction/add'
 import { Route as AppSettingsProfileImport } from './routes/_app/settings/profile'
 import { Route as AppSettingsPreferencesImport } from './routes/_app/settings/preferences'
@@ -70,6 +72,12 @@ const AppDashboardRouteRoute = AppDashboardRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppTravelBlogsIndexRoute = AppTravelBlogsIndexImport.update({
+  id: '/travel-blogs/',
+  path: '/travel-blogs/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppTouristAttractionIndexRoute = AppTouristAttractionIndexImport.update({
   id: '/tourist-attraction/',
   path: '/tourist-attraction/',
@@ -85,6 +93,12 @@ const AppPoliticalSitesIndexRoute = AppPoliticalSitesIndexImport.update({
 const AppHotelsIndexRoute = AppHotelsIndexImport.update({
   id: '/hotels/',
   path: '/hotels/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppTravelBlogsAddRoute = AppTravelBlogsAddImport.update({
+  id: '/travel-blogs/add',
+  path: '/travel-blogs/add',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -219,6 +233,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTouristAttractionAddImport
       parentRoute: typeof AppImport
     }
+    '/_app/travel-blogs/add': {
+      id: '/_app/travel-blogs/add'
+      path: '/travel-blogs/add'
+      fullPath: '/travel-blogs/add'
+      preLoaderRoute: typeof AppTravelBlogsAddImport
+      parentRoute: typeof AppImport
+    }
     '/_app/hotels/': {
       id: '/_app/hotels/'
       path: '/hotels'
@@ -238,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/tourist-attraction'
       fullPath: '/tourist-attraction'
       preLoaderRoute: typeof AppTouristAttractionIndexImport
+      parentRoute: typeof AppImport
+    }
+    '/_app/travel-blogs/': {
+      id: '/_app/travel-blogs/'
+      path: '/travel-blogs'
+      fullPath: '/travel-blogs'
+      preLoaderRoute: typeof AppTravelBlogsIndexImport
       parentRoute: typeof AppImport
     }
   }
@@ -266,9 +294,11 @@ interface AppRouteChildren {
   AppHotelsAddRoute: typeof AppHotelsAddRoute
   AppPoliticalSitesAddRoute: typeof AppPoliticalSitesAddRoute
   AppTouristAttractionAddRoute: typeof AppTouristAttractionAddRoute
+  AppTravelBlogsAddRoute: typeof AppTravelBlogsAddRoute
   AppHotelsIndexRoute: typeof AppHotelsIndexRoute
   AppPoliticalSitesIndexRoute: typeof AppPoliticalSitesIndexRoute
   AppTouristAttractionIndexRoute: typeof AppTouristAttractionIndexRoute
+  AppTravelBlogsIndexRoute: typeof AppTravelBlogsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -277,9 +307,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppHotelsAddRoute: AppHotelsAddRoute,
   AppPoliticalSitesAddRoute: AppPoliticalSitesAddRoute,
   AppTouristAttractionAddRoute: AppTouristAttractionAddRoute,
+  AppTravelBlogsAddRoute: AppTravelBlogsAddRoute,
   AppHotelsIndexRoute: AppHotelsIndexRoute,
   AppPoliticalSitesIndexRoute: AppPoliticalSitesIndexRoute,
   AppTouristAttractionIndexRoute: AppTouristAttractionIndexRoute,
+  AppTravelBlogsIndexRoute: AppTravelBlogsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -309,9 +341,11 @@ export interface FileRoutesByFullPath {
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/travel-blogs/add': typeof AppTravelBlogsAddRoute
   '/hotels': typeof AppHotelsIndexRoute
   '/political-sites': typeof AppPoliticalSitesIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
+  '/travel-blogs': typeof AppTravelBlogsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -327,9 +361,11 @@ export interface FileRoutesByTo {
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/travel-blogs/add': typeof AppTravelBlogsAddRoute
   '/hotels': typeof AppHotelsIndexRoute
   '/political-sites': typeof AppPoliticalSitesIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
+  '/travel-blogs': typeof AppTravelBlogsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -347,9 +383,11 @@ export interface FileRoutesById {
   '/_app/settings/preferences': typeof AppSettingsPreferencesRoute
   '/_app/settings/profile': typeof AppSettingsProfileRoute
   '/_app/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/_app/travel-blogs/add': typeof AppTravelBlogsAddRoute
   '/_app/hotels/': typeof AppHotelsIndexRoute
   '/_app/political-sites/': typeof AppPoliticalSitesIndexRoute
   '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
+  '/_app/travel-blogs/': typeof AppTravelBlogsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -367,9 +405,11 @@ export interface FileRouteTypes {
     | '/settings/preferences'
     | '/settings/profile'
     | '/tourist-attraction/add'
+    | '/travel-blogs/add'
     | '/hotels'
     | '/political-sites'
     | '/tourist-attraction'
+    | '/travel-blogs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -384,9 +424,11 @@ export interface FileRouteTypes {
     | '/settings/preferences'
     | '/settings/profile'
     | '/tourist-attraction/add'
+    | '/travel-blogs/add'
     | '/hotels'
     | '/political-sites'
     | '/tourist-attraction'
+    | '/travel-blogs'
   id:
     | '__root__'
     | '/'
@@ -402,9 +444,11 @@ export interface FileRouteTypes {
     | '/_app/settings/preferences'
     | '/_app/settings/profile'
     | '/_app/tourist-attraction/add'
+    | '/_app/travel-blogs/add'
     | '/_app/hotels/'
     | '/_app/political-sites/'
     | '/_app/tourist-attraction/'
+    | '/_app/travel-blogs/'
   fileRoutesById: FileRoutesById
 }
 
@@ -446,9 +490,11 @@ export const routeTree = rootRoute
         "/_app/hotels/add",
         "/_app/political-sites/add",
         "/_app/tourist-attraction/add",
+        "/_app/travel-blogs/add",
         "/_app/hotels/",
         "/_app/political-sites/",
-        "/_app/tourist-attraction/"
+        "/_app/tourist-attraction/",
+        "/_app/travel-blogs/"
       ]
     },
     "/_auth": {
@@ -503,6 +549,10 @@ export const routeTree = rootRoute
       "filePath": "_app/tourist-attraction/add.tsx",
       "parent": "/_app"
     },
+    "/_app/travel-blogs/add": {
+      "filePath": "_app/travel-blogs/add.tsx",
+      "parent": "/_app"
+    },
     "/_app/hotels/": {
       "filePath": "_app/hotels/index.tsx",
       "parent": "/_app"
@@ -513,6 +563,10 @@ export const routeTree = rootRoute
     },
     "/_app/tourist-attraction/": {
       "filePath": "_app/tourist-attraction/index.tsx",
+      "parent": "/_app"
+    },
+    "/_app/travel-blogs/": {
+      "filePath": "_app/travel-blogs/index.tsx",
       "parent": "/_app"
     }
   }

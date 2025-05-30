@@ -27,8 +27,8 @@ const categoryOptions: SelectOption[] = [
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .min(3, "name must be at least 3 characters")
-    .required("Username is required"),
+    .min(3, "Name must be at least 3 characters")
+    .required("Name is required"),
   category: Yup.string().required("Category is required"),
   address: Yup.string().required("Address is required"),
 });

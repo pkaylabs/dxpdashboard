@@ -234,8 +234,10 @@ export default function AppLayout() {
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Hotels
                   </h2>
-                ) : !!matchRoute({ to: "/dashboard" }) ? (
-                  "Repayment Reconciliation"
+                ) : !!matchRoute({ to: "/travel-blogs" }) ? (
+                  <h2 className="font-medium text-[#06275A] text-2xl ">
+                    Travel Blogs
+                  </h2>
                 ) : (
                   <Link
                     to=".."

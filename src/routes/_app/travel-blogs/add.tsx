@@ -3,7 +3,7 @@ import {
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
-import { HotelSearch } from ".";
+import { TravelSearch } from ".";
 import * as Yup from "yup";
 import { useState } from "react";
 import { sleep } from "@/utils";
@@ -11,16 +11,16 @@ import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
 
-export const Route = createFileRoute("/_app/hotels/add")({
-  validateSearch: (search) => HotelSearch.parse(search),
+export const Route = createFileRoute("/_app/travel-blogs/add")({
+  validateSearch: (search) => TravelSearch.parse(search),
   component: RouteComponent,
 });
 
 const validationSchema = Yup.object({
-  name: Yup.string()
-    .min(3, "Name must be at least 3 characters")
-    .required("Name is required"),
-  address: Yup.string().required("Address is required"),
+  title: Yup.string()
+    .min(3, "Title must be at least 3 characters")
+    .required("Title is required"),
+  writer: Yup.string().required("Writer is required"),
 });
 
 function RouteComponent() {
@@ -31,8 +31,8 @@ function RouteComponent() {
   const isLoading = useRouterState({ select: (s) => s.isLoading });
 
   const initialValues = {
-    name: search?.name ?? "",
-    address: search?.address ?? "",
+    title: search?.title ?? "",
+    writer: search?.writer ?? "",
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -56,7 +56,9 @@ function RouteComponent() {
   return (
     <div className="font-inter">
       <div className="mb-5">
-        <h1 className="font-medium text-2xl text-[#06275A] ">Add/Edit Hotel</h1>
+        <h1 className="font-medium text-2xl text-[#06275A] ">
+          Add/Edit Travel Blog
+        </h1>
       </div>
       <Formik
         initialValues={initialValues}
@@ -65,29 +67,29 @@ function RouteComponent() {
       >
         {({ errors, touched, setFieldValue, values }) => (
           <Form className="space-y-4">
-            <Field name="name">
+            <Field name="title">
               {({ field }: any) => (
                 <Input
                   {...field}
-                  label="Name"
-                  placeholder="Enter name"
-                  error={touched.name && errors.name ? errors.name : undefined}
+                  label="Title"
+                  placeholder="Enter title"
+                  error={
+                    touched.title && errors.title ? errors.title : undefined
+                  }
                   required
                   fullWidth
                 />
               )}
             </Field>
 
-            <Field name="address">
+            <Field name="writer">
               {({ field }: any) => (
                 <Input
                   {...field}
-                  label="Address"
-                  placeholder="Enter address"
+                  label="Writer"
+                  placeholder="Enter writer"
                   error={
-                    touched.address && errors.address
-                      ? errors.address
-                      : undefined
+                    touched.writer && errors.writer ? errors.writer : undefined
                   }
                   required
                   fullWidth
