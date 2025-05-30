@@ -1,18 +1,19 @@
 import {
   createFileRoute,
+  useNavigate,
   useRouter,
   useRouterState,
 } from "@tanstack/react-router";
-import { HotelSearch } from ".";
 import * as Yup from "yup";
 import { useState } from "react";
 import { sleep } from "@/utils";
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
+import { PoliticalSearch } from ".";
 
-export const Route = createFileRoute("/_app/hotels/add")({
-  validateSearch: (search) => HotelSearch.parse(search),
+export const Route = createFileRoute("/_app/political-sites/add")({
+  validateSearch: (search) => PoliticalSearch.parse(search),
   component: RouteComponent,
 });
 
@@ -56,7 +57,9 @@ function RouteComponent() {
   return (
     <div className="font-inter">
       <div className="mb-5">
-        <h1 className="font-medium text-2xl text-[#06275A] ">Add/Edit Hotel</h1>
+        <h1 className="font-medium text-2xl text-[#06275A] ">
+          Add/Edit Political sites
+        </h1>
       </div>
       <Formik
         initialValues={initialValues}

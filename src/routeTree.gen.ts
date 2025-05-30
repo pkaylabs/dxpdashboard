@@ -19,11 +19,13 @@ import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings/route'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard/route'
 import { Route as AppTouristAttractionIndexImport } from './routes/_app/tourist-attraction/index'
+import { Route as AppPoliticalSitesIndexImport } from './routes/_app/political-sites/index'
 import { Route as AppHotelsIndexImport } from './routes/_app/hotels/index'
 import { Route as AppTouristAttractionAddImport } from './routes/_app/tourist-attraction/add'
 import { Route as AppSettingsProfileImport } from './routes/_app/settings/profile'
 import { Route as AppSettingsPreferencesImport } from './routes/_app/settings/preferences'
 import { Route as AppSettingsPasswordImport } from './routes/_app/settings/password'
+import { Route as AppPoliticalSitesAddImport } from './routes/_app/political-sites/add'
 import { Route as AppHotelsAddImport } from './routes/_app/hotels/add'
 
 // Create/Update Routes
@@ -74,6 +76,12 @@ const AppTouristAttractionIndexRoute = AppTouristAttractionIndexImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AppPoliticalSitesIndexRoute = AppPoliticalSitesIndexImport.update({
+  id: '/political-sites/',
+  path: '/political-sites/',
+  getParentRoute: () => AppRoute,
+} as any)
+
 const AppHotelsIndexRoute = AppHotelsIndexImport.update({
   id: '/hotels/',
   path: '/hotels/',
@@ -102,6 +110,12 @@ const AppSettingsPasswordRoute = AppSettingsPasswordImport.update({
   id: '/password',
   path: '/password',
   getParentRoute: () => AppSettingsRouteRoute,
+} as any)
+
+const AppPoliticalSitesAddRoute = AppPoliticalSitesAddImport.update({
+  id: '/political-sites/add',
+  path: '/political-sites/add',
+  getParentRoute: () => AppRoute,
 } as any)
 
 const AppHotelsAddRoute = AppHotelsAddImport.update({
@@ -170,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHotelsAddImport
       parentRoute: typeof AppImport
     }
+    '/_app/political-sites/add': {
+      id: '/_app/political-sites/add'
+      path: '/political-sites/add'
+      fullPath: '/political-sites/add'
+      preLoaderRoute: typeof AppPoliticalSitesAddImport
+      parentRoute: typeof AppImport
+    }
     '/_app/settings/password': {
       id: '/_app/settings/password'
       path: '/password'
@@ -205,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHotelsIndexImport
       parentRoute: typeof AppImport
     }
+    '/_app/political-sites/': {
+      id: '/_app/political-sites/'
+      path: '/political-sites'
+      fullPath: '/political-sites'
+      preLoaderRoute: typeof AppPoliticalSitesIndexImport
+      parentRoute: typeof AppImport
+    }
     '/_app/tourist-attraction/': {
       id: '/_app/tourist-attraction/'
       path: '/tourist-attraction'
@@ -236,8 +264,10 @@ interface AppRouteChildren {
   AppDashboardRouteRoute: typeof AppDashboardRouteRoute
   AppSettingsRouteRoute: typeof AppSettingsRouteRouteWithChildren
   AppHotelsAddRoute: typeof AppHotelsAddRoute
+  AppPoliticalSitesAddRoute: typeof AppPoliticalSitesAddRoute
   AppTouristAttractionAddRoute: typeof AppTouristAttractionAddRoute
   AppHotelsIndexRoute: typeof AppHotelsIndexRoute
+  AppPoliticalSitesIndexRoute: typeof AppPoliticalSitesIndexRoute
   AppTouristAttractionIndexRoute: typeof AppTouristAttractionIndexRoute
 }
 
@@ -245,8 +275,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardRouteRoute: AppDashboardRouteRoute,
   AppSettingsRouteRoute: AppSettingsRouteRouteWithChildren,
   AppHotelsAddRoute: AppHotelsAddRoute,
+  AppPoliticalSitesAddRoute: AppPoliticalSitesAddRoute,
   AppTouristAttractionAddRoute: AppTouristAttractionAddRoute,
   AppHotelsIndexRoute: AppHotelsIndexRoute,
+  AppPoliticalSitesIndexRoute: AppPoliticalSitesIndexRoute,
   AppTouristAttractionIndexRoute: AppTouristAttractionIndexRoute,
 }
 
@@ -272,11 +304,13 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/hotels/add': typeof AppHotelsAddRoute
+  '/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/settings/password': typeof AppSettingsPasswordRoute
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
   '/hotels': typeof AppHotelsIndexRoute
+  '/political-sites': typeof AppPoliticalSitesIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
 }
 
@@ -288,11 +322,13 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/hotels/add': typeof AppHotelsAddRoute
+  '/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/settings/password': typeof AppSettingsPasswordRoute
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsProfileRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
   '/hotels': typeof AppHotelsIndexRoute
+  '/political-sites': typeof AppPoliticalSitesIndexRoute
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
 }
 
@@ -306,11 +342,13 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_app/hotels/add': typeof AppHotelsAddRoute
+  '/_app/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/_app/settings/password': typeof AppSettingsPasswordRoute
   '/_app/settings/preferences': typeof AppSettingsPreferencesRoute
   '/_app/settings/profile': typeof AppSettingsProfileRoute
   '/_app/tourist-attraction/add': typeof AppTouristAttractionAddRoute
   '/_app/hotels/': typeof AppHotelsIndexRoute
+  '/_app/political-sites/': typeof AppPoliticalSitesIndexRoute
   '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
 }
 
@@ -324,11 +362,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/hotels/add'
+    | '/political-sites/add'
     | '/settings/password'
     | '/settings/preferences'
     | '/settings/profile'
     | '/tourist-attraction/add'
     | '/hotels'
+    | '/political-sites'
     | '/tourist-attraction'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -339,11 +379,13 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/hotels/add'
+    | '/political-sites/add'
     | '/settings/password'
     | '/settings/preferences'
     | '/settings/profile'
     | '/tourist-attraction/add'
     | '/hotels'
+    | '/political-sites'
     | '/tourist-attraction'
   id:
     | '__root__'
@@ -355,11 +397,13 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/reset-password'
     | '/_app/hotels/add'
+    | '/_app/political-sites/add'
     | '/_app/settings/password'
     | '/_app/settings/preferences'
     | '/_app/settings/profile'
     | '/_app/tourist-attraction/add'
     | '/_app/hotels/'
+    | '/_app/political-sites/'
     | '/_app/tourist-attraction/'
   fileRoutesById: FileRoutesById
 }
@@ -400,8 +444,10 @@ export const routeTree = rootRoute
         "/_app/dashboard",
         "/_app/settings",
         "/_app/hotels/add",
+        "/_app/political-sites/add",
         "/_app/tourist-attraction/add",
         "/_app/hotels/",
+        "/_app/political-sites/",
         "/_app/tourist-attraction/"
       ]
     },
@@ -437,6 +483,10 @@ export const routeTree = rootRoute
       "filePath": "_app/hotels/add.tsx",
       "parent": "/_app"
     },
+    "/_app/political-sites/add": {
+      "filePath": "_app/political-sites/add.tsx",
+      "parent": "/_app"
+    },
     "/_app/settings/password": {
       "filePath": "_app/settings/password.tsx",
       "parent": "/_app/settings"
@@ -455,6 +505,10 @@ export const routeTree = rootRoute
     },
     "/_app/hotels/": {
       "filePath": "_app/hotels/index.tsx",
+      "parent": "/_app"
+    },
+    "/_app/political-sites/": {
+      "filePath": "_app/political-sites/index.tsx",
       "parent": "/_app"
     },
     "/_app/tourist-attraction/": {

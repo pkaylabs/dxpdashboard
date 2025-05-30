@@ -5,23 +5,23 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
 
-export const HotelSearch = z.object({
+export const PoliticalSearch = z.object({
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
 });
 
-export const Route = createFileRoute("/_app/hotels/")({
-  validateSearch: (search) => HotelSearch.parse(search),
+export const Route = createFileRoute("/_app/political-sites/")({
+  validateSearch: (search) => PoliticalSearch.parse(search),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const hotelData = generateVenueData();
+  const politicalData = generateVenueData();
   const navigate = useNavigate();
 
   const handleEdit = (item: any) => {
     navigate({
-      to: "/hotels/add",
+      to: "/political-sites/add",
       search: {
         name: item.name,
         address: item.address,
@@ -44,7 +44,7 @@ function RouteComponent() {
           try {
             Swal.fire({
               title: "Deleted!",
-              text: "Hotel has been deleted.",
+              text: "Political has been deleted.",
               icon: "success",
             });
           } catch (error: any) {
@@ -69,7 +69,7 @@ function RouteComponent() {
     }
   };
 
-  const tableData = hotelData.map((item) => ({
+  const tableData = politicalData.map((item) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -112,13 +112,12 @@ function RouteComponent() {
   ];
 
   const handleAddVenue = () => {
-    navigate({ to: "/hotels/add" });
+    navigate({ to: "/political-sites/add" });
   };
 
   const handleRowClick = (row: any, index: number) => {
     console.log("Row clicked: ", row, "Index:", index);
   };
-
   return (
     <div>
       <Table
@@ -127,13 +126,13 @@ function RouteComponent() {
         searchable={true}
         searchableFields={["_rawName", "_rawAddress"]}
         showAddButton={true}
-        addButtonText="Add Hotel"
+        addButtonText="Add Political Site"
         onAddButtonClick={handleAddVenue}
         onRowClick={handleRowClick}
         maxRows={10}
         striped={true}
         stickyHeader={false}
-        emptyStateMessage="No Hotels found. Start by adding your first hotel!"
+        emptyStateMessage="No Political Sites found. Start by adding your first political site!"
       />
     </div>
   );
