@@ -10,7 +10,7 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { ArrowDown2, Element4, SearchNormal1 } from "iconsax-react";
+import { ArrowDown2, ArrowLeft, Element4, SearchNormal1 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
 import { Link, Outlet, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { Route } from "@/routes/_app";
@@ -146,7 +146,7 @@ export default function AppLayout() {
                         {item.tabs.map((itm, idx) => (
                           <li key={idx}>
                             {itm.href ? (
-                              <Link to={itm.href}>
+                              <Link className="" to={itm.href}>
                                 {({ isActive }) => {
                                   return (
                                     <div
@@ -154,7 +154,7 @@ export default function AppLayout() {
                                         isActive
                                           ? "bg-primary-50 text-[#06275A] bg-[#D9D9D9] font-semibold"
                                           : "text-white hover:bg-[#d9d9d915] font-medium",
-                                        "group flex gap-x-3 rounded-xl p-3 text-sm  leading-6 capitalize"
+                                        "group flex gap-x-3 rounded-xl p-3 text-sm mb-1 leading-6 capitalize"
                                       )}
                                     >
                                       <itm.icon
@@ -215,7 +215,7 @@ export default function AppLayout() {
               <div className="font-semibold  text-xl md:text-[1.75rem] text-gray-900 flex-1 flex items-center">
                 {!!matchRoute({ to: "/dashboard" }) ? (
                   <div className="w-full md:max-w-1/2 flex  items-center gap-2 ">
-                    <Element4 size="40" color="#06275A" variant="Bold"/>
+                    <Element4 size="40" color="#06275A" variant="Bold" />
                     {/* <MdOutlineDashboard aria-hidden="true" className="size-10 " /> */}
                     <div className="w-full h-11 rounded-xl border border-[#06275A] flex items-center gap-1.5 px-2">
                       <input
@@ -229,13 +229,20 @@ export default function AppLayout() {
                     </div>
                   </div>
                 ) : !!matchRoute({ to: "/tourist-attraction" }) ? (
-                  <h2 className="font-medium text-[#06275A] text-2xl ">Tourist Attraction</h2>
+                  <h2 className="font-medium text-[#06275A] text-2xl ">
+                    Tourist Attraction
+                  </h2>
                 ) : !!matchRoute({ to: "/dashboard" }) ? (
                   "Progress Report"
                 ) : !!matchRoute({ to: "/dashboard" }) ? (
                   "Repayment Reconciliation"
                 ) : (
-                  `Welcome ${auth?.user?.split(" ")[0] ?? "User"}!`
+                  <Link
+                    to=".."
+                    className="bg-white border border-gray-200 rounded-md p-2"
+                  >
+                    <ArrowLeft size="20" color="#06275A" />
+                  </Link>
                 )}
               </div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">

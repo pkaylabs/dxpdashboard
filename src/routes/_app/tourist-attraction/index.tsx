@@ -1,7 +1,15 @@
 import Table from "@/components/table";
-import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_app/tourist-attraction")({
+export const VenueSearch = z.object({
+  name: z.string().catch("").optional(),
+  category: z.string().catch("").optional(),
+  address: z.string().catch("").optional(),
+});
+
+export const Route = createFileRoute("/_app/tourist-attraction/")({
+  validateSearch: (search) => VenueSearch.parse(search),
   component: RouteComponent,
 });
 
@@ -206,11 +214,17 @@ const CategoryBadge = ({ category }: { category: string }) => {
 
 function RouteComponent() {
   const venueData = generateVenueData();
+  const navigate = useNavigate();
 
   const handleEdit = (venue: any) => {
-    console.log("Edit venue:", venue);
-
-    alert(`Edit venue: ${venue.name}`);
+    navigate({
+      to: "/tourist-attraction/add",
+      search: {
+        name: venue.name,
+        category: venue.category,
+        address: venue.address,
+      },
+    });
   };
 
   const handleDelete = (venue: any) => {
@@ -276,8 +290,7 @@ function RouteComponent() {
   ];
 
   const handleAddVenue = () => {
-    console.log("Add new venue clicked");
-    alert("Add new venue functionality");
+    navigate({ to: "/tourist-attraction/add" });
   };
 
   const handleRowClick = (row: any, index: number) => {
