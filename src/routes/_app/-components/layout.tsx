@@ -18,6 +18,7 @@ import { useAuth } from "@/services/auth";
 import classNames from "@/utils/classnames";
 import Avatar from "@/components/core/avatar";
 import { navigations } from "@/constants";
+import Modal, { ModalAction } from "@/components/elements/modal";
 
 const userNavigation = [
   { name: "Your profile", href: "/settings/profile" },
@@ -25,6 +26,7 @@ const userNavigation = [
 ];
 
 export default function AppLayout() {
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = Route.useNavigate();
   const matchRoute = useMatchRoute();
@@ -32,14 +34,28 @@ export default function AppLayout() {
   const auth = useAuth();
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      auth.logout().then(() => {
-        router.invalidate().finally(() => {
-          navigate({ to: "/" });
-        });
+    auth.logout().then(() => {
+      router.invalidate().finally(() => {
+        navigate({ to: "/" });
       });
-    }
+    });
   };
+
+  const confirmActions: ModalAction[] = [
+    {
+      label: "Cancel",
+      onClick: () => setLogoutOpen(false),
+      variant: "secondary",
+    },
+    {
+      label: "Logout",
+      onClick: () => {
+        setLogoutOpen(false);
+        handleLogout();
+      },
+      variant: "danger",
+    },
+  ];
 
   return (
     <>
@@ -170,7 +186,7 @@ export default function AppLayout() {
                               </Link>
                             ) : (
                               <button
-                                onClick={handleLogout}
+                                onClick={() => setLogoutOpen(true)}
                                 className="font-medium w-full group  flex gap-x-3 rounded-md p-3  text-white hover:bg-[#d9d9d915] "
                               >
                                 <TbLogout2
@@ -299,7 +315,7 @@ export default function AppLayout() {
                         <button
                           onClick={
                             idx === userNavigation.length - 1
-                              ? handleLogout
+                              ? () => setLogoutOpen(true)
                               : () => {
                                   navigate({ to: item.href });
                                 }
@@ -327,6 +343,21 @@ export default function AppLayout() {
           </main>
         </div>
       </div>
+
+      <Modal
+        isOpen={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        title="Logout Confirmation"
+        description="Log in to get back here"
+        type="warning"
+        actions={confirmActions}
+        closeOnBackdropClick={false}
+      >
+        <p className="text-gray-600">
+          Are you sure you want to logout? Make sure you have saved all changes
+          before confirming this action!
+        </p>
+      </Modal>
     </>
   );
 }

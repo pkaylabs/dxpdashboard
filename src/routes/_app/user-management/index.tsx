@@ -6,6 +6,8 @@ import { generateUserData, generateVenueData } from "@/constants";
 import ActionDropdown, { ActionButtons } from "../-components";
 import Avatar from "@/components/core/avatar";
 import { Edit2, Eye, Trash } from "iconsax-react";
+import ViewModal from "./-components/view-modal";
+import { useState } from "react";
 
 export const UserSearch = z.object({
   name: z.string().catch("").optional(),
@@ -24,6 +26,7 @@ export const Route = createFileRoute("/_app/user-management/")({
 function RouteComponent() {
   const userData = generateUserData();
   const navigate = useNavigate();
+  const [openView, setOpenView] = useState(false);
 
   const handleEdit = (item: any) => {
     navigate({
@@ -50,6 +53,7 @@ function RouteComponent() {
         avatar: item.avatar,
       },
     });
+    setOpenView(true);
   };
 
   const handleDelete = (item: any) => {
@@ -59,7 +63,7 @@ function RouteComponent() {
         text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#17567E",
+        confirmButtonColor: "#06275A",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
       }).then(async (result) => {
@@ -182,7 +186,7 @@ function RouteComponent() {
     console.log("Row clicked: ", row, "Index:", index);
   };
   return (
-    <div>
+    <>
       <Table
         headers={headers}
         rows={tableData}
@@ -198,6 +202,7 @@ function RouteComponent() {
         stickyHeader={false}
         emptyStateMessage="No users found. Start by adding your first user!"
       />
-    </div>
+      <ViewModal open={openView} setOpen={setOpenView} />
+    </>
   );
 }
