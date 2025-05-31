@@ -20,8 +20,8 @@ import Avatar from "@/components/core/avatar";
 import { navigations } from "@/constants";
 
 const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Logout", href: "#" },
+  { name: "Your profile", href: "/settings/profile" },
+  { name: "Logout", href: "" },
 ];
 
 export default function AppLayout() {
