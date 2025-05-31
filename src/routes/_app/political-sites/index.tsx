@@ -95,8 +95,8 @@ function RouteComponent() {
       />
     ),
     // Raw data for filtering
-    _rawName: item.name,
-    _rawAddress: item.address,
+    Name: item.name,
+  Address: item.address,
   }));
 
   const headers = [
@@ -124,7 +124,7 @@ function RouteComponent() {
         headers={headers}
         rows={tableData}
         searchable={true}
-        searchableFields={["_rawName", "_rawAddress"]}
+        searchableFields={["Name", "Address"]}
         showAddButton={true}
         addButtonText="Add Political Site"
         onAddButtonClick={handleAddVenue}

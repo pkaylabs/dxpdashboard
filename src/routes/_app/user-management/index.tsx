@@ -12,6 +12,8 @@ export const UserSearch = z.object({
   email: z.string().catch("").optional(),
   phone: z.string().catch("").optional(),
   location: z.string().catch("").optional(),
+  role: z.string().catch("").optional(),
+  avatar: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/user-management/")({
@@ -30,7 +32,9 @@ function RouteComponent() {
         name: item.name,
         email: item.email,
         location: item.location,
-        phone: item.location,
+        phone: item.phone,
+        role: item.role,
+        avatar: item.avatar,
       },
     });
   };
@@ -41,7 +45,9 @@ function RouteComponent() {
         name: item.name,
         email: item.email,
         location: item.location,
-        phone: item.location,
+        phone: item.phone,
+        role: item.role,
+        avatar: item.avatar,
       },
     });
   };

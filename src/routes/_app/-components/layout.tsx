@@ -245,9 +245,9 @@ export default function AppLayout() {
                     User Management
                   </h2>
                 ) : !!matchRoute({ to: "/settings" }) ||
-                  !matchRoute({ to: "/settings/password" }) ||
-                  !matchRoute({ to: "/settings/preferences" }) ||
-                  !matchRoute({ to: "/settings/profile" }) ? (
+                  !!matchRoute({ to: "/settings/password" }) ||
+                  !!matchRoute({ to: "/settings/preferences" }) ||
+                  !!matchRoute({ to: "/settings/profile" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Settings
                   </h2>

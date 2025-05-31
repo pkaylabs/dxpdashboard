@@ -93,8 +93,8 @@ function RouteComponent() {
       />
     ),
     // Raw data for filtering
-    _rawName: item.writer,
-    _rawTitle: item.title,
+    Name: item.writer,
+    Title: item.title,
   }));
 
   const headers = [
@@ -123,7 +123,7 @@ function RouteComponent() {
         headers={headers}
         rows={tableData}
         searchable={true}
-        searchableFields={["_rawName", "_rawTitle"]}
+        searchableFields={["Name", "Title"]}
         showAddButton={true}
         addButtonText="Add Blog"
         onAddButtonClick={handleAddVenue}

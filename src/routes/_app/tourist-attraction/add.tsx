@@ -65,7 +65,7 @@ function RouteComponent() {
   const isLoggingIn = isLoading || isSubmitting;
 
   return (
-    <div className="font-inter">
+    <main className="font-inter">
       <div className="mb-5">
         <h1 className="font-medium text-2xl text-[#06275A] ">
           Add/Edit Tourist Attraction
@@ -159,6 +159,6 @@ function RouteComponent() {
           </Form>
         )}
       </Formik>
-    </div>
+    </main>
   );
 }

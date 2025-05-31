@@ -121,10 +121,10 @@ function RouteComponent() {
       />
     ),
     // Raw data for filtering
-    _rawName: item.name,
-    _rawCategory: item.category,
-    _rawAddress: item.address,
+    Name: item.name,
     Category: item.category,
+    Address: item.address,
+    
   }));
 
   const headers = [
@@ -193,7 +193,7 @@ function RouteComponent() {
         headers={headers}
         rows={tableData}
         searchable={true}
-        searchableFields={["_rawName", "_rawAddress", "_rawCategory"]}
+        searchableFields={["Name", "Address", "Category"]}
         filters={filters}
         showAddButton={true}
         addButtonText="Add Venue"
