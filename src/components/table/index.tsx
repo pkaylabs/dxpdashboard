@@ -206,7 +206,7 @@ const Table: React.FC<TableProps> = ({
                     {headers.map((header) => (
                       <th
                         key={header.value}
-                        className="px-6 py-4 text-left text-base font-semibold text-[#06275A]"
+                        className="px-6 py-4 text-left text-base text-nowrap font-semibold text-[#06275A]"
                         style={{ width: header.width }}
                       >
                         {header.name}
