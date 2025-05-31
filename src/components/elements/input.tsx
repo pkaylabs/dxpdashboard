@@ -149,7 +149,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
 
         {/* File Input */}
         {type === 'file' ? (
-          <>
+          <label>
             <input
               ref={ref}
               type="file"
@@ -171,7 +171,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
               </div>
               <span className="text-sm text-gray-400">Browse</span>
             </div>
-          </>
+          </label>
         ) : (
           /* Regular Input */
           <input

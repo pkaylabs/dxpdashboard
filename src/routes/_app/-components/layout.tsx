@@ -31,8 +31,6 @@ export default function AppLayout() {
   const router = useRouter();
   const auth = useAuth();
 
-  console.log(!!matchRoute({ to: "/dashboard" }), "match route");
-
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       auth.logout().then(() => {
@@ -153,7 +151,7 @@ export default function AppLayout() {
                                         isActive
                                           ? "bg-primary-50 text-[#06275A] bg-[#D9D9D9] font-semibold"
                                           : "text-white hover:bg-[#d9d9d915] font-medium",
-                                        "group flex gap-x-3 rounded-xl p-3 text-sm mb-1 leading-6 capitalize"
+                                        "group flex gap-x-3 rounded-lg p-3 text-sm mb-1 leading-6 capitalize"
                                       )}
                                     >
                                       <itm.icon
@@ -215,7 +213,7 @@ export default function AppLayout() {
                 {!!matchRoute({ to: "/dashboard" }) ? (
                   <div className="w-full md:max-w-1/2 flex  items-center gap-2 ">
                     <Element4 size="40" color="#06275A" variant="Bold" />
-                    <div className="w-full h-11 rounded-xl border border-[#06275A] flex items-center gap-1.5 px-2">
+                    <div className="w-full h-11 rounded-lg border border-[#06275A] flex items-center gap-1.5 px-3">
                       <input
                         type="search"
                         name=""
@@ -246,7 +244,10 @@ export default function AppLayout() {
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     User Management
                   </h2>
-                ) : !!matchRoute({ to: "/settings" }) ? (
+                ) : !!matchRoute({ to: "/settings" }) ||
+                  !matchRoute({ to: "/settings/password" }) ||
+                  !matchRoute({ to: "/settings/preferences" }) ||
+                  !matchRoute({ to: "/settings/profile" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Settings
                   </h2>
@@ -271,7 +272,7 @@ export default function AppLayout() {
                   <MenuButton className="-m-1.5 flex space-x-1 p-1.5">
                     <span className="sr-only">Open user menu</span>
                     <Avatar alt="Nana Kay" src={""} size="sm" />
-                    <div className="">
+                    <div className="text-left">
                       <p className="font-medium text-sm text-[#06275A] ">
                         {auth.user}
                       </p>

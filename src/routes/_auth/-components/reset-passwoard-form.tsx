@@ -41,7 +41,6 @@ const ResetPasswordForm: React.FC = () => {
       >
         {({ errors, touched }) => (
           <Form className="space-y-4">
-            {/* Username Field */}
             <Field name="password">
               {({ field }: any) => (
                 <Input
@@ -61,7 +60,6 @@ const ResetPasswordForm: React.FC = () => {
               )}
             </Field>
 
-            {/* Password Field */}
             <Field name="confrimPassword">
               {({ field }: any) => (
                 <Input
