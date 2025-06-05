@@ -16,8 +16,10 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AppImport } from './routes/_app'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthVerifyOtpImport } from './routes/_auth/verify-otp'
 import { Route as AuthResetPasswordImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginImport } from './routes/_auth/login'
+import { Route as AuthForgotPasswordImport } from './routes/_auth/forgot-password'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard/route'
 import { Route as AppUserManagementIndexImport } from './routes/_app/user-management/index'
 import { Route as AppTravelBlogsIndexImport } from './routes/_app/travel-blogs/index'
@@ -64,6 +66,12 @@ const AppSettingsRoute = AppSettingsImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 
+const AuthVerifyOtpRoute = AuthVerifyOtpImport.update({
+  id: '/verify-otp',
+  path: '/verify-otp',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 const AuthResetPasswordRoute = AuthResetPasswordImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -73,6 +81,12 @@ const AuthResetPasswordRoute = AuthResetPasswordImport.update({
 const AuthLoginRoute = AuthLoginImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthForgotPasswordRoute = AuthForgotPasswordImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -213,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppImport
     }
+    '/_auth/forgot-password': {
+      id: '/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/login': {
       id: '/_auth/login'
       path: '/login'
@@ -225,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof AuthResetPasswordImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/verify-otp': {
+      id: '/_auth/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof AuthVerifyOtpImport
       parentRoute: typeof AuthImport
     }
     '/_app/hotels/add': {
@@ -415,13 +443,17 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthVerifyOtpRoute: typeof AuthVerifyOtpRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthVerifyOtpRoute: AuthVerifyOtpRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -430,8 +462,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
   '/dashboard': typeof AppDashboardRouteRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/verify-otp': typeof AuthVerifyOtpRoute
   '/hotels/add': typeof AppHotelsAddRoute
   '/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/settings': typeof AppSettingsSettingsRouteWithChildren
@@ -454,8 +488,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
   '/dashboard': typeof AppDashboardRouteRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/verify-otp': typeof AuthVerifyOtpRoute
   '/hotels/add': typeof AppHotelsAddRoute
   '/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -479,8 +515,10 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRouteRoute
+  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_auth/verify-otp': typeof AuthVerifyOtpRoute
   '/_app/hotels/add': typeof AppHotelsAddRoute
   '/_app/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/_app/settings': typeof AppSettingsRouteWithChildren
@@ -506,8 +544,10 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/dashboard'
+    | '/forgot-password'
     | '/login'
     | '/reset-password'
+    | '/verify-otp'
     | '/hotels/add'
     | '/political-sites/add'
     | '/settings'
@@ -529,8 +569,10 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/dashboard'
+    | '/forgot-password'
     | '/login'
     | '/reset-password'
+    | '/verify-otp'
     | '/hotels/add'
     | '/political-sites/add'
     | '/settings'
@@ -552,8 +594,10 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/_app/dashboard'
+    | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/reset-password'
+    | '/_auth/verify-otp'
     | '/_app/hotels/add'
     | '/_app/political-sites/add'
     | '/_app/settings'
@@ -625,13 +669,19 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
+        "/_auth/forgot-password",
         "/_auth/login",
-        "/_auth/reset-password"
+        "/_auth/reset-password",
+        "/_auth/verify-otp"
       ]
     },
     "/_app/dashboard": {
       "filePath": "_app/dashboard/route.tsx",
       "parent": "/_app"
+    },
+    "/_auth/forgot-password": {
+      "filePath": "_auth/forgot-password.tsx",
+      "parent": "/_auth"
     },
     "/_auth/login": {
       "filePath": "_auth/login.tsx",
@@ -639,6 +689,10 @@ export const routeTree = rootRoute
     },
     "/_auth/reset-password": {
       "filePath": "_auth/reset-password.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/verify-otp": {
+      "filePath": "_auth/verify-otp.tsx",
       "parent": "/_auth"
     },
     "/_app/hotels/add": {

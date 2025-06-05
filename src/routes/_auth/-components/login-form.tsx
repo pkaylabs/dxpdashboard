@@ -3,7 +3,10 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Input from "@/components/elements/input";
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
-import { fallback, Route } from "../login";
+
+import { Route as LoginRoute, fallback } from "../login";
+import { Route as ForgotPasswordRoute } from "../forgot-password";
+
 import { useAuth } from "@/services/auth";
 import { sleep } from "@/utils";
 import { ButtonLoader } from "@/components/loaders";
@@ -31,8 +34,8 @@ const LoginForm: React.FC = () => {
   const auth = useAuth();
   const router = useRouter();
   const isLoading = useRouterState({ select: (s) => s.isLoading });
-  const navigate = Route.useNavigate();
-  const search = Route.useSearch();
+  const navigate = LoginRoute.useNavigate();
+  const search = LoginRoute.useSearch();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -42,6 +45,7 @@ const LoginForm: React.FC = () => {
     try {
       await auth.login(values.username);
 
+      // Force‐revalidate any protected data
       await router.invalidate();
 
       await sleep(1);
@@ -58,7 +62,7 @@ const LoginForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-xl mx-auto p-6 rounded-lg">
-      <h2 className="text-3xl font-inter font-bold text-center mb-10 text-[#06275A] ">
+      <h2 className="text-3xl font-inter font-bold text-center mb-10 text-[#06275A]">
         Sign In
       </h2>
 
@@ -115,24 +119,23 @@ const LoginForm: React.FC = () => {
                   name="rememberMe"
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label className="ml-2 block text-[#06275A] ">
-                  Remember me
-                </label>
+                <label className="ml-2 block text-[#06275A]">Remember me</label>
               </div>
 
               <Link
-                from={Route.fullPath}
-                to={"/reset-password"}
-                className=" font-inter text-[#06275A]  "
+                from={LoginRoute.fullPath}
+                to={ForgotPasswordRoute.fullPath}
+                className="font-inter text-[#06275A] hover:underline"
               >
-                Forget Password ?
+                Forget Password?
               </Link>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full h-12 flex justify-center items-center bg-[#06275A] text-white  rounded-lg hover:bg-[#06105a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold "
+              className="w-full h-12 flex justify-center items-center bg-[#06275A] text-white rounded-lg hover:bg-[#06105a]
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold"
             >
               {isLoggingIn ? <ButtonLoader title="Submitting..." /> : "Login"}
             </button>

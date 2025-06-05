@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Input from "@/components/elements/input";
-import { Link } from "@tanstack/react-router";
-import { Route } from "../reset-password";
+import { Link, useSearch } from "@tanstack/react-router";
 import { ArrowLeft } from "iconsax-reactjs";
+
+interface ResetPasswordValues {
+  password: string;
+  confirmPassword: string;
+}
 
 const validationSchema = Yup.object({
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
+    .matches(/[A-Z]/, "Must contain at least one uppercase")
+    .matches(/[a-z]/, "Must contain at least one lowercase")
+    .matches(/[0-9]/, "Must contain at least one number")
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
@@ -19,20 +23,43 @@ const validationSchema = Yup.object({
 });
 
 const ResetPasswordForm: React.FC = () => {
-  const initialValues = {
+  const search = useSearch({ from: "/_auth/reset-password" });
+  const [email, setEmail] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (search.email) {
+      setEmail(search.email);
+    }
+  }, [search.email]);
+
+  const initialValues: ResetPasswordValues = {
     password: "",
-    confrimPassword: "",
+    confirmPassword: "",
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
+  const handleSubmit = async (values: ResetPasswordValues) => {
+    if (!email) {
+      console.error("No email in search params; cannot reset password.");
+      return;
+    }
+    console.log("Resetting password for:", email, "to:", values.password);
   };
 
   return (
     <div className="w-full max-w-xl mx-auto p-6 rounded-lg">
-      <h2 className="text-3xl font-inter font-bold text-center mb-10 text-[#06275A] ">
+      <h2 className="text-3xl font-inter font-bold text-center mb-10 text-[#06275A]">
         Reset Password
       </h2>
+
+      {email ? (
+        <p className="text-center text-gray-700 mb-6">
+          Resetting password for <strong>{email}</strong>
+        </p>
+      ) : (
+        <p className="text-red-500 text-center mb-6">
+          No email provided. Please start again from Forgot Password.
+        </p>
+      )}
 
       <Formik
         initialValues={initialValues}
@@ -60,7 +87,7 @@ const ResetPasswordForm: React.FC = () => {
               )}
             </Field>
 
-            <Field name="confrimPassword">
+            <Field name="confirmPassword">
               {({ field }: any) => (
                 <Input
                   {...field}
@@ -68,8 +95,8 @@ const ResetPasswordForm: React.FC = () => {
                   label="Confirm New Password"
                   placeholder="Confirm your password"
                   error={
-                    touched.confrimPassword && errors.confrimPassword
-                      ? errors.confrimPassword
+                    touched.confirmPassword && errors.confirmPassword
+                      ? errors.confirmPassword
                       : undefined
                   }
                   required
@@ -78,19 +105,18 @@ const ResetPasswordForm: React.FC = () => {
               )}
             </Field>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full h-12 flex justify-center items-center bg-[#06275A] text-white  rounded-lg hover:bg-[#06105a]
-               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold mt-6"
+              disabled={!email}
+              className="w-full h-12 flex justify-center items-center bg-[#06275A] text-white rounded-lg hover:bg-[#06105a]
+                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold"
             >
               Submit
             </button>
 
             <Link
-              from={Route.fullPath}
-              to={"/login"}
-              className="flex justify-center items-center space-x-1.5 font-inter text-[#06275A]  "
+              to="/login"
+              className="flex justify-center items-center space-x-1.5 font-inter text-[#06275A]"
             >
               <ArrowLeft size="20" color="#06275A" />
               <span>Back to login</span>
