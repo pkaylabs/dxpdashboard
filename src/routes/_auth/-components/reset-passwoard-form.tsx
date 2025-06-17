@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Input from "@/components/elements/input";
-import { Link, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { ArrowLeft } from "iconsax-reactjs";
 
 interface ResetPasswordValues {
@@ -23,6 +23,7 @@ const validationSchema = Yup.object({
 });
 
 const ResetPasswordForm: React.FC = () => {
+  const navigate = useNavigate();
   const search = useSearch({ from: "/_auth/reset-password" });
   const [email, setEmail] = useState<string | undefined>(undefined);
 
@@ -42,6 +43,7 @@ const ResetPasswordForm: React.FC = () => {
       console.error("No email in search params; cannot reset password.");
       return;
     }
+    navigate({ to: "/dashboard" });
     console.log("Resetting password for:", email, "to:", values.password);
   };
 

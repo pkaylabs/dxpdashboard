@@ -28,7 +28,7 @@ export const navigations = [
     category: "Management",
     tabs: [
       {
-        name: "Tourist  Attractions",
+        name: "Tourist  Site",
         href: "/tourist-attraction",
         icon: GiCargoShip,
       },

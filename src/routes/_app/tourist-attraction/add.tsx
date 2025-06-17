@@ -31,6 +31,7 @@ const validationSchema = Yup.object({
     .required("Name is required"),
   category: Yup.string().required("Category is required"),
   address: Yup.string().required("Address is required"),
+  description: Yup.string().required("Description is required"),
 });
 
 function RouteComponent() {
@@ -44,6 +45,9 @@ function RouteComponent() {
     name: search?.name ?? "",
     category: search?.category ?? "",
     address: search?.address ?? "",
+    description: "",
+    mainImage: null as File | null,
+    additionalImages: [] as File[],
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -139,6 +143,112 @@ function RouteComponent() {
               )}
             </Field>
 
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                value={values.description}
+                onChange={(e) => setFieldValue("description", e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
+              />
+              {touched.description && errors.description && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.description}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="mainImage"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Main Image
+              </label>
+              <div className="mt-1">
+                {values.mainImage ? (
+                  <div className="relative inline-block">
+                    <img
+                      src={URL.createObjectURL(values.mainImage)}
+                      alt="Main Preview"
+                      className="w-22 h-22 rounded-full shadow"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFieldValue("mainImage", null)}
+                      className="absolute top-1 h-8 w-8 right-1 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                      title="Change Image"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.currentTarget.files?.[0] ?? null;
+                      setFieldValue("mainImage", file);
+                    }}
+                    className="block w-full text-sm text-gray-700"
+                  />
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Additional Images (up to 3)
+              </label>
+              <div className="mt-1">
+                {values.additionalImages.length < 3 && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      const files = Array.from(e.currentTarget.files ?? []);
+                      const selected = files.slice(0, 3);
+                      setFieldValue("additionalImages", selected);
+                    }}
+                    className="block w-full text-sm text-gray-700"
+                  />
+                )}
+
+                {values.additionalImages.length > 0 && (
+                  <div className="mt-2 flex gap-2">
+                    {values.additionalImages.map((file, idx) => (
+                      <div key={idx} className="relative inline-block">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Additional ${idx + 1}`}
+                          className="w-22 h-22 object-cover rounded-full shadow"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newList = values.additionalImages.filter(
+                              (_, i) => i !== idx
+                            );
+                            setFieldValue("additionalImages", newList);
+                          }}
+                          className="absolute top-1 right-1 w-8 h-8 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                          title="Remove Image"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="flex justify-end">
               <div className="flex items-center gap-3">
                 <button
