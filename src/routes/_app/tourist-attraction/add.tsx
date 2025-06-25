@@ -11,6 +11,8 @@ import { Formik, Form, Field } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import { VenueSearch } from ".";
+import { MainImageSection } from "@/components/elements/MainImageSection";
+import { AdditionalImagesSection } from "@/components/elements/AdditionalImagesSection";
 
 export const Route = createFileRoute("/_app/tourist-attraction/add")({
   validateSearch: (search) => VenueSearch.parse(search),
@@ -39,6 +41,7 @@ function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const isLoading = useRouterState({ select: (s) => s.isLoading });
 
   const initialValues = {
@@ -85,7 +88,7 @@ function RouteComponent() {
             <div className="flex justify-between items-start gap-6">
               <div className="flex-1">
                 <Field name="name">
-                  {({ field }: any) => (
+                  {({ field }: import("formik").FieldProps) => (
                     <Input
                       {...field}
                       label="Name"
@@ -102,7 +105,7 @@ function RouteComponent() {
 
               <div className="flex-1">
                 <Field name="category">
-                  {({ field }: any) => (
+                  {({ field }: import("formik").FieldProps) => (
                     <Select
                       {...field}
                       label="Category"
@@ -127,7 +130,7 @@ function RouteComponent() {
             </div>
 
             <Field name="address">
-              {({ field }: any) => (
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
                   label="Address"
@@ -166,87 +169,23 @@ function RouteComponent() {
             </div>
 
             <div>
-              <label
-                htmlFor="mainImage"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Main Image
-              </label>
               <div className="mt-1">
-                {values.mainImage ? (
-                  <div className="relative inline-block">
-                    <img
-                      src={URL.createObjectURL(values.mainImage)}
-                      alt="Main Preview"
-                      className="w-22 h-22 rounded-full shadow"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setFieldValue("mainImage", null)}
-                      className="absolute top-1 h-8 w-8 right-1 bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                      title="Change Image"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ) : (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.currentTarget.files?.[0] ?? null;
-                      setFieldValue("mainImage", file);
-                    }}
-                    className="block w-full text-sm text-gray-700"
-                  />
-                )}
+                <MainImageSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Additional Images (up to 3)
-              </label>
               <div className="mt-1">
-                {values.additionalImages.length < 3 && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => {
-                      const files = Array.from(e.currentTarget.files ?? []);
-                      const selected = files.slice(0, 3);
-                      setFieldValue("additionalImages", selected);
-                    }}
-                    className="block w-full text-sm text-gray-700"
-                  />
-                )}
-
-                {values.additionalImages.length > 0 && (
-                  <div className="mt-2 flex gap-2">
-                    {values.additionalImages.map((file, idx) => (
-                      <div key={idx} className="relative inline-block">
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={`Additional ${idx + 1}`}
-                          className="w-22 h-22 object-cover rounded-full shadow"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newList = values.additionalImages.filter(
-                              (_, i) => i !== idx
-                            );
-                            setFieldValue("additionalImages", newList);
-                          }}
-                          className="absolute top-1 right-1 w-8 h-8 bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                          title="Remove Image"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <AdditionalImagesSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
               </div>
             </div>
             <div className="flex justify-end">

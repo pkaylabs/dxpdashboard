@@ -226,7 +226,7 @@ export default function AppLayout() {
 
             <div className="font-inter flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <div className="font-semibold  text-xl md:text-[1.75rem] text-gray-900 flex-1 flex items-center">
-                {!!matchRoute({ to: "/dashboard" }) ? (
+                {matchRoute({ to: "/dashboard" }) ? (
                   <div className="w-full md:max-w-1/2 flex  items-center gap-2 ">
                     <Element4 size="40" color="#06275A" variant="Bold" />
                     <div className="w-full h-11 rounded-lg border border-[#06275A] flex items-center gap-1.5 px-3">
@@ -240,30 +240,30 @@ export default function AppLayout() {
                       <SearchNormal1 size={18} color="#06275A" />
                     </div>
                   </div>
-                ) : !!matchRoute({ to: "/tourist-attraction" }) ? (
+                ) : matchRoute({ to: "/tourist-attraction" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Tourist Attraction
                   </h2>
-                ) : !!matchRoute({ to: "/hotels" }) ? (
+                ) : matchRoute({ to: "/hotels" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Hotels
                   </h2>
-                ) : !!matchRoute({ to: "/travel-blogs" }) ? (
+                ) : matchRoute({ to: "/travel-blogs" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Travel Blogs
                   </h2>
-                ) : !!matchRoute({ to: "/notifications" }) ? (
+                ) : matchRoute({ to: "/notifications" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Notifications
                   </h2>
-                ) : !!matchRoute({ to: "/user-management" }) ? (
+                ) : matchRoute({ to: "/user-management" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     User Management
                   </h2>
-                ) : !!matchRoute({ to: "/settings" }) ||
-                  !!matchRoute({ to: "/settings/password" }) ||
-                  !!matchRoute({ to: "/settings/preferences" }) ||
-                  !!matchRoute({ to: "/settings/profile" }) ? (
+                ) : matchRoute({ to: "/settings" }) ||
+                  matchRoute({ to: "/settings/password" }) ||
+                  matchRoute({ to: "/settings/preferences" }) ||
+                  matchRoute({ to: "/settings/profile" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Settings
                   </h2>

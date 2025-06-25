@@ -8,6 +8,7 @@ import { ActionButtons } from "../-components";
 export const PoliticalSearch = z.object({
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
+  description: z.string().catch("").optional()
 });
 
 export const Route = createFileRoute("/_app/political-sites/")({

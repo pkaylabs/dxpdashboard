@@ -10,6 +10,8 @@ import { sleep } from "@/utils";
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
+import { MainImageSection } from "@/components/elements/MainImageSection";
+import { AdditionalImagesSection } from "@/components/elements/AdditionalImagesSection";
 
 export const Route = createFileRoute("/_app/travel-blogs/add")({
   validateSearch: (search) => TravelSearch.parse(search),
@@ -21,6 +23,7 @@ const validationSchema = Yup.object({
     .min(3, "Title must be at least 3 characters")
     .required("Title is required"),
   writer: Yup.string().required("Writer is required"),
+  description: Yup.string().required("Description is required"),
 });
 
 function RouteComponent() {
@@ -33,6 +36,9 @@ function RouteComponent() {
   const initialValues = {
     title: search?.title ?? "",
     writer: search?.writer ?? "",
+    description: search?.description ?? "",
+    mainImage: null as File | null,
+    additionalImages: [] as File[],
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -68,7 +74,7 @@ function RouteComponent() {
         {({ errors, touched, setFieldValue, values }) => (
           <Form className="space-y-4">
             <Field name="title">
-              {({ field }: any) => (
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
                   label="Title"
@@ -83,7 +89,7 @@ function RouteComponent() {
             </Field>
 
             <Field name="writer">
-              {({ field }: any) => (
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
                   label="Writer"
@@ -96,6 +102,47 @@ function RouteComponent() {
                 />
               )}
             </Field>
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                value={values.description}
+                onChange={(e) => setFieldValue("description", e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
+              />
+              {touched.description && errors.description && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.description}
+                </p>
+              )}
+            </div>
+            <div>
+              <div className="mt-1">
+                <MainImageSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="mt-1">
+                <AdditionalImagesSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
+              </div>
+            </div>
 
             <div className="flex justify-end">
               <div className="flex items-center gap-3">

@@ -8,6 +8,7 @@ import { ActionButtons } from "../-components";
 export const HotelSearch = z.object({
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
+  description: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/hotels/")({
@@ -15,11 +16,21 @@ export const Route = createFileRoute("/_app/hotels/")({
   component: RouteComponent,
 });
 
+interface HotelItem {
+  id: string;
+  name: string;
+  address: string;
+  lastUpdated: string;
+}
+
 function RouteComponent() {
-  const hotelData = generateVenueData();
+  const hotelData: HotelItem[] = generateVenueData().map(item => ({
+    ...item,
+    id: String(item.id),
+  }));
   const navigate = useNavigate();
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: HotelItem) => {
     navigate({
       to: "/hotels/add",
       search: {
@@ -29,7 +40,7 @@ function RouteComponent() {
     });
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = () => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -47,23 +58,27 @@ function RouteComponent() {
               text: "Hotel has been deleted.",
               icon: "success",
             });
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error(error);
             Swal.fire({
               title: "Error!",
               text:
-                error?.data?.message ??
-                "An error occurred while deleting the reconciliation.",
+                typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+                  ? (error as { data?: { message?: string } }).data!.message
+                  : "An error occurred while deleting the reconciliation.",
               icon: "error",
             });
           }
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: error?.data?.message ?? "An error occurred. Please try again.",
+        text:
+          typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+            ? (error as { data?: { message?: string } }).data!.message
+            : "An error occurred. Please try again.",
         icon: "error",
       });
     }
@@ -91,7 +106,7 @@ function RouteComponent() {
     actions: (
       <ActionButtons
         onEdit={() => handleEdit(item)}
-        onDelete={() => handleDelete(item)}
+        onDelete={() => handleDelete()}
       />
     ),
     // Raw data for filtering
@@ -115,8 +130,10 @@ function RouteComponent() {
     navigate({ to: "/hotels/add" });
   };
 
-  const handleRowClick = (row: any, index: number) => {
+  const handleRowClick = (row: { [key: string]: React.ReactNode }, index: number) => {
     console.log("Row clicked: ", row, "Index:", index);
+    // If you need HotelItem, you can map back using hotelData if 'id' is present:
+    // const hotel = hotelData.find(h => h.id === row.id);
   };
 
   return (

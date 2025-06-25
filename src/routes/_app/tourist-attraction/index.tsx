@@ -43,7 +43,15 @@ function RouteComponent() {
   const venueData = generateVenueData();
   const navigate = useNavigate();
 
-  const handleEdit = (item: any) => {
+  type Venue = {
+    id: string;
+    name: string;
+    category: string;
+    address: string;
+    lastUpdated: string;
+  };
+
+  const handleEdit = (item: Venue) => {
     navigate({
       to: "/tourist-attraction/add",
       search: {
@@ -54,7 +62,7 @@ function RouteComponent() {
     });
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = () => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -72,30 +80,34 @@ function RouteComponent() {
               text: "Venue has been deleted.",
               icon: "success",
             });
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error(error);
             Swal.fire({
               title: "Error!",
               text:
-                error?.data?.message ??
-                "An error occurred while deleting the reconciliation.",
+                typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+                  ? (error as { data?: { message?: string } }).data?.message
+                  : "An error occurred while deleting the reconciliation.",
               icon: "error",
             });
           }
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: error?.data?.message ?? "An error occurred. Please try again.",
+        text:
+          typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+            ? (error as { data?: { message?: string } }).data?.message
+            : "An error occurred. Please try again.",
         icon: "error",
       });
     }
   };
 
   const tableData = venueData.map((item) => ({
-    id: item.id,
+    id: String(item.id),
     name: (
       <div className="font-inter flex items-center ">
         <span className=" text-[#06275A] text-base text-nowrap">
@@ -116,8 +128,8 @@ function RouteComponent() {
     ),
     actions: (
       <ActionButtons
-        onEdit={() => handleEdit(item)}
-        onDelete={() => handleDelete(item)}
+        onEdit={() => handleEdit({ ...item, id: String(item.id) })}
+        onDelete={() => handleDelete()}
       />
     ),
     // Raw data for filtering
@@ -152,7 +164,8 @@ function RouteComponent() {
     navigate({ to: "/tourist-attraction/add" });
   };
 
-  const handleRowClick = (row: any, index: number) => {
+  const handleRowClick = (row: { [key: string]: React.ReactNode }, index: number) => {
+    // If you want to access the raw data, you can use the raw fields (Name, Category, Address)
     console.log("Row clicked:", row, "Index:", index);
   };
 

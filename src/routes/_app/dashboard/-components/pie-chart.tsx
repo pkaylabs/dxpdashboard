@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ResponsivePie } from "@nivo/pie";
-import { ChevronDownIcon, FilterIcon } from "../../-components/charts/bar";
+import { ChevronDownIcon } from "../../-components/charts/bar";
 import { formatCompactNumber } from "@/utils";
 
 const writersData = [
@@ -53,7 +53,19 @@ const writersLegend = [
   },
 ];
 
-const MyResponsivePie = ({ data, onSliceClick }: any) => (
+interface PieDataItem {
+  id: string;
+  label: string;
+  value: number;
+  color: string;
+}
+
+interface MyResponsivePieProps {
+  data: PieDataItem[];
+  onSliceClick: (slice: ComputedDatum<PieDataItem>) => void;
+}
+
+const MyResponsivePie = ({ data, onSliceClick }: MyResponsivePieProps) => (
   <ResponsivePie
     data={data}
     margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
@@ -63,7 +75,7 @@ const MyResponsivePie = ({ data, onSliceClick }: any) => (
     cornerRadius={0}
     activeOuterRadiusOffset={8}
     activeInnerRadiusOffset={8}
-    colors={(slice: any) => slice.data.color}
+    colors={(slice: { data: PieDataItem }) => slice.data.color}
     borderWidth={2}
     borderColor={{
       from: "color",
@@ -90,7 +102,10 @@ const MyResponsivePie = ({ data, onSliceClick }: any) => (
             {datum.value} writers (
             {(
               (datum.value /
-                data.reduce((sum: number, item: any) => sum + item.value, 0)) *
+                data.reduce(
+                  (sum: number, item: PieDataItem) => sum + item.value,
+                  0
+                )) *
               100
             ).toFixed(1)}
             %)
@@ -145,13 +160,15 @@ const MyResponsivePie = ({ data, onSliceClick }: any) => (
 );
 
 interface WritersPieChartProps {
-  data?: any[];
+  data?: PieDataItem[];
   title?: string;
   timeFrame?: string;
   timeFrameOptions?: string[];
   onTimeFrameChange?: (timeFrame: string) => void;
   className?: string;
 }
+
+import type { ComputedDatum } from "@nivo/pie";
 
 const WritersPieChart: React.FC<WritersPieChartProps> = ({
   data = writersData,
@@ -172,12 +189,18 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
     onTimeFrameChange?.(newTimeFrame);
   };
 
-  const handleSliceClick = (slice: any) => {
-    setSelectedSlice(selectedSlice === slice.id ? null : slice.id);
+  const handleSliceClick = (slice: ComputedDatum<PieDataItem>) => {
+    setSelectedSlice(selectedSlice === slice.data.id ? null : slice.data.id);
     console.log("Slice clicked:", slice);
   };
 
-  const handleLegendClick = (item: any, index: number) => {
+  interface WritersLegendItem {
+    name: string;
+    value: number;
+    color: string;
+  }
+
+  const handleLegendClick = (item: WritersLegendItem) => {
     setSelectedSlice(
       selectedSlice === item.name.toLowerCase().replace(/\s+/g, "-")
         ? null
@@ -186,10 +209,6 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
   };
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  const totalPercentage = writersLegend.reduce(
-    (sum, item) => sum + (item.value / total) * 100,
-    0
-  );
 
   return (
     <div
@@ -290,7 +309,7 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
                   ? "bg-primary-50 border border-primary-200 shadow-sm"
                   : ""
               } ${isHovered ? "transform scale-[1.02]" : ""}`}
-              onClick={() => handleLegendClick(item, index)}
+              onClick={() => handleLegendClick(item)}
               onMouseEnter={() => setHoveredItem(itemId)}
               onMouseLeave={() => setHoveredItem(null)}
             >
