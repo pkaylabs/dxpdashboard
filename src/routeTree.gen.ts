@@ -10,374 +10,498 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthVerifyOtpRouteImport } from './routes/_auth/verify-otp'
+import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AppDashboardRouteRouteImport } from './routes/_app/dashboard/route'
+import { Route as AppUserManagementIndexRouteImport } from './routes/_app/user-management/index'
+import { Route as AppTravelBlogsIndexRouteImport } from './routes/_app/travel-blogs/index'
+import { Route as AppTouristAttractionIndexRouteImport } from './routes/_app/tourist-attraction/index'
+import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
+import { Route as AppPoliticalSitesIndexRouteImport } from './routes/_app/political-sites/index'
+import { Route as AppNotificationsIndexRouteImport } from './routes/_app/notifications/index'
+import { Route as AppHotelsIndexRouteImport } from './routes/_app/hotels/index'
+import { Route as AppUserManagementAddRouteImport } from './routes/_app/user-management/add'
+import { Route as AppTravelBlogsAddRouteImport } from './routes/_app/travel-blogs/add'
+import { Route as AppTouristAttractionAddRouteImport } from './routes/_app/tourist-attraction/add'
+import { Route as AppSettingsSettingsRouteImport } from './routes/_app/settings/_settings'
+import { Route as AppPoliticalSitesAddRouteImport } from './routes/_app/political-sites/add'
+import { Route as AppHotelsAddRouteImport } from './routes/_app/hotels/add'
+import { Route as AppSettingsSettingsProfileRouteImport } from './routes/_app/settings/_settings/profile'
+import { Route as AppSettingsSettingsPreferencesRouteImport } from './routes/_app/settings/_settings/preferences'
+import { Route as AppSettingsSettingsPasswordRouteImport } from './routes/_app/settings/_settings/password'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AuthImport } from './routes/_auth'
-import { Route as AppImport } from './routes/_app'
-import { Route as IndexImport } from './routes/index'
-import { Route as AuthVerifyOtpImport } from './routes/_auth/verify-otp'
-import { Route as AuthResetPasswordImport } from './routes/_auth/reset-password'
-import { Route as AuthLoginImport } from './routes/_auth/login'
-import { Route as AuthForgotPasswordImport } from './routes/_auth/forgot-password'
-import { Route as AppDashboardRouteImport } from './routes/_app/dashboard/route'
-import { Route as AppUserManagementIndexImport } from './routes/_app/user-management/index'
-import { Route as AppTravelBlogsIndexImport } from './routes/_app/travel-blogs/index'
-import { Route as AppTouristAttractionIndexImport } from './routes/_app/tourist-attraction/index'
-import { Route as AppSettingsIndexImport } from './routes/_app/settings/index'
-import { Route as AppPoliticalSitesIndexImport } from './routes/_app/political-sites/index'
-import { Route as AppNotificationsIndexImport } from './routes/_app/notifications/index'
-import { Route as AppHotelsIndexImport } from './routes/_app/hotels/index'
-import { Route as AppUserManagementAddImport } from './routes/_app/user-management/add'
-import { Route as AppTravelBlogsAddImport } from './routes/_app/travel-blogs/add'
-import { Route as AppTouristAttractionAddImport } from './routes/_app/tourist-attraction/add'
-import { Route as AppSettingsSettingsImport } from './routes/_app/settings/_settings'
-import { Route as AppPoliticalSitesAddImport } from './routes/_app/political-sites/add'
-import { Route as AppHotelsAddImport } from './routes/_app/hotels/add'
-import { Route as AppSettingsSettingsProfileImport } from './routes/_app/settings/_settings/profile'
-import { Route as AppSettingsSettingsPreferencesImport } from './routes/_app/settings/_settings/preferences'
-import { Route as AppSettingsSettingsPasswordImport } from './routes/_app/settings/_settings/password'
+const AppSettingsRouteImport = createFileRoute('/_app/settings')()
 
-// Create Virtual Routes
-
-const AppSettingsImport = createFileRoute('/_app/settings')()
-
-// Create/Update Routes
-
-const AuthRoute = AuthImport.update({
+const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AppRoute = AppImport.update({
+const AppRoute = AppRouteImport.update({
   id: '/_app',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AppSettingsRoute = AppSettingsImport.update({
+const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AuthVerifyOtpRoute = AuthVerifyOtpImport.update({
+const AuthVerifyOtpRoute = AuthVerifyOtpRouteImport.update({
   id: '/verify-otp',
   path: '/verify-otp',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthResetPasswordRoute = AuthResetPasswordImport.update({
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthLoginRoute = AuthLoginImport.update({
+const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthForgotPasswordRoute = AuthForgotPasswordImport.update({
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AppDashboardRouteRoute = AppDashboardRouteImport.update({
+const AppDashboardRouteRoute = AppDashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppUserManagementIndexRoute = AppUserManagementIndexImport.update({
+const AppUserManagementIndexRoute = AppUserManagementIndexRouteImport.update({
   id: '/user-management/',
   path: '/user-management/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppTravelBlogsIndexRoute = AppTravelBlogsIndexImport.update({
+const AppTravelBlogsIndexRoute = AppTravelBlogsIndexRouteImport.update({
   id: '/travel-blogs/',
   path: '/travel-blogs/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppTouristAttractionIndexRoute = AppTouristAttractionIndexImport.update({
-  id: '/tourist-attraction/',
-  path: '/tourist-attraction/',
-  getParentRoute: () => AppRoute,
-} as any)
-
-const AppSettingsIndexRoute = AppSettingsIndexImport.update({
+const AppTouristAttractionIndexRoute =
+  AppTouristAttractionIndexRouteImport.update({
+    id: '/tourist-attraction/',
+    path: '/tourist-attraction/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppSettingsRoute,
 } as any)
-
-const AppPoliticalSitesIndexRoute = AppPoliticalSitesIndexImport.update({
+const AppPoliticalSitesIndexRoute = AppPoliticalSitesIndexRouteImport.update({
   id: '/political-sites/',
   path: '/political-sites/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppNotificationsIndexRoute = AppNotificationsIndexImport.update({
+const AppNotificationsIndexRoute = AppNotificationsIndexRouteImport.update({
   id: '/notifications/',
   path: '/notifications/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppHotelsIndexRoute = AppHotelsIndexImport.update({
+const AppHotelsIndexRoute = AppHotelsIndexRouteImport.update({
   id: '/hotels/',
   path: '/hotels/',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppUserManagementAddRoute = AppUserManagementAddImport.update({
+const AppUserManagementAddRoute = AppUserManagementAddRouteImport.update({
   id: '/user-management/add',
   path: '/user-management/add',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppTravelBlogsAddRoute = AppTravelBlogsAddImport.update({
+const AppTravelBlogsAddRoute = AppTravelBlogsAddRouteImport.update({
   id: '/travel-blogs/add',
   path: '/travel-blogs/add',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppTouristAttractionAddRoute = AppTouristAttractionAddImport.update({
+const AppTouristAttractionAddRoute = AppTouristAttractionAddRouteImport.update({
   id: '/tourist-attraction/add',
   path: '/tourist-attraction/add',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppSettingsSettingsRoute = AppSettingsSettingsImport.update({
+const AppSettingsSettingsRoute = AppSettingsSettingsRouteImport.update({
   id: '/_settings',
   getParentRoute: () => AppSettingsRoute,
 } as any)
-
-const AppPoliticalSitesAddRoute = AppPoliticalSitesAddImport.update({
+const AppPoliticalSitesAddRoute = AppPoliticalSitesAddRouteImport.update({
   id: '/political-sites/add',
   path: '/political-sites/add',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppHotelsAddRoute = AppHotelsAddImport.update({
+const AppHotelsAddRoute = AppHotelsAddRouteImport.update({
   id: '/hotels/add',
   path: '/hotels/add',
   getParentRoute: () => AppRoute,
 } as any)
-
-const AppSettingsSettingsProfileRoute = AppSettingsSettingsProfileImport.update(
-  {
+const AppSettingsSettingsProfileRoute =
+  AppSettingsSettingsProfileRouteImport.update({
     id: '/profile',
     path: '/profile',
     getParentRoute: () => AppSettingsSettingsRoute,
-  } as any,
-)
-
+  } as any)
 const AppSettingsSettingsPreferencesRoute =
-  AppSettingsSettingsPreferencesImport.update({
+  AppSettingsSettingsPreferencesRouteImport.update({
     id: '/preferences',
     path: '/preferences',
     getParentRoute: () => AppSettingsSettingsRoute,
   } as any)
-
 const AppSettingsSettingsPasswordRoute =
-  AppSettingsSettingsPasswordImport.update({
+  AppSettingsSettingsPasswordRouteImport.update({
     id: '/password',
     path: '/password',
     getParentRoute: () => AppSettingsSettingsRoute,
   } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/dashboard': typeof AppDashboardRouteRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/login': typeof AuthLoginRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/verify-otp': typeof AuthVerifyOtpRoute
+  '/hotels/add': typeof AppHotelsAddRoute
+  '/political-sites/add': typeof AppPoliticalSitesAddRoute
+  '/settings': typeof AppSettingsSettingsRouteWithChildren
+  '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/travel-blogs/add': typeof AppTravelBlogsAddRoute
+  '/user-management/add': typeof AppUserManagementAddRoute
+  '/hotels': typeof AppHotelsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
+  '/political-sites': typeof AppPoliticalSitesIndexRoute
+  '/settings/': typeof AppSettingsIndexRoute
+  '/tourist-attraction': typeof AppTouristAttractionIndexRoute
+  '/travel-blogs': typeof AppTravelBlogsIndexRoute
+  '/user-management': typeof AppUserManagementIndexRoute
+  '/settings/password': typeof AppSettingsSettingsPasswordRoute
+  '/settings/preferences': typeof AppSettingsSettingsPreferencesRoute
+  '/settings/profile': typeof AppSettingsSettingsProfileRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/dashboard': typeof AppDashboardRouteRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/login': typeof AuthLoginRoute
+  '/reset-password': typeof AuthResetPasswordRoute
+  '/verify-otp': typeof AuthVerifyOtpRoute
+  '/hotels/add': typeof AppHotelsAddRoute
+  '/political-sites/add': typeof AppPoliticalSitesAddRoute
+  '/settings': typeof AppSettingsIndexRoute
+  '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/travel-blogs/add': typeof AppTravelBlogsAddRoute
+  '/user-management/add': typeof AppUserManagementAddRoute
+  '/hotels': typeof AppHotelsIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
+  '/political-sites': typeof AppPoliticalSitesIndexRoute
+  '/tourist-attraction': typeof AppTouristAttractionIndexRoute
+  '/travel-blogs': typeof AppTravelBlogsIndexRoute
+  '/user-management': typeof AppUserManagementIndexRoute
+  '/settings/password': typeof AppSettingsSettingsPasswordRoute
+  '/settings/preferences': typeof AppSettingsSettingsPreferencesRoute
+  '/settings/profile': typeof AppSettingsSettingsProfileRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_auth': typeof AuthRouteWithChildren
+  '/_app/dashboard': typeof AppDashboardRouteRoute
+  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/_auth/login': typeof AuthLoginRoute
+  '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_auth/verify-otp': typeof AuthVerifyOtpRoute
+  '/_app/hotels/add': typeof AppHotelsAddRoute
+  '/_app/political-sites/add': typeof AppPoliticalSitesAddRoute
+  '/_app/settings': typeof AppSettingsRouteWithChildren
+  '/_app/settings/_settings': typeof AppSettingsSettingsRouteWithChildren
+  '/_app/tourist-attraction/add': typeof AppTouristAttractionAddRoute
+  '/_app/travel-blogs/add': typeof AppTravelBlogsAddRoute
+  '/_app/user-management/add': typeof AppUserManagementAddRoute
+  '/_app/hotels/': typeof AppHotelsIndexRoute
+  '/_app/notifications/': typeof AppNotificationsIndexRoute
+  '/_app/political-sites/': typeof AppPoliticalSitesIndexRoute
+  '/_app/settings/': typeof AppSettingsIndexRoute
+  '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
+  '/_app/travel-blogs/': typeof AppTravelBlogsIndexRoute
+  '/_app/user-management/': typeof AppUserManagementIndexRoute
+  '/_app/settings/_settings/password': typeof AppSettingsSettingsPasswordRoute
+  '/_app/settings/_settings/preferences': typeof AppSettingsSettingsPreferencesRoute
+  '/_app/settings/_settings/profile': typeof AppSettingsSettingsProfileRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/verify-otp'
+    | '/hotels/add'
+    | '/political-sites/add'
+    | '/settings'
+    | '/tourist-attraction/add'
+    | '/travel-blogs/add'
+    | '/user-management/add'
+    | '/hotels'
+    | '/notifications'
+    | '/political-sites'
+    | '/settings/'
+    | '/tourist-attraction'
+    | '/travel-blogs'
+    | '/user-management'
+    | '/settings/password'
+    | '/settings/preferences'
+    | '/settings/profile'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/verify-otp'
+    | '/hotels/add'
+    | '/political-sites/add'
+    | '/settings'
+    | '/tourist-attraction/add'
+    | '/travel-blogs/add'
+    | '/user-management/add'
+    | '/hotels'
+    | '/notifications'
+    | '/political-sites'
+    | '/tourist-attraction'
+    | '/travel-blogs'
+    | '/user-management'
+    | '/settings/password'
+    | '/settings/preferences'
+    | '/settings/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/_auth'
+    | '/_app/dashboard'
+    | '/_auth/forgot-password'
+    | '/_auth/login'
+    | '/_auth/reset-password'
+    | '/_auth/verify-otp'
+    | '/_app/hotels/add'
+    | '/_app/political-sites/add'
+    | '/_app/settings'
+    | '/_app/settings/_settings'
+    | '/_app/tourist-attraction/add'
+    | '/_app/travel-blogs/add'
+    | '/_app/user-management/add'
+    | '/_app/hotels/'
+    | '/_app/notifications/'
+    | '/_app/political-sites/'
+    | '/_app/settings/'
+    | '/_app/tourist-attraction/'
+    | '/_app/travel-blogs/'
+    | '/_app/user-management/'
+    | '/_app/settings/_settings/password'
+    | '/_app/settings/_settings/preferences'
+    | '/_app/settings/_settings/profile'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app': {
       id: '/_app'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AppImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
-      parentRoute: typeof AppImport
-    }
-    '/_auth/forgot-password': {
-      id: '/_auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/login': {
-      id: '/_auth/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/reset-password': {
-      id: '/_auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/verify-otp': {
-      id: '/_auth/verify-otp'
-      path: '/verify-otp'
-      fullPath: '/verify-otp'
-      preLoaderRoute: typeof AuthVerifyOtpImport
-      parentRoute: typeof AuthImport
-    }
-    '/_app/hotels/add': {
-      id: '/_app/hotels/add'
-      path: '/hotels/add'
-      fullPath: '/hotels/add'
-      preLoaderRoute: typeof AppHotelsAddImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/political-sites/add': {
-      id: '/_app/political-sites/add'
-      path: '/political-sites/add'
-      fullPath: '/political-sites/add'
-      preLoaderRoute: typeof AppPoliticalSitesAddImport
-      parentRoute: typeof AppImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/settings': {
       id: '/_app/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsImport
-      parentRoute: typeof AppImport
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_app/settings/_settings': {
-      id: '/_app/settings/_settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppSettingsSettingsImport
-      parentRoute: typeof AppSettingsRoute
+    '/_auth/verify-otp': {
+      id: '/_auth/verify-otp'
+      path: '/verify-otp'
+      fullPath: '/verify-otp'
+      preLoaderRoute: typeof AuthVerifyOtpRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_app/tourist-attraction/add': {
-      id: '/_app/tourist-attraction/add'
-      path: '/tourist-attraction/add'
-      fullPath: '/tourist-attraction/add'
-      preLoaderRoute: typeof AppTouristAttractionAddImport
-      parentRoute: typeof AppImport
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_app/travel-blogs/add': {
-      id: '/_app/travel-blogs/add'
-      path: '/travel-blogs/add'
-      fullPath: '/travel-blogs/add'
-      preLoaderRoute: typeof AppTravelBlogsAddImport
-      parentRoute: typeof AppImport
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_app/user-management/add': {
-      id: '/_app/user-management/add'
-      path: '/user-management/add'
-      fullPath: '/user-management/add'
-      preLoaderRoute: typeof AppUserManagementAddImport
-      parentRoute: typeof AppImport
+    '/_auth/forgot-password': {
+      id: '/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
-    '/_app/hotels/': {
-      id: '/_app/hotels/'
-      path: '/hotels'
-      fullPath: '/hotels'
-      preLoaderRoute: typeof AppHotelsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/notifications/': {
-      id: '/_app/notifications/'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof AppNotificationsIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/political-sites/': {
-      id: '/_app/political-sites/'
-      path: '/political-sites'
-      fullPath: '/political-sites'
-      preLoaderRoute: typeof AppPoliticalSitesIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/settings/': {
-      id: '/_app/settings/'
-      path: '/'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof AppSettingsIndexImport
-      parentRoute: typeof AppSettingsImport
-    }
-    '/_app/tourist-attraction/': {
-      id: '/_app/tourist-attraction/'
-      path: '/tourist-attraction'
-      fullPath: '/tourist-attraction'
-      preLoaderRoute: typeof AppTouristAttractionIndexImport
-      parentRoute: typeof AppImport
-    }
-    '/_app/travel-blogs/': {
-      id: '/_app/travel-blogs/'
-      path: '/travel-blogs'
-      fullPath: '/travel-blogs'
-      preLoaderRoute: typeof AppTravelBlogsIndexImport
-      parentRoute: typeof AppImport
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/user-management/': {
       id: '/_app/user-management/'
       path: '/user-management'
       fullPath: '/user-management'
-      preLoaderRoute: typeof AppUserManagementIndexImport
-      parentRoute: typeof AppImport
+      preLoaderRoute: typeof AppUserManagementIndexRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_app/settings/_settings/password': {
-      id: '/_app/settings/_settings/password'
-      path: '/password'
-      fullPath: '/settings/password'
-      preLoaderRoute: typeof AppSettingsSettingsPasswordImport
-      parentRoute: typeof AppSettingsSettingsImport
+    '/_app/travel-blogs/': {
+      id: '/_app/travel-blogs/'
+      path: '/travel-blogs'
+      fullPath: '/travel-blogs'
+      preLoaderRoute: typeof AppTravelBlogsIndexRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_app/settings/_settings/preferences': {
-      id: '/_app/settings/_settings/preferences'
-      path: '/preferences'
-      fullPath: '/settings/preferences'
-      preLoaderRoute: typeof AppSettingsSettingsPreferencesImport
-      parentRoute: typeof AppSettingsSettingsImport
+    '/_app/tourist-attraction/': {
+      id: '/_app/tourist-attraction/'
+      path: '/tourist-attraction'
+      fullPath: '/tourist-attraction'
+      preLoaderRoute: typeof AppTouristAttractionIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/': {
+      id: '/_app/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AppSettingsIndexRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/_app/political-sites/': {
+      id: '/_app/political-sites/'
+      path: '/political-sites'
+      fullPath: '/political-sites'
+      preLoaderRoute: typeof AppPoliticalSitesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications/': {
+      id: '/_app/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/hotels/': {
+      id: '/_app/hotels/'
+      path: '/hotels'
+      fullPath: '/hotels'
+      preLoaderRoute: typeof AppHotelsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/user-management/add': {
+      id: '/_app/user-management/add'
+      path: '/user-management/add'
+      fullPath: '/user-management/add'
+      preLoaderRoute: typeof AppUserManagementAddRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/travel-blogs/add': {
+      id: '/_app/travel-blogs/add'
+      path: '/travel-blogs/add'
+      fullPath: '/travel-blogs/add'
+      preLoaderRoute: typeof AppTravelBlogsAddRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tourist-attraction/add': {
+      id: '/_app/tourist-attraction/add'
+      path: '/tourist-attraction/add'
+      fullPath: '/tourist-attraction/add'
+      preLoaderRoute: typeof AppTouristAttractionAddRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings/_settings': {
+      id: '/_app/settings/_settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsSettingsRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/_app/political-sites/add': {
+      id: '/_app/political-sites/add'
+      path: '/political-sites/add'
+      fullPath: '/political-sites/add'
+      preLoaderRoute: typeof AppPoliticalSitesAddRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/hotels/add': {
+      id: '/_app/hotels/add'
+      path: '/hotels/add'
+      fullPath: '/hotels/add'
+      preLoaderRoute: typeof AppHotelsAddRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/settings/_settings/profile': {
       id: '/_app/settings/_settings/profile'
       path: '/profile'
       fullPath: '/settings/profile'
-      preLoaderRoute: typeof AppSettingsSettingsProfileImport
-      parentRoute: typeof AppSettingsSettingsImport
+      preLoaderRoute: typeof AppSettingsSettingsProfileRouteImport
+      parentRoute: typeof AppSettingsSettingsRoute
+    }
+    '/_app/settings/_settings/preferences': {
+      id: '/_app/settings/_settings/preferences'
+      path: '/preferences'
+      fullPath: '/settings/preferences'
+      preLoaderRoute: typeof AppSettingsSettingsPreferencesRouteImport
+      parentRoute: typeof AppSettingsSettingsRoute
+    }
+    '/_app/settings/_settings/password': {
+      id: '/_app/settings/_settings/password'
+      path: '/password'
+      fullPath: '/settings/password'
+      preLoaderRoute: typeof AppSettingsSettingsPasswordRouteImport
+      parentRoute: typeof AppSettingsSettingsRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface AppSettingsSettingsRouteChildren {
   AppSettingsSettingsPasswordRoute: typeof AppSettingsSettingsPasswordRoute
@@ -458,320 +582,11 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
-  '/dashboard': typeof AppDashboardRouteRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/login': typeof AuthLoginRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/verify-otp': typeof AuthVerifyOtpRoute
-  '/hotels/add': typeof AppHotelsAddRoute
-  '/political-sites/add': typeof AppPoliticalSitesAddRoute
-  '/settings': typeof AppSettingsSettingsRouteWithChildren
-  '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
-  '/travel-blogs/add': typeof AppTravelBlogsAddRoute
-  '/user-management/add': typeof AppUserManagementAddRoute
-  '/hotels': typeof AppHotelsIndexRoute
-  '/notifications': typeof AppNotificationsIndexRoute
-  '/political-sites': typeof AppPoliticalSitesIndexRoute
-  '/settings/': typeof AppSettingsIndexRoute
-  '/tourist-attraction': typeof AppTouristAttractionIndexRoute
-  '/travel-blogs': typeof AppTravelBlogsIndexRoute
-  '/user-management': typeof AppUserManagementIndexRoute
-  '/settings/password': typeof AppSettingsSettingsPasswordRoute
-  '/settings/preferences': typeof AppSettingsSettingsPreferencesRoute
-  '/settings/profile': typeof AppSettingsSettingsProfileRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
-  '/dashboard': typeof AppDashboardRouteRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/login': typeof AuthLoginRoute
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/verify-otp': typeof AuthVerifyOtpRoute
-  '/hotels/add': typeof AppHotelsAddRoute
-  '/political-sites/add': typeof AppPoliticalSitesAddRoute
-  '/settings': typeof AppSettingsIndexRoute
-  '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
-  '/travel-blogs/add': typeof AppTravelBlogsAddRoute
-  '/user-management/add': typeof AppUserManagementAddRoute
-  '/hotels': typeof AppHotelsIndexRoute
-  '/notifications': typeof AppNotificationsIndexRoute
-  '/political-sites': typeof AppPoliticalSitesIndexRoute
-  '/tourist-attraction': typeof AppTouristAttractionIndexRoute
-  '/travel-blogs': typeof AppTravelBlogsIndexRoute
-  '/user-management': typeof AppUserManagementIndexRoute
-  '/settings/password': typeof AppSettingsSettingsPasswordRoute
-  '/settings/preferences': typeof AppSettingsSettingsPreferencesRoute
-  '/settings/profile': typeof AppSettingsSettingsProfileRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_app': typeof AppRouteWithChildren
-  '/_auth': typeof AuthRouteWithChildren
-  '/_app/dashboard': typeof AppDashboardRouteRoute
-  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/_auth/login': typeof AuthLoginRoute
-  '/_auth/reset-password': typeof AuthResetPasswordRoute
-  '/_auth/verify-otp': typeof AuthVerifyOtpRoute
-  '/_app/hotels/add': typeof AppHotelsAddRoute
-  '/_app/political-sites/add': typeof AppPoliticalSitesAddRoute
-  '/_app/settings': typeof AppSettingsRouteWithChildren
-  '/_app/settings/_settings': typeof AppSettingsSettingsRouteWithChildren
-  '/_app/tourist-attraction/add': typeof AppTouristAttractionAddRoute
-  '/_app/travel-blogs/add': typeof AppTravelBlogsAddRoute
-  '/_app/user-management/add': typeof AppUserManagementAddRoute
-  '/_app/hotels/': typeof AppHotelsIndexRoute
-  '/_app/notifications/': typeof AppNotificationsIndexRoute
-  '/_app/political-sites/': typeof AppPoliticalSitesIndexRoute
-  '/_app/settings/': typeof AppSettingsIndexRoute
-  '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
-  '/_app/travel-blogs/': typeof AppTravelBlogsIndexRoute
-  '/_app/user-management/': typeof AppUserManagementIndexRoute
-  '/_app/settings/_settings/password': typeof AppSettingsSettingsPasswordRoute
-  '/_app/settings/_settings/preferences': typeof AppSettingsSettingsPreferencesRoute
-  '/_app/settings/_settings/profile': typeof AppSettingsSettingsProfileRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | ''
-    | '/dashboard'
-    | '/forgot-password'
-    | '/login'
-    | '/reset-password'
-    | '/verify-otp'
-    | '/hotels/add'
-    | '/political-sites/add'
-    | '/settings'
-    | '/tourist-attraction/add'
-    | '/travel-blogs/add'
-    | '/user-management/add'
-    | '/hotels'
-    | '/notifications'
-    | '/political-sites'
-    | '/settings/'
-    | '/tourist-attraction'
-    | '/travel-blogs'
-    | '/user-management'
-    | '/settings/password'
-    | '/settings/preferences'
-    | '/settings/profile'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | ''
-    | '/dashboard'
-    | '/forgot-password'
-    | '/login'
-    | '/reset-password'
-    | '/verify-otp'
-    | '/hotels/add'
-    | '/political-sites/add'
-    | '/settings'
-    | '/tourist-attraction/add'
-    | '/travel-blogs/add'
-    | '/user-management/add'
-    | '/hotels'
-    | '/notifications'
-    | '/political-sites'
-    | '/tourist-attraction'
-    | '/travel-blogs'
-    | '/user-management'
-    | '/settings/password'
-    | '/settings/preferences'
-    | '/settings/profile'
-  id:
-    | '__root__'
-    | '/'
-    | '/_app'
-    | '/_auth'
-    | '/_app/dashboard'
-    | '/_auth/forgot-password'
-    | '/_auth/login'
-    | '/_auth/reset-password'
-    | '/_auth/verify-otp'
-    | '/_app/hotels/add'
-    | '/_app/political-sites/add'
-    | '/_app/settings'
-    | '/_app/settings/_settings'
-    | '/_app/tourist-attraction/add'
-    | '/_app/travel-blogs/add'
-    | '/_app/user-management/add'
-    | '/_app/hotels/'
-    | '/_app/notifications/'
-    | '/_app/political-sites/'
-    | '/_app/settings/'
-    | '/_app/tourist-attraction/'
-    | '/_app/travel-blogs/'
-    | '/_app/user-management/'
-    | '/_app/settings/_settings/password'
-    | '/_app/settings/_settings/preferences'
-    | '/_app/settings/_settings/profile'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AppRoute: typeof AppRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/_app",
-        "/_auth"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/_app": {
-      "filePath": "_app.tsx",
-      "children": [
-        "/_app/dashboard",
-        "/_app/hotels/add",
-        "/_app/political-sites/add",
-        "/_app/settings",
-        "/_app/tourist-attraction/add",
-        "/_app/travel-blogs/add",
-        "/_app/user-management/add",
-        "/_app/hotels/",
-        "/_app/notifications/",
-        "/_app/political-sites/",
-        "/_app/tourist-attraction/",
-        "/_app/travel-blogs/",
-        "/_app/user-management/"
-      ]
-    },
-    "/_auth": {
-      "filePath": "_auth.tsx",
-      "children": [
-        "/_auth/forgot-password",
-        "/_auth/login",
-        "/_auth/reset-password",
-        "/_auth/verify-otp"
-      ]
-    },
-    "/_app/dashboard": {
-      "filePath": "_app/dashboard/route.tsx",
-      "parent": "/_app"
-    },
-    "/_auth/forgot-password": {
-      "filePath": "_auth/forgot-password.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/login": {
-      "filePath": "_auth/login.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/reset-password": {
-      "filePath": "_auth/reset-password.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/verify-otp": {
-      "filePath": "_auth/verify-otp.tsx",
-      "parent": "/_auth"
-    },
-    "/_app/hotels/add": {
-      "filePath": "_app/hotels/add.tsx",
-      "parent": "/_app"
-    },
-    "/_app/political-sites/add": {
-      "filePath": "_app/political-sites/add.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings": {
-      "filePath": "_app/settings",
-      "parent": "/_app",
-      "children": [
-        "/_app/settings/_settings",
-        "/_app/settings/"
-      ]
-    },
-    "/_app/settings/_settings": {
-      "filePath": "_app/settings/_settings.tsx",
-      "parent": "/_app/settings",
-      "children": [
-        "/_app/settings/_settings/password",
-        "/_app/settings/_settings/preferences",
-        "/_app/settings/_settings/profile"
-      ]
-    },
-    "/_app/tourist-attraction/add": {
-      "filePath": "_app/tourist-attraction/add.tsx",
-      "parent": "/_app"
-    },
-    "/_app/travel-blogs/add": {
-      "filePath": "_app/travel-blogs/add.tsx",
-      "parent": "/_app"
-    },
-    "/_app/user-management/add": {
-      "filePath": "_app/user-management/add.tsx",
-      "parent": "/_app"
-    },
-    "/_app/hotels/": {
-      "filePath": "_app/hotels/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/notifications/": {
-      "filePath": "_app/notifications/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/political-sites/": {
-      "filePath": "_app/political-sites/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/": {
-      "filePath": "_app/settings/index.tsx",
-      "parent": "/_app/settings"
-    },
-    "/_app/tourist-attraction/": {
-      "filePath": "_app/tourist-attraction/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/travel-blogs/": {
-      "filePath": "_app/travel-blogs/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/user-management/": {
-      "filePath": "_app/user-management/index.tsx",
-      "parent": "/_app"
-    },
-    "/_app/settings/_settings/password": {
-      "filePath": "_app/settings/_settings/password.tsx",
-      "parent": "/_app/settings/_settings"
-    },
-    "/_app/settings/_settings/preferences": {
-      "filePath": "_app/settings/_settings/preferences.tsx",
-      "parent": "/_app/settings/_settings"
-    },
-    "/_app/settings/_settings/profile": {
-      "filePath": "_app/settings/_settings/profile.tsx",
-      "parent": "/_app/settings/_settings"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
