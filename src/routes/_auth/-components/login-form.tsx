@@ -2,63 +2,79 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Input from "@/components/elements/input";
-import { Link, useRouter, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { useLoginMutation } from "@/redux/features/auth/authApiSlice";
+import { toast } from "react-hot-toast";
 
-import { Route as LoginRoute, fallback } from "../login";
+import { fallback, Route as LoginRoute } from "../login";
 import { Route as ForgotPasswordRoute } from "../forgot-password";
 
-import { useAuth } from "@/services/auth";
-import { sleep } from "@/utils";
 import { ButtonLoader } from "@/components/loaders";
+import { useAppDispatch } from "@/redux";
+import { setCredentials } from "@/redux/features/auth/authSlice";
 
 const validationSchema = Yup.object({
-  username: Yup.string()
-    .min(3, "Username must be at least 3 characters")
-    .required("Username is required"),
+  email: Yup.string()
+    .email("Invalid email format")
+    .max(255, "Email must be at most 255 characters")
+    .min(5, "Email must be at least 5 characters")
+    .required("email is required"),
   password: Yup.string()
     .min(8, "Password must be at least 8 characters")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
+    // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    // .matches(/[0-9]/, "Password must contain at least one number")
     .required("Password is required"),
 });
 
 const LoginForm: React.FC = () => {
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const dispatch = useAppDispatch();
+
   const initialValues = {
-    username: "",
     email: "",
     password: "",
-    rememberMe: false,
+    // rememberMe: false,
   };
-
-  const auth = useAuth();
-  const router = useRouter();
   const isLoading = useRouterState({ select: (s) => s.isLoading });
   const navigate = LoginRoute.useNavigate();
   const search = LoginRoute.useSearch();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleSubmit = async (values: typeof initialValues) => {
     console.log("Form submitted:", values);
 
-    setIsSubmitting(true);
     try {
-      await auth.login(values.username);
+      const res = await login(values).unwrap();
+
+      console.log("Login response:", res);
+
+      if (res?.token) {
+        dispatch(setCredentials({ ...res }));
+        toast(
+          JSON.stringify({
+            type: "success",
+            title: `Welcome back`,
+          })
+        );
+        navigate({ to: search.redirect || fallback });
+      } else {
+        toast(JSON.stringify({ type: "error", title: "Login failed!" }));
+      }
 
       // Force‐revalidate any protected data
-      await router.invalidate();
-
-      await sleep(1);
-
-      await navigate({ to: search.redirect || fallback });
-    } catch (error) {
+      // await router.invalidate();
+    } catch (error: any) {
       console.error("Error logging in: ", error);
-    } finally {
-      setIsSubmitting(false);
+      toast(
+        JSON.stringify({
+          type: "error",
+          title: error?.data?.error_message || "Login failed!",
+        })
+      );
     }
   };
 
-  const isLoggingIn = isLoading || isSubmitting;
+  const isLoggingIn = isLoading || isLoginLoading;
 
   return (
     <div className="w-full max-w-xl mx-auto p-6 rounded-lg">
@@ -74,16 +90,14 @@ const LoginForm: React.FC = () => {
         {({ errors, touched }) => (
           <Form className="space-y-4">
             {/* Username Field */}
-            <Field name="username">
+            <Field name="email">
               {({ field }: any) => (
                 <Input
                   {...field}
-                  label="Username"
-                  placeholder="Enter your username"
+                  label="Email"
+                  placeholder="Enter your email"
                   error={
-                    touched.username && errors.username
-                      ? errors.username
-                      : undefined
+                    touched.email && errors.email ? errors.email : undefined
                   }
                   required
                   fullWidth

@@ -1,9 +1,21 @@
 import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  useLoaderData,
+  useNavigate,
+} from "@tanstack/react-router";
 import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
+import { store } from "@/app/store";
+import {
+  touristApiSlice,
+  useDeleteTouristSiteMutation,
+  useGetTouristSitesQuery,
+} from "@/redux/features/touristSites/touristSiteApiSlice";
+import { useEffect } from "react";
 
 export const VenueSearch = z.object({
   name: z.string().catch("").optional(),
@@ -13,6 +25,15 @@ export const VenueSearch = z.object({
 
 export const Route = createFileRoute("/_app/tourist-attraction/")({
   validateSearch: (search) => VenueSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      touristApiSlice.endpoints.getTouristSites.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load tourist sites");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
@@ -40,9 +61,6 @@ const CategoryBadge = ({ category }: { category: string }) => {
 };
 
 function RouteComponent() {
-  const venueData = generateVenueData();
-  const navigate = useNavigate();
-
   type Venue = {
     id: string;
     name: string;
@@ -50,6 +68,26 @@ function RouteComponent() {
     address: string;
     lastUpdated: string;
   };
+  const venueData = generateVenueData();
+  const preLoadedData = Route.useLoaderData() as Venue[];
+
+  const {
+    data = preLoadedData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetTouristSitesQuery(undefined);
+
+  const [deleteTouristSite, { isLoading: deleting }] =
+    useDeleteTouristSiteMutation();
+
+  useEffect(() => {
+    refetch();
+  }, [data, refetch]);
+
+  console.log("Preloaded Data:", preLoadedData);
+
+  const navigate = useNavigate();
 
   const handleEdit = (item: Venue) => {
     navigate({
@@ -62,7 +100,7 @@ function RouteComponent() {
     });
   };
 
-  const handleDelete = () => {
+  const handleDelete = (id: number) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -75,6 +113,8 @@ function RouteComponent() {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            await deleteTouristSite({ id }).unwrap();
+            refetch(); // Refetch the data after deletion
             Swal.fire({
               title: "Deleted!",
               text: "Venue has been deleted.",
@@ -85,7 +125,11 @@ function RouteComponent() {
             Swal.fire({
               title: "Error!",
               text:
-                typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+                typeof error === "object" &&
+                error !== null &&
+                "data" in error &&
+                typeof (error as { data?: { message?: string } }).data
+                  ?.message === "string"
                   ? (error as { data?: { message?: string } }).data?.message
                   : "An error occurred while deleting the reconciliation.",
               icon: "error",
@@ -98,7 +142,11 @@ function RouteComponent() {
       Swal.fire({
         title: "Error!",
         text:
-          typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+          typeof error === "object" &&
+          error !== null &&
+          "data" in error &&
+          typeof (error as { data?: { message?: string } }).data?.message ===
+            "string"
             ? (error as { data?: { message?: string } }).data?.message
             : "An error occurred. Please try again.",
         icon: "error",
@@ -106,7 +154,19 @@ function RouteComponent() {
     }
   };
 
-  const tableData = venueData.map((item) => ({
+  if (isLoading) {
+    return <div className="text-center text-gray-500">Loading...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-500">
+        Error loading tourist sites.
+      </div>
+    );
+  }
+
+  const tableData = data.map((item: any) => ({
     id: String(item.id),
     name: (
       <div className="font-inter flex items-center ">
@@ -129,14 +189,13 @@ function RouteComponent() {
     actions: (
       <ActionButtons
         onEdit={() => handleEdit({ ...item, id: String(item.id) })}
-        onDelete={() => handleDelete()}
+        onDelete={() => handleDelete(Number(item.id))}
       />
     ),
     // Raw data for filtering
     Name: item.name,
     Category: item.category,
     Address: item.address,
-    
   }));
 
   const headers = [
@@ -164,7 +223,10 @@ function RouteComponent() {
     navigate({ to: "/tourist-attraction/add" });
   };
 
-  const handleRowClick = (row: { [key: string]: React.ReactNode }, index: number) => {
+  const handleRowClick = (
+    row: { [key: string]: React.ReactNode },
+    index: number
+  ) => {
     // If you want to access the raw data, you can use the raw fields (Name, Category, Address)
     console.log("Row clicked:", row, "Index:", index);
   };
@@ -178,7 +240,7 @@ function RouteComponent() {
             Total Venues
           </h3>
           <p className="text-3xl font-bold text-[#06275A] ">
-            {venueData.length}
+            {data.length}
           </p>
         </div>
 
@@ -187,7 +249,7 @@ function RouteComponent() {
             Entertainment
           </h3>
           <p className="text-3xl font-bold text-purple-600">
-            {venueData.filter((v) => v.category === "Entertainment").length}
+            {data.filter((v: Venue) => v.category === "Entertainment").length}
           </p>
         </div>
 
@@ -196,12 +258,11 @@ function RouteComponent() {
             Culture/Nature
           </h3>
           <p className="text-3xl font-bold text-green-600">
-            {venueData.filter((v) => v.category === "Culture/Nature").length}
+            {data.filter((v: Venue) => v.category === "Culture/Nature").length}
           </p>
         </div>
       </div>
 
-   
       <Table
         headers={headers}
         rows={tableData}

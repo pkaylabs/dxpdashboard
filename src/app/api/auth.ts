@@ -9,9 +9,10 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 import { logout } from "@/redux/features/auth/authSlice";
+import { BACKEND_BASE_URL } from "@/constants/page-path";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "BACKEND_BASE_URL",
+  baseUrl: BACKEND_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
     if (token) {

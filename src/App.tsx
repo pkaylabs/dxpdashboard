@@ -1,15 +1,12 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import "./App.css";
-import { AuthProvider, useAuth } from "./services/auth";
+import NotificationProvider from "./notifications";
 
 const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   scrollRestoration: true,
-  context: {
-    auth: undefined!,
-  },
 });
 
 declare module "@tanstack/react-router" {
@@ -18,16 +15,16 @@ declare module "@tanstack/react-router" {
   }
 }
 
-function InnerApp() {
-  const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
-}
+// function InnerApp() {
+//   const auth = useAuth();
+//   return <RouterProvider router={router}  />;
+// }
 
 function App() {
   return (
-    <AuthProvider>
-      <InnerApp />
-    </AuthProvider>
+    <NotificationProvider>
+      <RouterProvider router={router} />
+    </NotificationProvider>
   );
 }
 
