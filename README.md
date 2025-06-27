@@ -52,3 +52,8 @@ export default tseslint.config({
   },
 })
 ```
+
+
+<!-- The creation of the blog post is giving errors -->
+<!-- The categories for creating hotels is giving errors -->
+

@@ -8,6 +8,11 @@ import Avatar from "@/components/core/avatar";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import ViewModal from "./-components/view-modal";
 import { useState } from "react";
+import { store } from "@/app/store";
+import {
+  useGetUsersQuery,
+  usersApiSlice,
+} from "@/redux/features/users/usersApiSlice";
 
 export const UserSearch = z.object({
   name: z.string().catch("").optional(),
@@ -20,11 +25,21 @@ export const UserSearch = z.object({
 
 export const Route = createFileRoute("/_app/user-management/")({
   validateSearch: (search) => UserSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      usersApiSlice.endpoints.getUsers.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load users");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const userData = generateUserData();
+  const userData = Route.useLoaderData();
+  const { data = userData } = useGetUsersQuery(undefined);
   const navigate = useNavigate();
   const [openView, setOpenView] = useState(false);
 
@@ -96,7 +111,7 @@ function RouteComponent() {
     }
   };
 
-  const tableData = userData.map((item) => ({
+  const tableData = data.map((item) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center gap-2">

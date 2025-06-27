@@ -2,22 +2,44 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
+import { store } from "@/app/store";
+import {
+  politicalSitesApiSlice,
+  useDeletePoliticalSiteMutation,
+  useGetPoliticalSitesQuery,
+} from "@/redux/features/politicalSites/politicalSitesApiSlice";
+import { useEffect } from "react";
 
 export const PoliticalSearch = z.object({
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
-  description: z.string().catch("").optional()
+  description: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/political-sites/")({
   validateSearch: (search) => PoliticalSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      politicalSitesApiSlice.endpoints.getPoliticalSites.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load political sites");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const politicalData = generateVenueData();
+  const politicalData = Route.useLoaderData();
+  const {
+    data = politicalData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetPoliticalSitesQuery(undefined);
+  const [deletePoliticalSite] = useDeletePoliticalSiteMutation();
   const navigate = useNavigate();
 
   const handleEdit = (item: any) => {
@@ -30,7 +52,7 @@ function RouteComponent() {
     });
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = (id: number) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -43,6 +65,8 @@ function RouteComponent() {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            await deletePoliticalSite({ id }).unwrap();
+            refetch();
             Swal.fire({
               title: "Deleted!",
               text: "Political has been deleted.",
@@ -70,7 +94,17 @@ function RouteComponent() {
     }
   };
 
-  const tableData = politicalData.map((item) => ({
+  useEffect(() => {
+    refetch();
+  }, [data, refetch]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>Error loading political sites.</div>;
+  }
+  const tableData = data.map((item: any) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -92,12 +126,12 @@ function RouteComponent() {
     actions: (
       <ActionButtons
         onEdit={() => handleEdit(item)}
-        onDelete={() => handleDelete(item)}
+        onDelete={() => handleDelete(Number(item.id))}
       />
     ),
     // Raw data for filtering
     Name: item.name,
-  Address: item.address,
+    Address: item.address,
   }));
 
   const headers = [

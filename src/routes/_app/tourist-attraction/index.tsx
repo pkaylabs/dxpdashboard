@@ -3,11 +3,8 @@ import Swal from "sweetalert2";
 import Table from "@/components/table";
 import {
   createFileRoute,
-  redirect,
-  useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
-import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
 import { store } from "@/app/store";
 import {
@@ -68,7 +65,6 @@ function RouteComponent() {
     address: string;
     lastUpdated: string;
   };
-  const venueData = generateVenueData();
   const preLoadedData = Route.useLoaderData() as Venue[];
 
   const {
@@ -78,8 +74,7 @@ function RouteComponent() {
     refetch,
   } = useGetTouristSitesQuery(undefined);
 
-  const [deleteTouristSite, { isLoading: deleting }] =
-    useDeleteTouristSiteMutation();
+  const [deleteTouristSite] = useDeleteTouristSiteMutation();
 
   useEffect(() => {
     refetch();
@@ -239,9 +234,7 @@ function RouteComponent() {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Total Venues
           </h3>
-          <p className="text-3xl font-bold text-[#06275A] ">
-            {data.length}
-          </p>
+          <p className="text-3xl font-bold text-[#06275A] ">{data.length}</p>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-sm">

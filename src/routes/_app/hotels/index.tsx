@@ -2,8 +2,14 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
+import { store } from "@/app/store";
+import {
+  hotelApiSlice,
+  useDeleteHotelMutation,
+  useGetHotelsQuery,
+} from "@/redux/features/hotels/hotelApiSlice";
+import { useEffect } from "react";
 
 export const HotelSearch = z.object({
   name: z.string().catch("").optional(),
@@ -13,6 +19,15 @@ export const HotelSearch = z.object({
 
 export const Route = createFileRoute("/_app/hotels/")({
   validateSearch: (search) => HotelSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      hotelApiSlice.endpoints.getHotels.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load hotels");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
@@ -24,10 +39,9 @@ interface HotelItem {
 }
 
 function RouteComponent() {
-  const hotelData: HotelItem[] = generateVenueData().map(item => ({
-    ...item,
-    id: String(item.id),
-  }));
+  const hotelData = Route.useLoaderData();
+  const { data = hotelData, refetch } = useGetHotelsQuery(undefined);
+  const [deleteHotel] = useDeleteHotelMutation();
   const navigate = useNavigate();
 
   const handleEdit = (item: HotelItem) => {
@@ -40,7 +54,11 @@ function RouteComponent() {
     });
   };
 
-  const handleDelete = () => {
+  useEffect(() => {
+    refetch();
+  }, [data, refetch]);
+
+  const handleDelete = (id: number) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -53,6 +71,8 @@ function RouteComponent() {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            await deleteHotel({ id }).unwrap();
+            refetch();
             Swal.fire({
               title: "Deleted!",
               text: "Hotel has been deleted.",
@@ -63,7 +83,11 @@ function RouteComponent() {
             Swal.fire({
               title: "Error!",
               text:
-                typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+                typeof error === "object" &&
+                error !== null &&
+                "data" in error &&
+                typeof (error as { data?: { message?: string } }).data
+                  ?.message === "string"
                   ? (error as { data?: { message?: string } }).data!.message
                   : "An error occurred while deleting the reconciliation.",
               icon: "error",
@@ -76,7 +100,11 @@ function RouteComponent() {
       Swal.fire({
         title: "Error!",
         text:
-          typeof error === "object" && error !== null && "data" in error && typeof (error as { data?: { message?: string } }).data?.message === "string"
+          typeof error === "object" &&
+          error !== null &&
+          "data" in error &&
+          typeof (error as { data?: { message?: string } }).data?.message ===
+            "string"
             ? (error as { data?: { message?: string } }).data!.message
             : "An error occurred. Please try again.",
         icon: "error",
@@ -84,7 +112,7 @@ function RouteComponent() {
     }
   };
 
-  const tableData = hotelData.map((item) => ({
+  const tableData = data.map((item: any) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -106,7 +134,7 @@ function RouteComponent() {
     actions: (
       <ActionButtons
         onEdit={() => handleEdit(item)}
-        onDelete={() => handleDelete()}
+        onDelete={() => handleDelete(Number(item.id))}
       />
     ),
     // Raw data for filtering
@@ -130,7 +158,10 @@ function RouteComponent() {
     navigate({ to: "/hotels/add" });
   };
 
-  const handleRowClick = (row: { [key: string]: React.ReactNode }, index: number) => {
+  const handleRowClick = (
+    row: { [key: string]: React.ReactNode },
+    index: number
+  ) => {
     console.log("Row clicked: ", row, "Index:", index);
     // If you need HotelItem, you can map back using hotelData if 'id' is present:
     // const hotel = hotelData.find(h => h.id === row.id);
