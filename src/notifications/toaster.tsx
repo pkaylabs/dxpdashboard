@@ -13,8 +13,8 @@ import toast, { Toast, useToaster } from "react-hot-toast";
 
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import wrapClick from "../utils/wrap-click";
-import classNames from "@/utils/classnames";
+import  classNames  from "@/utils/classnames";
+import { wrapClick } from "@/utils/wrap-click";
 
 const Toaster: FC = () => {
   const { toasts, handlers } = useToaster();

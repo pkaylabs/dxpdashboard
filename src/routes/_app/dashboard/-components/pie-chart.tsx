@@ -6,19 +6,19 @@ import { formatCompactNumber } from "@/utils";
 const writersData = [
   {
     id: "tourist-bloggers",
-    label: "Tourist Bloggers",
+    label: "Tourist Blogs",
     value: 15,
     color: "#B83FD4",
   },
   {
     id: "hotel-bloggers",
-    label: "Hotel Bloggers",
+    label: "Hotel Blogs",
     value: 30,
     color: "#F4C542",
   },
   {
     id: "travel-bloggers",
-    label: "Travel Bloggers",
+    label: "Travel Blogs",
     value: 35,
     color: "#5BA8C7",
   },
@@ -32,17 +32,17 @@ const writersData = [
 
 const writersLegend = [
   {
-    name: "Tourist Bloggers",
+    name: "Tourist Blogs",
     value: 15,
     color: "#B83FD4",
   },
   {
-    name: "Hotel Bloggers",
+    name: "Hotel Blogs",
     value: 30,
     color: "#F4C542",
   },
   {
-    name: "Travel Bloggers",
+    name: "Travel Blogs",
     value: 35,
     color: "#5BA8C7",
   },
@@ -172,7 +172,7 @@ import type { ComputedDatum } from "@nivo/pie";
 
 const WritersPieChart: React.FC<WritersPieChartProps> = ({
   data = writersData,
-  title = "Writers",
+  title = "Blogs by Category",
   timeFrame = "Weekly",
   timeFrameOptions = ["Daily", "Weekly", "Monthly", "Yearly"],
   onTimeFrameChange,
@@ -217,7 +217,7 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
-          <h2 className="text-xl font-bold text-[#06275A] ">{title}</h2>
+          <h2 className="text-lg font-bold text-[#06275A] ">{title}</h2>
 
           {/* Summary Stats */}
           {/* <div className="flex items-center gap-3 text-sm">
@@ -453,19 +453,19 @@ const WritersDemo: React.FC = () => {
   const weeklyData = [
     {
       id: "tourist-bloggers",
-      label: "Tourist Bloggers",
+      label: "Tourist Blogs",
       value: 15,
       color: "#B83FD4",
     },
     {
       id: "hotel-bloggers",
-      label: "Hotel Bloggers",
+      label: "Hotel Blogs",
       value: 30,
       color: "#F4C542",
     },
     {
       id: "travel-bloggers",
-      label: "Travel Bloggers",
+      label: "Travel Blogs",
       value: 35,
       color: "#5BA8C7",
     },
@@ -480,19 +480,19 @@ const WritersDemo: React.FC = () => {
   const monthlyData = [
     {
       id: "tourist-bloggers",
-      label: "Tourist Bloggers",
+      label: "Tourist Blogs",
       value: 125,
       color: "#B83FD4",
     },
     {
       id: "hotel-bloggers",
-      label: "Hotel Bloggers",
+      label: "Hotel Blogs",
       value: 240,
       color: "#F4C542",
     },
     {
       id: "travel-bloggers",
-      label: "Travel Bloggers",
+      label: "Travel Blogs",
       value: 285,
       color: "#5BA8C7",
     },

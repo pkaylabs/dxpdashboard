@@ -1,36 +1,60 @@
-import { generateNotificationData } from "@/constants";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Message2 } from "iconsax-react";
 import Table from "@/components/table";
+import { store } from "@/app/store";
+import {
+  notificationApiSlice,
+  useGetNotificationsQuery,
+} from "@/redux/features/notifications/notificationApiSlice";
 
 export const Route = createFileRoute("/_app/notifications/")({
+  loader: async () => {
+    const result = await store.dispatch(
+      notificationApiSlice.endpoints.getNotifications.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load notifications");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  date: string;
+  time: string;
+  read?: string
+}
 
 const NotificationRow = ({
   notification,
   index,
 }: {
-  notification: any;
+  notification: Notification;
   index: number;
 }) => {
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case "success":
-        return "✅";
-      case "warning":
-        return "⚠️";
-      case "error":
-        return "❌";
-      case "info":
-        return "ℹ️";
-      case "action":
-        return "📋";
-      default:
-        return "📢";
-    }
-  };
+  // const getNotificationIcon = (type: string) => {
+  //   switch (type) {
+  //     case "success":
+  //       return "✅";
+  //     case "warning":
+  //       return "⚠️";
+  //     case "error":
+  //       return "❌";
+  //     case "info":
+  //       return "ℹ️";
+  //     case "action":
+  //       return "📋";
+  //     default:
+  //       return "📢";
+  //   }
+  // };
+
+  console.log(index);
 
   return (
     <div className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors duration-150">
@@ -65,10 +89,11 @@ const NotificationRow = ({
 };
 
 function RouteComponent() {
-  const notifications = generateNotificationData();
-  const navigate = useNavigate();
+  const notifications = Route.useLoaderData();
+  const { data = notifications } = useGetNotificationsQuery(undefined);
+  // const navigate = useNavigate();
 
-  const tableData = notifications.map((notification, index) => ({
+  const tableData = data.map((notification: Notification, index: number) => ({
     id: notification.id,
     notification: <NotificationRow notification={notification} index={index} />,
   }));

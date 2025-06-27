@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import Input from "@/components/elements/input";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useLoginMutation } from "@/redux/features/auth/authApiSlice";
-import { toast } from "react-hot-toast";
 
 import { fallback, Route as LoginRoute } from "../login";
 import { Route as ForgotPasswordRoute } from "../forgot-password";
@@ -12,6 +11,7 @@ import { Route as ForgotPasswordRoute } from "../forgot-password";
 import { ButtonLoader } from "@/components/loaders";
 import { useAppDispatch } from "@/redux";
 import { setCredentials } from "@/redux/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -45,32 +45,19 @@ const LoginForm: React.FC = () => {
 
     try {
       const res = await login(values).unwrap();
-
-      console.log("Login response:", res);
-
       if (res?.token) {
         dispatch(setCredentials({ ...res }));
-        toast(
-          JSON.stringify({
-            type: "success",
-            title: `Welcome back`,
-          })
-        );
+        toast.success("Login successfull");
         navigate({ to: search.redirect || fallback });
       } else {
-        toast(JSON.stringify({ type: "error", title: "Login failed!" }));
+        toast.error("Failed to login");
       }
 
       // Force‐revalidate any protected data
       // await router.invalidate();
     } catch (error: any) {
       console.error("Error logging in: ", error);
-      toast(
-        JSON.stringify({
-          type: "error",
-          title: error?.data?.error_message || "Login failed!",
-        })
-      );
+      toast.error("Login Failed");
     }
   };
 

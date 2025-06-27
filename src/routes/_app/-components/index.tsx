@@ -422,7 +422,7 @@ type ProfilePictureSectionProps = {
   setFieldValue: (field: string, value: unknown) => void;
   touched: Record<string, unknown>;
   errors: Record<string, unknown>;
-  auth?: { user?: string };
+  user?: any;
 };
 
 export const ProfilePictureSection = ({
@@ -430,7 +430,7 @@ export const ProfilePictureSection = ({
   setFieldValue,
   touched,
   errors,
-  auth,
+  user,
 }: ProfilePictureSectionProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -481,7 +481,7 @@ export const ProfilePictureSection = ({
       <div className="relative size-20">
         <Avatar
           src={getAvatarSrc() ?? undefined}
-          alt={typeof auth?.user === "string" ? auth.user : "NA"}
+          alt={typeof user?.name === "string" ? user.name : "NA"}
           size="lg"
         />
 
