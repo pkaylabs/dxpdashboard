@@ -13,7 +13,7 @@ import toast, { Toast, useToaster } from "react-hot-toast";
 
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import  classNames  from "@/utils/classnames";
+import classNames from "@/utils/classnames";
 import { wrapClick } from "@/utils/wrap-click";
 
 const Toaster: FC = () => {
@@ -75,7 +75,7 @@ const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
       className={`max-w-sm w-full ${
         _toastMessage.type === "error"
           ? "bg-[#FEF3F2] border-red"
-          : "bg-primary-300 border-primary"
+          : "bg-white border-gray-400"
       } shadow-lg rounded-lg pointer-events-auto border-l-[3px] border-r-[3px]  overflow-hidden`}
     >
       <div className="p-5">
@@ -88,13 +88,13 @@ const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
           <div className="flex-shrink-0">
             {_toastMessage.type === "success" && (
               <IoMdCheckmarkCircleOutline
-                className="h-6 w-6 text-primary"
+                className="h-6 w-6 text-black"
                 aria-hidden="true"
               />
             )}
             {_toastMessage.type === "error" && (
               <ExclamationCircleIcon
-                className="h-6 w-6 text-red"
+                className="h-6 w-6 text-red-400"
                 aria-hidden="true"
               />
             )}
@@ -127,7 +127,7 @@ const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
             <div>
               <p
                 className={`text-sm  font-inter ${
-                  _toastMessage.type === "error" ? "text-red" : "text-white"
+                  _toastMessage.type === "error" ? "text-red-300" : "text-black"
                 }`}
               >
                 {_toastMessage.title}
@@ -135,7 +135,7 @@ const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
               {_toastMessage.description && (
                 <p
                   className={`mt-1 text-sm  font-normal text-gray-100 ${
-                    _toastMessage.type === "error" ? "text-red" : "text-white"
+                    _toastMessage.type === "error" ? "text-red-300" : "text-black"
                   }`}
                 >
                   {_toastMessage.description}
@@ -145,7 +145,7 @@ const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
                 <div className="mt-3 flex space-x-7">
                   <button
                     type="button"
-                    className="rounded-md text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="rounded-md text-sm font-medium text-gray-600 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   >
                     Undo
                   </button>
@@ -161,7 +161,7 @@ const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
             {_toastMessage.undoable && (
               <button
                 type="button"
-                className="ml-3 flex-shrink-0 rounded-md text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="ml-3 flex-shrink-0 rounded-md text-sm font-medium text-gray-600 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
                 Undo
               </button>

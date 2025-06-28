@@ -16,11 +16,12 @@ export const Route = createFileRoute("/_app/tourist-attraction/add")({
 });
 
 const categoryOptions: SelectOption[] = [
-  { label: "Leisure/Entertainment", value: "Leisure/Entertainment" },
-  { label: "Culture/Nature", value: "NATURE" },
-  { label: "Entertainment", value: "Entertainment" },
-  { label: "Sports", value: "Sports" },
-  { label: "Business", value: "Business", disabled: true }, // Disabled option
+  { label: "HISTORICAL", value: "HISTORICAL" },
+  { label: "CULTURAL", value: "CULTURAL" },
+  { label: "ENTERTAINMENT", value: "ENTERTAINMENT" },
+  { label: "LEISURE", value: "LEISURE" },
+  { label: "NATURE", value: "NATURE" },
+  { label: "OTHERS", value: "OTHERS", disabled: true }, // Disabled option
 ];
 
 const validationSchema = Yup.object({
@@ -48,14 +49,15 @@ function RouteComponent() {
     useCreateTouristSiteMutation();
 
   const initialValues = {
+    id: search?.id ?? "",
     name: search?.name ?? "",
     category: search?.category ?? "",
     address: search?.address ?? "",
-    description: "",
-    phone: "",
-    email: "",
-    landmark: "",
-    mainImage: null as File | null,
+    description: search?.description ?? "",
+    phone: search?.phone ?? "",
+    email: search?.email ?? "",
+    landmark: search?.landmark ?? "",
+    mainImage: search?.mainImage ?? (null as File | null),
     additionalImages: [] as File[],
   };
 
@@ -64,6 +66,10 @@ function RouteComponent() {
 
     // build FormData object
     const formData = new FormData();
+
+    if (search?.id) {
+      formData.append("id", values.id);
+    }
 
     formData.append("name", values.name);
     formData.append("category", values.category);

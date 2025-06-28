@@ -1,6 +1,4 @@
-import {
-  createFileRoute,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { HotelSearch } from ".";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
@@ -48,20 +46,24 @@ function RouteComponent() {
   const [addHotel, { isLoading: isAdding }] = useAddHotelMutation();
 
   const initialValues = {
+    id: search?.id ?? "",
     name: search?.name ?? "",
     address: search?.address ?? "",
-    phone: "",
-    email: "",
-    website: "",
-    category: "",
+    phone: search?.phone ?? "",
+    email: search?.email ?? "",
+    website: search?.website ?? "",
+    category: search?.category ?? "",
     description: search?.description ?? "",
     mainImage: null as File | null,
     additionalImages: [] as File[],
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
     const formData = new FormData();
+
+    if (search?.id) {
+      formData.append("id", String(values.id));
+    }
     formData.append("name", values.name);
     formData.append("address", values.address);
     formData.append("phone", values.phone);

@@ -12,6 +12,7 @@ import {
 import { useEffect } from "react";
 
 export const TravelSearch = z.object({
+  id: z.string().catch("").optional(),
   title: z.string().catch("").optional(),
   content: z.string().catch("").optional(),
   category: z.string().catch("").optional(),
@@ -37,6 +38,8 @@ export const Route = createFileRoute("/_app/travel-blogs/")({
 function RouteComponent() {
   const travelBlogs = Route.useLoaderData(undefined);
   const { data = travelBlogs, refetch } = useGetTravelBlogsQuery(undefined);
+
+  console.log(data);
   const [deleteBlog] = useDeleteTravelBlogMutation();
   const navigate = useNavigate();
 
@@ -48,20 +51,27 @@ function RouteComponent() {
     feature_image?: string;
     is_published?: boolean;
     datePosted?: string;
+    updated_at: string;
     description?: string;
   };
 
   useEffect(() => {
-    // Refetch the data when the component mounts
-    refetch();
-  }, [data, refetch]);
+    if (data) {
+      // Refetch the data when the component mounts
+      refetch();
+    }
+  }, [data,refetch]);
 
   const handleEdit = (item: BlogItem) => {
     navigate({
       to: "/travel-blogs/add",
       search: {
+        id: String(item.id),
         title: item.title,
         content: item.content,
+        category: item.category,
+        description: item.description,
+        is_published: item.is_published
       },
     });
   };
@@ -80,7 +90,7 @@ function RouteComponent() {
         if (result.isConfirmed) {
           try {
             await deleteBlog({ blog: id }).unwrap();
-            refetch();
+            refetch()
             Swal.fire({
               title: "Deleted!",
               text: "Blog has been deleted.",
@@ -120,26 +130,33 @@ function RouteComponent() {
     }
   };
 
-  const tableData = data.map((item: BlogItem) => ({
+  const tableData = data?.map((item: BlogItem) => ({
     id: String(item.id),
-    content: (
+    title: (
       <div className="font-inter flex items-center ">
         <span className=" text-[#06275A] text-base text-nowrap">
-          {item.content}
+          {item.title}
         </span>
       </div>
     ),
-    title: (
-      <span className="text-[#06275A] text-base text-nowrap">{item.title}</span>
+    category: (
+      <span className="text-[#06275A] text-base text-nowrap">
+        {item.category}
+      </span>
+    ),
+    is_published: (
+      <span className="text-[#06275A] flex items-center  text-base">
+        {item.is_published ? "✅" : "❌"}
+      </span>
     ),
     datePosted: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.datePosted}
+        {new Date(item.updated_at).toLocaleDateString()}
       </span>
     ),
     actions: (
       <ActionButtons
-        onEdit={() => handleEdit({ ...item, id: String(item.id) })}
+        onEdit={() => handleEdit(item)}
         onDelete={() => handleDelete(Number(item.id))}
       />
     ),
@@ -149,8 +166,14 @@ function RouteComponent() {
   }));
 
   const headers = [
-    { name: "content", value: "content", sortable: true, width: "300px" },
-    { name: "Blog Articles", value: "title", sortable: true, width: "300px" },
+    { name: "title", value: "title", sortable: true, width: "300px" },
+    { name: "Category", value: "category", sortable: true, width: "300px" },
+    {
+      name: "Is Published",
+      value: "is_published",
+      sortable: true,
+      width: "300px",
+    },
     {
       name: "Date Posted",
       value: "datePosted",

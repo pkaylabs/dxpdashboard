@@ -1,4 +1,4 @@
-import { createFileRoute,  useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { TravelSearch } from ".";
 import * as Yup from "yup";
 
@@ -35,10 +35,10 @@ const validationSchema = Yup.object({
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const router = useRouter();
   const [createBlog, { isLoading: creating }] = useCreateTravelBlogMutation();
 
   const initialValues = {
+    id: search?.id ?? "",
     title: search?.title ?? "",
     content: search?.content ?? "",
     description: search?.description ?? "",
@@ -49,8 +49,12 @@ function RouteComponent() {
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log("Form submitted:");
     const formData = new FormData();
+
+    if (search?.id) {
+      formData.append("id", values.id);
+    }
+
     formData.append("title", values.title);
     formData.append("content", values.content);
     formData.append("description", values.description);
@@ -66,13 +70,13 @@ function RouteComponent() {
       toast(
         JSON.stringify({ type: "success", title: "Blog saved successfully!" })
       );
-      await router.invalidate();
+      // await router.invalidate();
       await navigate({ to: ".." });
     } catch (error) {
       console.error("Error logging in: ", error);
     }
   };
-  
+
   const isLoggingIn = creating;
 
   return (
@@ -87,7 +91,7 @@ function RouteComponent() {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched, setFieldValue, values }) => (
+        {({ errors, touched, setFieldValue, handleChange, values }) => (
           <Form className="space-y-4">
             <Field name="title">
               {({ field }: import("formik").FieldProps) => (
@@ -148,6 +152,7 @@ function RouteComponent() {
               <label className="inline-flex items-center">
                 <Field
                   type="checkbox"
+                  onChange={handleChange}
                   name="is_published"
                   className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
@@ -172,10 +177,9 @@ function RouteComponent() {
               <textarea
                 id="description"
                 name="description"
-                rows={4}
                 value={values.description}
-                onChange={(e) => setFieldValue("description", e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
+                onChange={handleChange}
+                className="mt-1 h-32 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
               />
               {touched.description && errors.description && (
                 <p className="mt-2 text-sm text-red-600">

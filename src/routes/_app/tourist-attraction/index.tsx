@@ -1,10 +1,7 @@
 import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
-import {
-  createFileRoute,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ActionButtons } from "../-components";
 import { store } from "@/app/store";
 import {
@@ -15,9 +12,16 @@ import {
 import { useEffect } from "react";
 
 export const VenueSearch = z.object({
+  id: z.string().catch("").optional(),
   name: z.string().catch("").optional(),
   category: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
+  email: z.string().email("Enter a valid email").catch("").optional(),
+  phone: z.string().catch("").optional(),
+  description: z.string().catch("").optional(),
+  landmark: z.string().catch("").optional(),
+  mainImage: z.string().catch("").optional(),
+  // additionalImages: z.string().array().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/tourist-attraction/")({
@@ -59,11 +63,17 @@ const CategoryBadge = ({ category }: { category: string }) => {
 
 function RouteComponent() {
   type Venue = {
-    id: string;
+    id: number;
     name: string;
     category: string;
     address: string;
-    lastUpdated: string;
+    email: string;
+    phone: string;
+    description: string;
+    landmark: string;
+    mainImage: string;
+    additionalImages: string[];
+    updated_at: string;
   };
   const preLoadedData = Route.useLoaderData() as Venue[];
 
@@ -88,9 +98,16 @@ function RouteComponent() {
     navigate({
       to: "/tourist-attraction/add",
       search: {
+        id: String(item.id),
         name: item.name,
         category: item.category,
         address: item.address,
+        email: item.email,
+        phone: item.phone,
+        description: item.description,
+        landmark: item.landmark,
+        mainImage: item.mainImage,
+        // additionalImages: item.additionalImages,
       },
     });
   };
@@ -161,7 +178,7 @@ function RouteComponent() {
     );
   }
 
-  const tableData = data.map((item: any) => ({
+  const tableData = data?.map((item: Venue) => ({
     id: String(item.id),
     name: (
       <div className="font-inter flex items-center ">
@@ -178,12 +195,12 @@ function RouteComponent() {
     ),
     lastUpdated: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastUpdated}
+        {new Date(item.updated_at).toLocaleDateString()}
       </span>
     ),
     actions: (
       <ActionButtons
-        onEdit={() => handleEdit({ ...item, id: String(item.id) })}
+        onEdit={() => handleEdit(item)}
         onDelete={() => handleDelete(Number(item.id))}
       />
     ),

@@ -11,7 +11,7 @@ import { Route as ForgotPasswordRoute } from "../forgot-password";
 import { ButtonLoader } from "@/components/loaders";
 import { useAppDispatch } from "@/redux";
 import { setCredentials } from "@/redux/features/auth/authSlice";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -47,7 +47,12 @@ const LoginForm: React.FC = () => {
       const res = await login(values).unwrap();
       if (res?.token) {
         dispatch(setCredentials({ ...res }));
-        toast.success("Login successfull");
+        toast(
+          JSON.stringify({
+            type: "success",
+            title: "Log in successful",
+          })
+        );
         navigate({ to: search.redirect || fallback });
       } else {
         toast.error("Failed to login");

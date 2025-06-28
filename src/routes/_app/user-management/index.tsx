@@ -2,13 +2,13 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { generateUserData, generateVenueData } from "@/constants";
-import ActionDropdown, { ActionButtons } from "../-components";
+import ActionDropdown from "../-components";
 import Avatar from "@/components/core/avatar";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import ViewModal from "./-components/view-modal";
 import { useState } from "react";
 import { store } from "@/app/store";
+import  moment  from "moment";
 import {
   useGetUsersQuery,
   usersApiSlice,
@@ -111,7 +111,7 @@ function RouteComponent() {
     }
   };
 
-  const tableData = data.map((item) => ({
+  const tableData = data.map((item: any) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center gap-2">
@@ -131,12 +131,12 @@ function RouteComponent() {
     ),
     location: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.location}
+        {item.address ? item.address : "No location specified"}
       </span>
     ),
     lastLogin: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastLogin}
+        {moment(item.last_login).format("MMM Do YY")}
       </span>
     ),
     actions: (

@@ -10,11 +10,17 @@ import {
   useGetHotelsQuery,
 } from "@/redux/features/hotels/hotelApiSlice";
 import { useEffect } from "react";
+import moment from "moment";
 
 export const HotelSearch = z.object({
+  id: z.string().catch("").optional(),
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
   description: z.string().catch("").optional(),
+  category: z.string().catch("").optional(),
+  email: z.string().email("Enter a valid email").catch("").optional(),
+  phone: z.string().catch("").optional(),
+  website: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/hotels/")({
@@ -32,10 +38,15 @@ export const Route = createFileRoute("/_app/hotels/")({
 });
 
 interface HotelItem {
-  id: string;
+  id: number;
   name: string;
   address: string;
-  lastUpdated: string;
+  description: string;
+  email: string;
+  phone: string;
+  website: string;
+  category: string;
+  updated_at: string;
 }
 
 function RouteComponent() {
@@ -48,8 +59,14 @@ function RouteComponent() {
     navigate({
       to: "/hotels/add",
       search: {
+        id: String(item.id),
         name: item.name,
         address: item.address,
+        category: item.category,
+        email: item.email,
+        description: item.description,
+        phone: item.phone,
+        website: item.website,
       },
     });
   };
@@ -112,7 +129,7 @@ function RouteComponent() {
     }
   };
 
-  const tableData = data.map((item: any) => ({
+  const tableData = data?.map((item: HotelItem) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -128,7 +145,7 @@ function RouteComponent() {
     ),
     lastUpdated: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastUpdated}
+        {moment(item.updated_at).format("MMM Do YY")}
       </span>
     ),
     actions: (

@@ -1,6 +1,4 @@
-import {
-  createFileRoute,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
@@ -49,14 +47,15 @@ function RouteComponent() {
     useCreatePoliticalSiteMutation();
 
   const initialValues = {
+    id: search?.id ?? "",
     name: search?.name ?? "",
     address: search?.address ?? "",
     description: search?.description ?? "",
-    phone: "",
-    email: "",
-    landmark: "",
-    custodian: "",
-    category: "",
+    phone: search?.phone ?? "",
+    email: search?.email ?? "",
+    landmark: search?.landmark ?? "",
+    custodian: search?.custodian ?? "",
+    category: search?.category ?? "",
     mainImage: null as File | null,
     additionalImages: [] as File[],
   };
@@ -64,6 +63,10 @@ function RouteComponent() {
   const handleSubmit = async (values: typeof initialValues) => {
     console.log("Form submitted:", values);
     const formData = new FormData();
+
+    if (search?.id) {
+      formData.append("id", values.id);
+    }
 
     formData.append("name", values.name);
     formData.append("address", values.address);
@@ -190,7 +193,7 @@ function RouteComponent() {
             </Field>
 
             <Field name="address">
-              {({ field }: any) => (
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
                   label="Address"

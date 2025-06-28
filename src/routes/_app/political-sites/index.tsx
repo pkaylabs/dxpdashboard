@@ -12,9 +12,15 @@ import {
 import { useEffect } from "react";
 
 export const PoliticalSearch = z.object({
+  id: z.string().catch("").optional(),
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
+  phone: z.string().catch("").optional(),
   description: z.string().catch("").optional(),
+  email: z.string().email("Enter a valid email").catch("").optional(),
+  landmark: z.string().catch("").optional(),
+  custodian: z.string().catch("").optional(),
+  category: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/political-sites/")({
@@ -31,6 +37,22 @@ export const Route = createFileRoute("/_app/political-sites/")({
   component: RouteComponent,
 });
 
+interface PoliticalSites {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  landmark: string;
+  custodian: string;
+  category: string;
+  description: string;
+  image: string;
+  second_image: string;
+  third_image: string;
+  updated_at: string;
+}
+
 function RouteComponent() {
   const politicalData = Route.useLoaderData();
   const {
@@ -42,12 +64,19 @@ function RouteComponent() {
   const [deletePoliticalSite] = useDeletePoliticalSiteMutation();
   const navigate = useNavigate();
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: PoliticalSites) => {
     navigate({
       to: "/political-sites/add",
       search: {
+        id: String(item.id),
         name: item.name,
         address: item.address,
+        phone: item.phone,
+        description: item.description,
+        email: item.email,
+        landmark: item.landmark,
+        custodian: item.custodian,
+        category: item.category,
       },
     });
   };
@@ -72,23 +101,52 @@ function RouteComponent() {
               text: "Political has been deleted.",
               icon: "success",
             });
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error(error);
+            let errorMessage =
+              "An error occurred while deleting the reconciliation.";
+            interface ErrorWithMessage {
+              data?: {
+                message?: string;
+              };
+            }
+            const err = error as ErrorWithMessage;
+            if (
+              typeof error === "object" &&
+              error !== null &&
+              "data" in error &&
+              typeof err.data === "object" &&
+              err.data !== null &&
+              "message" in err.data
+            ) {
+              errorMessage = err.data?.message ?? errorMessage;
+            }
             Swal.fire({
               title: "Error!",
-              text:
-                error?.data?.message ??
-                "An error occurred while deleting the reconciliation.",
+              text: errorMessage,
               icon: "error",
             });
           }
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
+      let errorMessage = "An error occurred. Please try again.";
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "data" in error &&
+        typeof (error as { data?: unknown }).data === "object" &&
+        (error as { data?: { message?: string } }).data !== null &&
+        "message" in (error as { data?: { message?: string } }).data!
+      ) {
+        errorMessage =
+          (error as { data: { message?: string } }).data?.message ??
+          errorMessage;
+      }
       Swal.fire({
         title: "Error!",
-        text: error?.data?.message ?? "An error occurred. Please try again.",
+        text: errorMessage,
         icon: "error",
       });
     }
@@ -104,7 +162,7 @@ function RouteComponent() {
   if (isError) {
     return <div>Error loading political sites.</div>;
   }
-  const tableData = data.map((item: any) => ({
+  const tableData = data?.map((item: PoliticalSites) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -120,7 +178,7 @@ function RouteComponent() {
     ),
     lastUpdated: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastUpdated}
+        {new Date(item.updated_at).toLocaleDateString()}
       </span>
     ),
     actions: (
@@ -150,8 +208,11 @@ function RouteComponent() {
     navigate({ to: "/political-sites/add" });
   };
 
-  const handleRowClick = (row: any, index: number) => {
-    console.log("Row clicked: ", row, "Index:", index);
+  // const handleRowClick = (row: any, index: number) => {
+  //   console.log("Row clicked: ", row, "Index:", index);
+  // };
+  const handleRowClick = () => {
+    console.log("Row clicked: ");
   };
   return (
     <div>
