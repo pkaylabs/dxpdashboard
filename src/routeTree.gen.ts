@@ -31,6 +31,7 @@ import { Route as AppTravelBlogsAddRouteImport } from './routes/_app/travel-blog
 import { Route as AppTouristAttractionAddRouteImport } from './routes/_app/tourist-attraction/add'
 import { Route as AppSettingsSettingsRouteImport } from './routes/_app/settings/_settings'
 import { Route as AppPoliticalSitesAddRouteImport } from './routes/_app/political-sites/add'
+import { Route as AppNotificationsAddRouteImport } from './routes/_app/notifications/add'
 import { Route as AppHotelsAddRouteImport } from './routes/_app/hotels/add'
 import { Route as AppSettingsSettingsProfileRouteImport } from './routes/_app/settings/_settings/profile'
 import { Route as AppSettingsSettingsPreferencesRouteImport } from './routes/_app/settings/_settings/preferences'
@@ -141,6 +142,11 @@ const AppPoliticalSitesAddRoute = AppPoliticalSitesAddRouteImport.update({
   path: '/political-sites/add',
   getParentRoute: () => AppRoute,
 } as any)
+const AppNotificationsAddRoute = AppNotificationsAddRouteImport.update({
+  id: '/notifications/add',
+  path: '/notifications/add',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppHotelsAddRoute = AppHotelsAddRouteImport.update({
   id: '/hotels/add',
   path: '/hotels/add',
@@ -173,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/verify-otp': typeof AuthVerifyOtpRoute
   '/hotels/add': typeof AppHotelsAddRoute
+  '/notifications/add': typeof AppNotificationsAddRoute
   '/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/settings': typeof AppSettingsSettingsRouteWithChildren
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof AuthResetPasswordRoute
   '/verify-otp': typeof AuthVerifyOtpRoute
   '/hotels/add': typeof AppHotelsAddRoute
+  '/notifications/add': typeof AppNotificationsAddRoute
   '/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/settings': typeof AppSettingsIndexRoute
   '/tourist-attraction/add': typeof AppTouristAttractionAddRoute
@@ -223,6 +231,7 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/verify-otp': typeof AuthVerifyOtpRoute
   '/_app/hotels/add': typeof AppHotelsAddRoute
+  '/_app/notifications/add': typeof AppNotificationsAddRoute
   '/_app/political-sites/add': typeof AppPoliticalSitesAddRoute
   '/_app/settings': typeof AppSettingsRouteWithChildren
   '/_app/settings/_settings': typeof AppSettingsSettingsRouteWithChildren
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/hotels/add'
+    | '/notifications/add'
     | '/political-sites/add'
     | '/settings'
     | '/tourist-attraction/add'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/verify-otp'
     | '/hotels/add'
+    | '/notifications/add'
     | '/political-sites/add'
     | '/settings'
     | '/tourist-attraction/add'
@@ -299,6 +310,7 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/verify-otp'
     | '/_app/hotels/add'
+    | '/_app/notifications/add'
     | '/_app/political-sites/add'
     | '/_app/settings'
     | '/_app/settings/_settings'
@@ -472,6 +484,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPoliticalSitesAddRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/notifications/add': {
+      id: '/_app/notifications/add'
+      path: '/notifications/add'
+      fullPath: '/notifications/add'
+      preLoaderRoute: typeof AppNotificationsAddRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/hotels/add': {
       id: '/_app/hotels/add'
       path: '/hotels/add'
@@ -535,6 +554,7 @@ const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
 interface AppRouteChildren {
   AppDashboardRouteRoute: typeof AppDashboardRouteRoute
   AppHotelsAddRoute: typeof AppHotelsAddRoute
+  AppNotificationsAddRoute: typeof AppNotificationsAddRoute
   AppPoliticalSitesAddRoute: typeof AppPoliticalSitesAddRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppTouristAttractionAddRoute: typeof AppTouristAttractionAddRoute
@@ -551,6 +571,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRouteRoute: AppDashboardRouteRoute,
   AppHotelsAddRoute: AppHotelsAddRoute,
+  AppNotificationsAddRoute: AppNotificationsAddRoute,
   AppPoliticalSitesAddRoute: AppPoliticalSitesAddRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
   AppTouristAttractionAddRoute: AppTouristAttractionAddRoute,

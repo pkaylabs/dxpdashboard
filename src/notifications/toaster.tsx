@@ -66,278 +66,79 @@ interface ToastComponentProps {
   toast: Toast;
 }
 
+
 const AlertToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
   const _toastMessage = JSON.parse(_toast.message as string);
 
   return (
     <div
       {..._toast.ariaProps}
-      className={`max-w-sm w-full ${
-        _toastMessage.type === "error"
-          ? "bg-[#FEF3F2] border-red"
-          : "bg-white border-gray-400"
-      } shadow-lg rounded-lg pointer-events-auto border-l-[3px] border-r-[3px]  overflow-hidden`}
+      className={`max-w-sm w-full bg-gray-800 border border-gray-700 shadow-lg rounded-2xl pointer-events-auto overflow-hidden`}
     >
-      <div className="p-5">
-        <div
-          className={classNames(
-            _toastMessage.description ? "items-start" : "items-center",
-            "flex"
+      <div className="p-4 flex">
+        <div className="flex-shrink-0">
+          {_toastMessage.type === "success" && (
+            <IoMdCheckmarkCircleOutline
+              className="h-6 w-6 text-green-400"
+              aria-hidden="true"
+            />
           )}
-        >
-          <div className="flex-shrink-0">
-            {_toastMessage.type === "success" && (
-              <IoMdCheckmarkCircleOutline
-                className="h-6 w-6 text-black"
-                aria-hidden="true"
-              />
-            )}
-            {_toastMessage.type === "error" && (
-              <ExclamationCircleIcon
-                className="h-6 w-6 text-red-400"
-                aria-hidden="true"
-              />
-            )}
-            {_toastMessage.type === "loading" && (
-              <ArrowPathIcon
-                className="h-6 w-6 text-gray-400 animate-spin"
-                aria-hidden="true"
-              />
-            )}
-            {_toastMessage.type === "notification" && (
-              <BellIcon
-                className="h-6 w-6 text-yellow-400"
-                aria-hidden="true"
-              />
-            )}
-            {_toastMessage.type === "warning" && (
-              <ExclamationTriangleIcon
-                className="h-6 w-6 text-orange-400"
-                aria-hidden="true"
-              />
-            )}
-          </div>
-          <div
-            className={classNames(
-              _toastMessage.description ? "pt-0.5" : "",
-              _toastMessage.type ? "ml-3" : "",
-              "w-0 flex-1 flex justify-between items-start"
-            )}
-          >
-            <div>
-              <p
-                className={`text-sm  font-inter ${
-                  _toastMessage.type === "error" ? "text-red-300" : "text-black"
-                }`}
-              >
-                {_toastMessage.title}
-              </p>
-              {_toastMessage.description && (
-                <p
-                  className={`mt-1 text-sm  font-normal text-gray-100 ${
-                    _toastMessage.type === "error" ? "text-red-300" : "text-black"
-                  }`}
-                >
-                  {_toastMessage.description}
-                </p>
-              )}
-              {_toastMessage.actions && (
-                <div className="mt-3 flex space-x-7">
-                  <button
-                    type="button"
-                    className="rounded-md text-sm font-medium text-gray-600 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
-                    Undo
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              )}
-            </div>
-            {_toastMessage.undoable && (
-              <button
-                type="button"
-                className="ml-3 flex-shrink-0 rounded-md text-sm font-medium text-gray-600 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
+          {_toastMessage.type === "error" && (
+            <ExclamationCircleIcon
+              className="h-6 w-6 text-red-400"
+              aria-hidden="true"
+            />
+          )}
+          {_toastMessage.type === "loading" && (
+            <ArrowPathIcon
+              className="h-6 w-6 text-gray-400 animate-spin"
+              aria-hidden="true"
+            />
+          )}
+          {_toastMessage.type === "notification" && (
+            <BellIcon
+              className="h-6 w-6 text-yellow-300"
+              aria-hidden="true"
+            />
+          )}
+          {_toastMessage.type === "warning" && (
+            <ExclamationTriangleIcon
+              className="h-6 w-6 text-orange-400"
+              aria-hidden="true"
+            />
+          )}
+        </div>
+
+        <div className="ml-3 flex-1">
+          <p className="text-sm font-medium text-white">
+            {_toastMessage.title}
+          </p>
+          {_toastMessage.description && (
+            <p className="mt-1 text-sm text-gray-300">
+              {_toastMessage.description}
+            </p>
+          )}
+          {_toastMessage.actions && (
+            <div className="mt-3 flex space-x-4">
+              <button className="text-sm font-medium text-blue-300 hover:text-blue-200">
                 Undo
               </button>
-            )}
-          </div>
-          <div className="ml-4 flex-shrink-0 flex">
-            <button
-              className="rounded-md inline-flex text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200"
-              onClick={wrapClick(() => toast.dismiss(_toast.id))}
-            >
-              <span className="sr-only">Close</span>
-              <IoIosCloseCircleOutline
-                className="h-5 w-5  text-[#51526C]"
-                aria-hidden="true"
-              />
-            </button>
-          </div>
+              <button className="text-sm font-medium text-gray-400 hover:text-gray-300">
+                Dismiss
+              </button>
+            </div>
+          )}
         </div>
+
+        <button
+          className="ml-4 flex-shrink-0 inline-flex text-gray-400 hover:text-gray-300"
+          onClick={() => toast.dismiss(_toast.id)}
+        >
+          <span className="sr-only">Close</span>
+          <IoIosCloseCircleOutline className="h-5 w-5" aria-hidden="true" />
+        </button>
       </div>
     </div>
   );
 };
 
-// const UndoableToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
-//   const _toastMessage = JSON.parse(_toast.message as string);
-
-//   return (
-//     <div {..._toast.ariaProps} className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
-//       <div className="p-4">
-//         <div className="flex items-start">
-//           <div className="flex-shrink-0">
-//             <InboxIcon className="h-6 w-6 text-gray-400" aria-hidden="true" />
-//           </div>
-//           <div className="ml-3 w-0 flex-1 pt-0.5">
-//             <p className="text-sm font-medium text-gray-900">{_toastMessage.title}</p>
-//             <p className="mt-1 text-sm text-gray-500">{_toastMessage.description}</p>
-//             <div className="mt-3 flex space-x-7">
-//               <button
-//                 type="button"
-//                 className="bg-white rounded-md text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-//               >
-//                 Undo
-//               </button>
-//               <button
-//                 type="button"
-//                 className="bg-white rounded-md text-sm font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-//               >
-//                 Dismiss
-//               </button>
-//             </div>
-//           </div>
-//           <div className="ml-4 flex-shrink-0 flex">
-//             <button
-//               className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-//               onClick={wrapClick(() => toast.dismiss(_toast.id))}
-//             >
-//               <span className="sr-only">Close</span>
-//               <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// const InviteToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
-//   const _toastMessage = JSON.parse(_toast.message as string);
-
-//   return (
-//     <div {..._toast.ariaProps} className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
-//       <div className="p-4">
-//         <div className="flex items-start">
-//           <div className="flex-shrink-0 pt-0.5">
-//             <img
-//               className="h-10 w-10 rounded-full"
-//               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-//               alt=""
-//             />
-//           </div>
-//           <div className="ml-3 w-0 flex-1">
-//             <p className="text-sm font-medium text-gray-900">Emilia Gates</p>
-//             <p className="mt-1 text-sm text-gray-500">Sent you an invite to connect.</p>
-//             <div className="mt-4 flex">
-//               <button
-//                 type="button"
-//                 className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-//               >
-//                 Accept
-//               </button>
-//               <button
-//                 type="button"
-//                 className="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-//               >
-//                 Decline
-//               </button>
-//             </div>
-//           </div>
-//           <div className="ml-4 flex-shrink-0 flex">
-//             <button
-//               className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-//               onClick={wrapClick(() => toast.dismiss(_toast.id))}
-//             >
-//               <span className="sr-only">Close</span>
-//               <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// const NewMessageToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
-//   const _toastMessage = JSON.parse(_toast.message as string);
-
-//   return (
-//     <div {..._toast.ariaProps} className="max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5">
-//       <div className="w-0 flex-1 p-4">
-//         <div className="flex items-start">
-//           <div className="flex-shrink-0 pt-0.5">
-//             <img
-//               className="h-10 w-10 rounded-full"
-//               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-//               alt=""
-//             />
-//           </div>
-//           <div className="ml-3 w-0 flex-1">
-//             <p className="text-sm font-medium text-gray-900">Emilia Gates</p>
-//             <p className="mt-1 text-sm text-gray-500">Sure! 8:30pm works great!</p>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="flex border-l border-gray-200">
-//         <button
-//           className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
-//           onClick={wrapClick(() => toast.dismiss(_toast.id))}
-//         >
-//           Reply
-//         </button>
-//       </div>
-//     </div>
-//   )
-// }
-
-// const AlertMessageToaster: FC<ToastComponentProps> = ({ toast: _toast }) => {
-//   const _toastMessage = JSON.parse(_toast.message as string);
-
-//   return (
-//     <div {..._toast.ariaProps} className="max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 divide-x divide-gray-200">
-//       <div className="w-0 flex-1 flex items-center p-4">
-//         <div className="w-full">
-//           <p className="text-sm font-medium text-gray-900">Receive notifications</p>
-//           <p className="mt-1 text-sm text-gray-500">Notifications may include alerts, sounds, and badges.</p>
-//         </div>
-//       </div>
-//       <div className="flex">
-//         <div className="flex flex-col divide-y divide-gray-200">
-//           <div className="h-0 flex-1 flex">
-//             <button
-//               className="w-full border border-transparent rounded-none rounded-tr-lg px-4 py-3 flex items-center justify-center text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:z-10 focus:ring-2 focus:ring-primary-500"
-//               onClick={wrapClick(() => toast.dismiss(_toast.id))}
-//             >
-//               Reply
-//             </button>
-//           </div>
-//           <div className="h-0 flex-1 flex">
-//             <button
-//               className="w-full border border-transparent rounded-none rounded-br-lg px-4 py-3 flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
-//               onClick={wrapClick(() => toast.dismiss(_toast.id))}
-//             >
-//               Don't allow
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }

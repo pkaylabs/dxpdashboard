@@ -1,12 +1,14 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { UserSearch } from ".";
 import { Formik, Form, Field } from "formik";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import { ButtonLoader } from "@/components/loaders";
-import Select from "@/components/elements/select";
+// import Select from "@/components/elements/select";
 import Input from "@/components/elements/input";
 import { ProfilePictureSection } from "../-components";
+import { useCreateUserMutation } from "@/redux/features/users/usersApiSlice";
+import toast from "react-hot-toast";
 
 export const Route = createFileRoute("/_app/user-management/add")({
   validateSearch: (search) => UserSearch.parse(search),
@@ -23,47 +25,68 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .min(10, "Phone must be at least 10 characters")
     .required("Phone is required"),
-  role: Yup.string().required("Role is required"),
-  location: Yup.string().required("Location is required"),
-  profilePicture: Yup.mixed()
-    .test("fileSize", "File too large", (value: any) => {
-      if (!value) return true;
-      return value.size <= 5 * 1024 * 1024;
-    })
-    .test("fileType", "Unsupported file type", (value: any) => {
-      if (!value) return true;
-      return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-    }),
+  // role: Yup.string().required("Role is required"),
+  bio: Yup.string().required("Bio is required"),
+  password: Yup.string()
+    .min(4, "Password must be atleast 4 characters")
+    .required("Password is required"),
+  address: Yup.string().required("Location is required"),
+  // profilePicture: Yup.mixed()
+  //   .test("fileSize", "File too large", (value: any) => {
+  //     if (!value) return true;
+  //     return value.size <= 5 * 1024 * 1024;
+  //   })
+  //   .test("fileType", "Unsupported file type", (value: any) => {
+  //     if (!value) return true;
+  //     return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
+  //   }),
 });
 
 function RouteComponent() {
-  const router = useRouter();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const [addUser, { isLoading: adding }] = useCreateUserMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const initialValues = {
-    name: search.name ?? "",
-    email: search.email ?? "",
-    phone: search.phone ?? "",
-    role: search.role ?? "",
-    location: search.location ?? "",
-    profilePicture: search.avatar ?? (null as File | null),
+    id: search?.id ?? "",
+    name: search?.name ?? "",
+    email: search?.email ?? "",
+    phone: search?.phone ?? "",
+    // role: search.role ?? "",
+    bio: search?.bio ?? "",
+    password: "",
+    address: search.address ?? "",
+    profilePicture: search?.avatar ?? (null as File | null),
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
-    setIsSubmitting(true);
+    const formData = new FormData();
+
+    formData.append("name", values.name);
+    formData.append("email", values.email);
+    formData.append("phone", values.phone);
+    formData.append("address", values.address);
+    formData.append("bio", values.bio);
+    if (values.password) {
+      formData.append("password", values.password);
+    }
+    if (values.profilePicture) {
+      formData.append("avatar", values.profilePicture);
+    }
+
+    if (search.id) {
+      formData.append("id", values.id);
+    }
 
     try {
-      // Simulate API call
-      await router.invalidate();
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      if (values.profilePicture instanceof File) {
-        console.log("New profile picture to upload:", values.profilePicture);
-      }
-
-      alert("Profile updated successfully!");
+      await addUser(formData).unwrap();
+      toast(
+        JSON.stringify({
+          type: "success",
+          title: "User Added successfully",
+        })
+      );
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile. Please try again.");
@@ -86,7 +109,7 @@ function RouteComponent() {
           enableReinitialize
         >
           {({ errors, touched, setFieldValue, values }) => (
-            <Form className="space-y-6">
+            <Form className="space-y-6" autoComplete="off">
               <div className="pb-6 border-b border-gray-200">
                 <ProfilePictureSection
                   values={values}
@@ -109,7 +132,7 @@ function RouteComponent() {
                 <div className="flex justify-between items-start gap-6">
                   <div className="flex-1">
                     <Field name="name">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
                           label="Full Name"
@@ -128,7 +151,7 @@ function RouteComponent() {
 
                   <div className="flex-1">
                     <Field name="email">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
                           type="email"
@@ -150,7 +173,7 @@ function RouteComponent() {
                 <div className="flex justify-between items-start gap-6">
                   <div className="flex-1">
                     <Field name="phone">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
                           label="Phone Number"
@@ -166,10 +189,30 @@ function RouteComponent() {
                       )}
                     </Field>
                   </div>
-
                   <div className="flex-1">
+                    <Field name="password">
+                      {({ field }: import("formik").FieldProps) => (
+                        <Input
+                          {...field}
+                          type="password"
+                          label="Password"
+                          name="password"
+                          placeholder="Enter your password"
+                          error={
+                            touched.password && errors.password
+                              ? errors.password
+                              : undefined
+                          }
+                          required
+                          fullWidth
+                        />
+                      )}
+                    </Field>
+                  </div>
+
+                  {/* <div className="flex-1">
                     <Field name="role">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Select
                           {...field}
                           label="Role"
@@ -196,20 +239,32 @@ function RouteComponent() {
                         />
                       )}
                     </Field>
-                  </div>
+                  </div> */}
                 </div>
 
-                <Field name="location">
-                  {({ field }: any) => (
+                <Field name="address">
+                  {({ field }: import("formik").FieldProps) => (
                     <Input
                       {...field}
-                      label="Location"
-                      placeholder="Enter user location"
+                      label="Address"
+                      placeholder="Enter user address"
                       error={
-                        touched.location && errors.location
-                          ? errors.location
+                        touched.address && errors.address
+                          ? errors.address
                           : undefined
                       }
+                      required
+                      fullWidth
+                    />
+                  )}
+                </Field>
+                <Field name="bio">
+                  {({ field }: import("formik").FieldProps) => (
+                    <Input
+                      {...field}
+                      label="Bio"
+                      placeholder="Enter your bio"
+                      error={touched.bio && errors.bio ? errors.bio : undefined}
                       required
                       fullWidth
                     />
@@ -229,10 +284,10 @@ function RouteComponent() {
                   </button>
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={adding}
                     className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white rounded-md hover:bg-[#051f4a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? (
+                    {adding ? (
                       <ButtonLoader title="Saving..." />
                     ) : (
                       "Save Changes"

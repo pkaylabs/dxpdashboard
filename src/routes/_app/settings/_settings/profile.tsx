@@ -3,10 +3,14 @@ import Select from "@/components/elements/select";
 import { ButtonLoader } from "@/components/loaders";
 import { createFileRoute } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import { ProfilePictureSection } from "../../-components";
 import { useAppSelector } from "@/redux";
+import {
+  useGetUserProfileQuery,
+  useUpdateProfileMutation,
+} from "@/redux/features/users/usersApiSlice";
+import toast from "react-hot-toast";
 
 export const Route = createFileRoute("/_app/settings/_settings/profile")({
   component: RouteComponent,
@@ -36,33 +40,31 @@ const validationSchema = Yup.object({
 
 function RouteComponent() {
   const user = useAppSelector((state) => state.auth.user);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data, refetch } = useGetUserProfileQuery(undefined);
+  const [updateProfile, { isLoading: updating }] = useUpdateProfileMutation();
 
   const initialValues = {
     name: "",
     email: "",
     phone: "",
-    role: "",
+    // role: "",
     profilePicture: null as File | null,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
-    setIsSubmitting(true);
-
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      if (values.profilePicture instanceof File) {
-        console.log("New profile picture to upload:", values.profilePicture);
-      }
-
-      alert("Profile updated successfully!");
+      await updateProfile(values).unwrap();
+      refetch()
+      toast(
+        JSON.stringify({
+          type: "success",
+          title: "User profile updated successfully",
+        })
+      );
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -166,7 +168,7 @@ function RouteComponent() {
                     </Field>
                   </div>
 
-                  <div className="flex-1">
+                  {/* <div className="flex-1">
                     <Field name="role">
                       {({ field }: import("formik").FieldProps) => (
                         <Select
@@ -195,7 +197,7 @@ function RouteComponent() {
                         />
                       )}
                     </Field>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -203,10 +205,10 @@ function RouteComponent() {
                 <div className="flex items-center gap-3">
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={updating}
                     className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white rounded-md hover:bg-[#051f4a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? (
+                    {updating ? (
                       <ButtonLoader title="Saving..." />
                     ) : (
                       "Save Changes"

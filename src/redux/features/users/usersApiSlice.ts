@@ -9,13 +9,39 @@ export const usersApiSlice = api.injectEndpoints({
       }),
     }),
     createUser: builder.mutation({
-      query: (credentials) => ({
+      query: (formData: FormData) => ({
         url: "/users/",
         method: "POST",
+        body: formData,
+      }),
+    }),
+    deleteUser: builder.mutation({
+      query: (credentials) => ({
+        url: "/users/",
+        method: "DELETE",
+        body: {...credentials}
+      })
+    }),
+    getUserProfile: builder.query({
+      query: () => ({
+        url: "/userprofile/",
+        method: "GET",
+      }),
+    }),
+    updateProfile: builder.mutation({
+      query: (credentials) => ({
+        url: "/userprofile/",
+        method: "PUT",
         body: { ...credentials },
       }),
     }),
   }),
 });
 
-export const { useGetUsersQuery, useCreateUserMutation } = usersApiSlice;
+export const {
+  useGetUsersQuery,
+  useCreateUserMutation,
+  useGetUserProfileQuery,
+  useUpdateProfileMutation,
+  useDeleteUserMutation
+} = usersApiSlice;

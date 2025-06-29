@@ -414,6 +414,18 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
 
 export default ActionDropdown;
 
+export interface User {
+  id: string;
+  email: string;
+  phone: string;
+  name: string;
+  address?: string;
+  avatar?: string;
+  bio: string;
+  last_login?: string;
+  password: string;
+}
+
 type ProfilePictureSectionProps = {
   values: {
     profilePicture?: File | string | null;
@@ -422,7 +434,7 @@ type ProfilePictureSectionProps = {
   setFieldValue: (field: string, value: unknown) => void;
   touched: Record<string, unknown>;
   errors: Record<string, unknown>;
-  user?: any;
+  user?: User;
 };
 
 export const ProfilePictureSection = ({

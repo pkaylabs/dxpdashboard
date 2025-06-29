@@ -81,7 +81,7 @@ function RouteComponent() {
     });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     try {
       Swal.fire({
         title: "Are you sure?",

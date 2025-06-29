@@ -22,8 +22,8 @@ import { useAppDispatch, useAppSelector } from "@/redux";
 import { logout } from "@/redux/features/auth/authSlice";
 
 const userNavigation = [
-  { name: "Your profile", href: "/settings/profile" },
-  { name: "Logout", href: "" },
+  { name: "Your profile", href: "/settings/profile/", },
+  { name: "Logout", href: "/", },
 ];
 
 export default function AppLayout() {
@@ -316,7 +316,7 @@ export default function AppLayout() {
                             idx === userNavigation.length - 1
                               ? () => setLogoutOpen(true)
                               : () => {
-                                  navigate({ to: item.href });
+                                  navigate({ to: item.href, search: true });
                                 }
                           }
                           className={`block w-full text-left px-3 py-1 text-sm/6 ${
