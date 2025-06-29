@@ -19,8 +19,8 @@ export const usersApiSlice = api.injectEndpoints({
       query: (credentials) => ({
         url: "/users/",
         method: "DELETE",
-        body: {...credentials}
-      })
+        body: { ...credentials },
+      }),
     }),
     getUserProfile: builder.query({
       query: () => ({
@@ -35,6 +35,13 @@ export const usersApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    changePassword: builder.mutation({
+      query: (credentials) => ({
+        url: "/changepassword/",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
   }),
 });
 
@@ -43,5 +50,6 @@ export const {
   useCreateUserMutation,
   useGetUserProfileQuery,
   useUpdateProfileMutation,
-  useDeleteUserMutation
+  useDeleteUserMutation,
+  useChangePasswordMutation
 } = usersApiSlice;
