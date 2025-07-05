@@ -2,61 +2,86 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { generateUserData, generateVenueData } from "@/constants";
-import ActionDropdown, { ActionButtons } from "../-components";
+import ActionDropdown, { User } from "../-components";
 import Avatar from "@/components/core/avatar";
 import { Edit2, Eye, Trash } from "iconsax-react";
 import ViewModal from "./-components/view-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { store } from "@/app/store";
+import moment from "moment";
+import {
+  useDeleteUserMutation,
+  useGetUsersQuery,
+  usersApiSlice,
+} from "@/redux/features/users/usersApiSlice";
 
 export const UserSearch = z.object({
+  id: z.string().catch("").optional(),
   name: z.string().catch("").optional(),
   email: z.string().catch("").optional(),
   phone: z.string().catch("").optional(),
-  location: z.string().catch("").optional(),
-  role: z.string().catch("").optional(),
+  address: z.string().catch("").optional(),
   avatar: z.string().catch("").optional(),
+  bio: z.string().catch("").optional(),
+  password: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/user-management/")({
   validateSearch: (search) => UserSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      usersApiSlice.endpoints.getUsers.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load users");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const userData = generateUserData();
+  const userData = Route.useLoaderData();
+  const { data = userData, refetch } = useGetUsersQuery(undefined);
+  const [deletedUser] = useDeleteUserMutation();
   const navigate = useNavigate();
   const [openView, setOpenView] = useState(false);
 
-  const handleEdit = (item: any) => {
+  useEffect(() => {
+    refetch();
+  }, [data, refetch]);
+
+  const handleEdit = (item: User) => {
     navigate({
       to: "/user-management/add",
       search: {
+        id: item.id,
         name: item.name,
         email: item.email,
-        location: item.location,
         phone: item.phone,
-        role: item.role,
+        // role: item.role,
+        password: "",
+        address: item.address,
         avatar: item.avatar,
+        bio: item.bio,
       },
     });
   };
-  const handleView = (item: any) => {
+  const handleView = (item: User) => {
     navigate({
       to: ".",
       search: {
         name: item.name,
         email: item.email,
-        location: item.location,
+        address: item.address,
         phone: item.phone,
-        role: item.role,
         avatar: item.avatar,
       },
     });
     setOpenView(true);
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = (item: User) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -69,34 +94,48 @@ function RouteComponent() {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            await deletedUser({ user: item.id });
+            refetch();
             Swal.fire({
               title: "Deleted!",
               text: "User has been deleted.",
               icon: "success",
             });
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error(error);
+            let errorMessage = "An error occurred while deleting the reconciliation.";
+            if (
+              typeof error === "object" &&
+              error !== null &&
+              "data" in error &&
+              typeof (error as { data?: unknown }).data === "object" &&
+              (error as { data?: unknown }).data !== null &&
+              "message" in (error as { data?: { message?: unknown } }).data!
+            ) {
+              const message = (error as { data: { message?: unknown } }).data.message;
+              if (typeof message === "string") {
+                errorMessage = message;
+              }
+            }
             Swal.fire({
               title: "Error!",
-              text:
-                error?.data?.message ??
-                "An error occurred while deleting the reconciliation.",
+              text: errorMessage,
               icon: "error",
             });
           }
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: error?.data?.message ?? "An error occurred. Please try again.",
+        text: (error as { data?: { message?: string } })?.data?.message ?? "An error occurred. Please try again.",
         icon: "error",
       });
     }
   };
 
-  const tableData = userData.map((item) => ({
+  const tableData = data.map((item: User) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center gap-2">
@@ -114,14 +153,14 @@ function RouteComponent() {
     phone: (
       <span className="text-[#06275A] text-base text-nowrap">{item.phone}</span>
     ),
-    location: (
+    address: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.location}
+        {item.address ? item.address : "No location specified"}
       </span>
     ),
     lastLogin: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastLogin}
+        {moment(item.last_login).format("MMM Do YY")}
       </span>
     ),
     actions: (
@@ -143,7 +182,7 @@ function RouteComponent() {
 
           {
             id: "delete",
-            label: "Delete Venue",
+            label: "Delete User",
             icon: <Trash size="18" color="#555555" variant="Bold" />,
             onClick: () => handleDelete(item),
             variant: "danger",
@@ -174,7 +213,7 @@ function RouteComponent() {
   const filters = [
     {
       name: "",
-      fields: [],
+      fields: [""],
     },
   ];
 
@@ -182,9 +221,9 @@ function RouteComponent() {
     navigate({ to: "/user-management/add" });
   };
 
-  const handleRowClick = (row: any, index: number) => {
-    console.log("Row clicked: ", row, "Index:", index);
-  };
+  // const handleRowClick = (row: User, index: number) => {
+  //   console.log("Row clicked: ", row, "Index:", index);
+  // };
   return (
     <>
       <Table
@@ -196,7 +235,7 @@ function RouteComponent() {
         showAddButton={true}
         addButtonText="Add User"
         onAddButtonClick={handleAddVenue}
-        onRowClick={handleRowClick}
+        // onRowClick={handleRowClick}
         maxRows={10}
         striped={true}
         stickyHeader={false}

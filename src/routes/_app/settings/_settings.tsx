@@ -21,7 +21,7 @@ const links = [
   },
   {
     icon: MdLock,
-    label: "Password Reset",
+    label: "Change Password",
     href: "/settings/password",
   },
 ];

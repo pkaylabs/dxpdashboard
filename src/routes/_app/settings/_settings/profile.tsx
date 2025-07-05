@@ -1,13 +1,16 @@
-import Avatar from "@/components/core/avatar";
 import Input from "@/components/elements/input";
 import Select from "@/components/elements/select";
 import { ButtonLoader } from "@/components/loaders";
-import { useAuth } from "@/services/auth";
 import { createFileRoute } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import { ProfilePictureSection } from "../../-components";
+import { useAppSelector } from "@/redux";
+import {
+  useGetUserProfileQuery,
+  useUpdateProfileMutation,
+} from "@/redux/features/users/usersApiSlice";
+import toast from "react-hot-toast";
 
 export const Route = createFileRoute("/_app/settings/_settings/profile")({
   component: RouteComponent,
@@ -24,46 +27,44 @@ const validationSchema = Yup.object({
     .min(10, "Phone must be at least 10 characters")
     .required("Phone is required"),
   role: Yup.string().required("Role is required"),
-  profilePicture: Yup.mixed()
-    .test("fileSize", "File too large", (value: any) => {
-      if (!value) return true;
-      return value.size <= 5 * 1024 * 1024;
-    })
-    .test("fileType", "Unsupported file type", (value: any) => {
-      if (!value) return true;
-      return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-    }),
+  // profilePicture: Yup.mixed()
+  //   .test("fileSize", "File too large", (value: any) => {
+  //     if (!value) return true;
+  //     return value.size <= 5 * 1024 * 1024;
+  //   })
+  //   .test("fileType", "Unsupported file type", (value: any) => {
+  //     if (!value) return true;
+  //     return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
+  //   }),
 });
 
 function RouteComponent() {
-  const auth = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const user = useAppSelector((state) => state.auth.user);
+
+  const { data, refetch } = useGetUserProfileQuery(undefined);
+  const [updateProfile, { isLoading: updating }] = useUpdateProfileMutation();
 
   const initialValues = {
-    name: auth.user || "",
+    name: "",
     email: "",
     phone: "",
-    role: "",
+    // role: "",
     profilePicture: null as File | null,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
-    setIsSubmitting(true);
-
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      if (values.profilePicture instanceof File) {
-        console.log("New profile picture to upload:", values.profilePicture);
-      }
-
-      alert("Profile updated successfully!");
+      await updateProfile(values).unwrap();
+      refetch()
+      toast(
+        JSON.stringify({
+          type: "success",
+          title: "User profile updated successfully",
+        })
+      );
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -91,7 +92,7 @@ function RouteComponent() {
                   setFieldValue={setFieldValue}
                   touched={touched}
                   errors={errors}
-                  auth={auth}
+                  user={user}
                 />
               </div>
 
@@ -108,9 +109,10 @@ function RouteComponent() {
                 <div className="flex justify-between items-start gap-6">
                   <div className="flex-1">
                     <Field name="name">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
+                          type="name"
                           label="Full Name"
                           placeholder="Enter your full name"
                           error={
@@ -127,7 +129,7 @@ function RouteComponent() {
 
                   <div className="flex-1">
                     <Field name="email">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
                           type="email"
@@ -149,7 +151,7 @@ function RouteComponent() {
                 <div className="flex justify-between items-start gap-6">
                   <div className="flex-1">
                     <Field name="phone">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
                           label="Phone Number"
@@ -166,9 +168,9 @@ function RouteComponent() {
                     </Field>
                   </div>
 
-                  <div className="flex-1">
+                  {/* <div className="flex-1">
                     <Field name="role">
-                      {({ field }: any) => (
+                      {({ field }: import("formik").FieldProps) => (
                         <Select
                           {...field}
                           label="Role"
@@ -195,7 +197,7 @@ function RouteComponent() {
                         />
                       )}
                     </Field>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -203,10 +205,10 @@ function RouteComponent() {
                 <div className="flex items-center gap-3">
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={updating}
                     className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white rounded-md hover:bg-[#051f4a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? (
+                    {updating ? (
                       <ButtonLoader title="Saving..." />
                     ) : (
                       "Save Changes"

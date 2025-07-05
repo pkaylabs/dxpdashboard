@@ -2,17 +2,39 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
+import { store } from "@/app/store";
+import {
+  touristApiSlice,
+  useDeleteTouristSiteMutation,
+  useGetTouristSitesQuery,
+} from "@/redux/features/touristSites/touristSiteApiSlice";
+import { useEffect } from "react";
 
 export const VenueSearch = z.object({
+  id: z.string().catch("").optional(),
   name: z.string().catch("").optional(),
   category: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
+  email: z.string().email("Enter a valid email").catch("").optional(),
+  phone: z.string().catch("").optional(),
+  description: z.string().catch("").optional(),
+  landmark: z.string().catch("").optional(),
+  mainImage: z.string().catch("").optional(),
+  // additionalImages: z.string().array().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/tourist-attraction/")({
   validateSearch: (search) => VenueSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      touristApiSlice.endpoints.getTouristSites.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load tourist sites");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
@@ -40,21 +62,57 @@ const CategoryBadge = ({ category }: { category: string }) => {
 };
 
 function RouteComponent() {
-  const venueData = generateVenueData();
+  type Venue = {
+    id: number;
+    name: string;
+    category: string;
+    address: string;
+    email: string;
+    phone: string;
+    description: string;
+    landmark: string;
+    mainImage: string;
+    additionalImages: string[];
+    updated_at: string;
+  };
+  const preLoadedData = Route.useLoaderData() as Venue[];
+
+  const {
+    data = preLoadedData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetTouristSitesQuery(undefined);
+
+  const [deleteTouristSite] = useDeleteTouristSiteMutation();
+
+  useEffect(() => {
+    refetch();
+  }, [data, refetch]);
+
+  console.log("Preloaded Data:", preLoadedData);
+
   const navigate = useNavigate();
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: Venue) => {
     navigate({
       to: "/tourist-attraction/add",
       search: {
+        id: String(item.id),
         name: item.name,
         category: item.category,
         address: item.address,
+        email: item.email,
+        phone: item.phone,
+        description: item.description,
+        landmark: item.landmark,
+        mainImage: item.mainImage,
+        // additionalImages: item.additionalImages,
       },
     });
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = (id: number) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -67,35 +125,61 @@ function RouteComponent() {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            await deleteTouristSite({ id }).unwrap();
+            refetch(); // Refetch the data after deletion
             Swal.fire({
               title: "Deleted!",
               text: "Venue has been deleted.",
               icon: "success",
             });
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error(error);
             Swal.fire({
               title: "Error!",
               text:
-                error?.data?.message ??
-                "An error occurred while deleting the reconciliation.",
+                typeof error === "object" &&
+                error !== null &&
+                "data" in error &&
+                typeof (error as { data?: { message?: string } }).data
+                  ?.message === "string"
+                  ? (error as { data?: { message?: string } }).data?.message
+                  : "An error occurred while deleting the reconciliation.",
               icon: "error",
             });
           }
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: error?.data?.message ?? "An error occurred. Please try again.",
+        text:
+          typeof error === "object" &&
+          error !== null &&
+          "data" in error &&
+          typeof (error as { data?: { message?: string } }).data?.message ===
+            "string"
+            ? (error as { data?: { message?: string } }).data?.message
+            : "An error occurred. Please try again.",
         icon: "error",
       });
     }
   };
 
-  const tableData = venueData.map((item) => ({
-    id: item.id,
+  if (isLoading) {
+    return <div className="text-center text-gray-500">Loading...</div>;
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-500">
+        Error loading tourist sites.
+      </div>
+    );
+  }
+
+  const tableData = data?.map((item: Venue) => ({
+    id: String(item.id),
     name: (
       <div className="font-inter flex items-center ">
         <span className=" text-[#06275A] text-base text-nowrap">
@@ -111,20 +195,19 @@ function RouteComponent() {
     ),
     lastUpdated: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastUpdated}
+        {new Date(item.updated_at).toLocaleDateString()}
       </span>
     ),
     actions: (
       <ActionButtons
         onEdit={() => handleEdit(item)}
-        onDelete={() => handleDelete(item)}
+        onDelete={() => handleDelete(Number(item.id))}
       />
     ),
     // Raw data for filtering
     Name: item.name,
     Category: item.category,
     Address: item.address,
-    
   }));
 
   const headers = [
@@ -152,7 +235,11 @@ function RouteComponent() {
     navigate({ to: "/tourist-attraction/add" });
   };
 
-  const handleRowClick = (row: any, index: number) => {
+  const handleRowClick = (
+    row: { [key: string]: React.ReactNode },
+    index: number
+  ) => {
+    // If you want to access the raw data, you can use the raw fields (Name, Category, Address)
     console.log("Row clicked:", row, "Index:", index);
   };
 
@@ -164,9 +251,7 @@ function RouteComponent() {
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Total Venues
           </h3>
-          <p className="text-3xl font-bold text-[#06275A] ">
-            {venueData.length}
-          </p>
+          <p className="text-3xl font-bold text-[#06275A] ">{data.length}</p>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -174,7 +259,7 @@ function RouteComponent() {
             Entertainment
           </h3>
           <p className="text-3xl font-bold text-purple-600">
-            {venueData.filter((v) => v.category === "Entertainment").length}
+            {data.filter((v: Venue) => v.category === "Entertainment").length}
           </p>
         </div>
 
@@ -183,12 +268,11 @@ function RouteComponent() {
             Culture/Nature
           </h3>
           <p className="text-3xl font-bold text-green-600">
-            {venueData.filter((v) => v.category === "Culture/Nature").length}
+            {data.filter((v: Venue) => v.category === "Culture/Nature").length}
           </p>
         </div>
       </div>
 
-   
       <Table
         headers={headers}
         rows={tableData}

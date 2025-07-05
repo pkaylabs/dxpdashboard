@@ -1,57 +1,83 @@
-import {
-  createFileRoute,
-  useRouter,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { TravelSearch } from ".";
 import * as Yup from "yup";
-import { useState } from "react";
-import { sleep } from "@/utils";
+
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
+import { MainImageSection } from "@/components/elements/MainImageSection";
+import { useCreateTravelBlogMutation } from "@/redux/features/travelBlogs/travelBlogsApiSlice";
+import Select, { SelectOption } from "@/components/elements/select";
+import toast from "react-hot-toast";
 
 export const Route = createFileRoute("/_app/travel-blogs/add")({
   validateSearch: (search) => TravelSearch.parse(search),
   component: RouteComponent,
 });
 
+const categoryOptions: SelectOption[] = [
+  { label: "TRAVEL", value: "TRAVEL BLOG" },
+  { label: "FUNFACT", value: "FUN FACT" },
+  { label: "OTHER", value: "OTHER BLOG" }, // Disabled option
+];
+
 const validationSchema = Yup.object({
   title: Yup.string()
     .min(3, "Title must be at least 3 characters")
     .required("Title is required"),
-  writer: Yup.string().required("Writer is required"),
+  content: Yup.string().required("Writer is required"),
+  category: Yup.string().required("Category is required"),
+  mainImage: Yup.mixed().required("Feature image is required"),
+  is_published: Yup.boolean().required("Publication status is required"),
+  description: Yup.string().required("Description is required"),
 });
 
 function RouteComponent() {
-  const router = useRouter();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isLoading = useRouterState({ select: (s) => s.isLoading });
+  const [createBlog, { isLoading: creating }] = useCreateTravelBlogMutation();
 
   const initialValues = {
+    id: search?.id ?? "",
     title: search?.title ?? "",
-    writer: search?.writer ?? "",
+    content: search?.content ?? "",
+    description: search?.description ?? "",
+    category: search?.category ?? "",
+    is_published: search?.is_published ?? false,
+    mainImage: null as File | null,
+    // additionalImages: [] as File[],
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
+    const formData = new FormData();
 
-    setIsSubmitting(true);
+    if (search?.id) {
+      formData.append("id", values.id);
+    }
+
+    formData.append("title", values.title);
+    formData.append("content", values.content);
+    formData.append("description", values.description);
+    formData.append("category", values.category);
+    formData.append("is_published", String(values.is_published));
+    if (values.mainImage) {
+      formData.append("feature_image", values.mainImage);
+    }
+
     try {
-      await router.invalidate();
+      await createBlog(formData).unwrap();
 
-      await sleep(1);
-
+      toast(
+        JSON.stringify({ type: "success", title: "Blog saved successfully!" })
+      );
+      // await router.invalidate();
       await navigate({ to: ".." });
     } catch (error) {
       console.error("Error logging in: ", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
-  const isLoggingIn = isLoading || isSubmitting;
+
+  const isLoggingIn = creating;
 
   return (
     <main className="font-inter">
@@ -65,10 +91,10 @@ function RouteComponent() {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched, setFieldValue, values }) => (
+        {({ errors, touched, setFieldValue, handleChange, values }) => (
           <Form className="space-y-4">
             <Field name="title">
-              {({ field }: any) => (
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
                   label="Title"
@@ -82,21 +108,95 @@ function RouteComponent() {
               )}
             </Field>
 
-            <Field name="writer">
-              {({ field }: any) => (
+            <Field name="content">
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
-                  label="Writer"
-                  placeholder="Enter writer"
+                  label="Content"
+                  placeholder="Enter content"
                   error={
-                    touched.writer && errors.writer ? errors.writer : undefined
+                    touched.content && errors.content
+                      ? errors.content
+                      : undefined
                   }
                   required
                   fullWidth
                 />
               )}
             </Field>
+            <div className="flex-1">
+              <Field name="category">
+                {({ field }: import("formik").FieldProps) => (
+                  <Select
+                    {...field}
+                    label="Category"
+                    name="category"
+                    placeholder="Select category"
+                    options={categoryOptions}
+                    value={values.category}
+                    onChange={(value, option) => {
+                      setFieldValue("category", value);
+                      console.log("Formik category:", option);
+                    }}
+                    error={
+                      touched.category && errors.category
+                        ? errors.category
+                        : undefined
+                    }
+                    required
+                  />
+                )}
+              </Field>
+            </div>
+            <div>
+              <label className="inline-flex items-center">
+                <Field
+                  type="checkbox"
+                  onChange={handleChange}
+                  name="is_published"
+                  className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">
+                  Publish this blog
+                </span>
+              </label>
+              {touched.is_published && errors.is_published && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.is_published}
+                </p>
+              )}
+            </div>
 
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={values.description}
+                onChange={handleChange}
+                className="mt-1 h-32 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
+              />
+              {touched.description && errors.description && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.description}
+                </p>
+              )}
+            </div>
+            <div>
+              <div className="mt-1">
+                <MainImageSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
+              </div>
+            </div>
             <div className="flex justify-end">
               <div className="flex items-center gap-3">
                 <button

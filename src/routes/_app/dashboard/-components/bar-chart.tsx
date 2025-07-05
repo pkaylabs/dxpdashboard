@@ -7,7 +7,6 @@ import {
 
 const InteractivePerformanceDemo: React.FC = () => {
   const [currentData, setCurrentData] = useState(defaultData);
-  const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
 
   const weeklyData = [
     { day: "Monday", value: 65, target: 70, previous: 58 },
@@ -43,10 +42,8 @@ const InteractivePerformanceDemo: React.FC = () => {
   };
 
   const handleBarClick = (data: PerformanceData, index: number) => {
-    setSelectedMetric(`${data.day}: ${data.value}% performance`);
     console.log("Bar clicked:", data, index);
   };
-
   return (
     <div className="flex-1">
       <PerformanceChart

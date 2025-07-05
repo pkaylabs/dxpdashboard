@@ -12,33 +12,32 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { ArrowDown2, ArrowLeft, Element4, SearchNormal1 } from "iconsax-react";
 import { TbLogout2 } from "react-icons/tb";
-import { Link, Outlet, useMatchRoute, useRouter } from "@tanstack/react-router";
+import { Link, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { Route } from "@/routes/_app";
-import { useAuth } from "@/services/auth";
 import classNames from "@/utils/classnames";
 import Avatar from "@/components/core/avatar";
 import { navigations } from "@/constants";
 import Modal, { ModalAction } from "@/components/elements/modal";
+import { useAppDispatch, useAppSelector } from "@/redux";
+import { logout } from "@/redux/features/auth/authSlice";
 
 const userNavigation = [
-  { name: "Your profile", href: "/settings/profile" },
-  { name: "Logout", href: "" },
+  { name: "Your profile", href: "/settings/profile/", },
+  { name: "Logout", href: "/", },
 ];
 
 export default function AppLayout() {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = Route.useNavigate();
+  const dispatch = useAppDispatch();
   const matchRoute = useMatchRoute();
-  const router = useRouter();
-  const auth = useAuth();
+  const user = useAppSelector((state) => state.auth.user);
+  // const router = useRouter();
 
   const handleLogout = () => {
-    auth.logout().then(() => {
-      router.invalidate().finally(() => {
-        navigate({ to: "/" });
-      });
-    });
+    dispatch(logout());
+    navigate({ to: "/" });
   };
 
   const confirmActions: ModalAction[] = [
@@ -226,7 +225,7 @@ export default function AppLayout() {
 
             <div className="font-inter flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <div className="font-semibold  text-xl md:text-[1.75rem] text-gray-900 flex-1 flex items-center">
-                {!!matchRoute({ to: "/dashboard" }) ? (
+                {matchRoute({ to: "/dashboard" }) ? (
                   <div className="w-full md:max-w-1/2 flex  items-center gap-2 ">
                     <Element4 size="40" color="#06275A" variant="Bold" />
                     <div className="w-full h-11 rounded-lg border border-[#06275A] flex items-center gap-1.5 px-3">
@@ -240,30 +239,30 @@ export default function AppLayout() {
                       <SearchNormal1 size={18} color="#06275A" />
                     </div>
                   </div>
-                ) : !!matchRoute({ to: "/tourist-attraction" }) ? (
+                ) : matchRoute({ to: "/tourist-attraction" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Tourist Attraction
                   </h2>
-                ) : !!matchRoute({ to: "/hotels" }) ? (
+                ) : matchRoute({ to: "/hotels" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Hotels
                   </h2>
-                ) : !!matchRoute({ to: "/travel-blogs" }) ? (
+                ) : matchRoute({ to: "/travel-blogs" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Travel Blogs
                   </h2>
-                ) : !!matchRoute({ to: "/notifications" }) ? (
+                ) : matchRoute({ to: "/notifications" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Notifications
                   </h2>
-                ) : !!matchRoute({ to: "/user-management" }) ? (
+                ) : matchRoute({ to: "/user-management" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     User Management
                   </h2>
-                ) : !!matchRoute({ to: "/settings" }) ||
-                  !!matchRoute({ to: "/settings/password" }) ||
-                  !!matchRoute({ to: "/settings/preferences" }) ||
-                  !!matchRoute({ to: "/settings/profile" }) ? (
+                ) : matchRoute({ to: "/settings" }) ||
+                  matchRoute({ to: "/settings/password" }) ||
+                  matchRoute({ to: "/settings/preferences" }) ||
+                  matchRoute({ to: "/settings/profile" }) ? (
                   <h2 className="font-medium text-[#06275A] text-2xl ">
                     Settings
                   </h2>
@@ -290,7 +289,7 @@ export default function AppLayout() {
                     <Avatar alt="Nana Kay" src={""} size="sm" />
                     <div className="text-left">
                       <p className="font-medium text-sm text-[#06275A] ">
-                        {auth.user}
+                        {user?.name || "Admin User"}
                       </p>
                       <p className="font-medium text-sm text-[#06275A] -mt-0.5 ">
                         admin@gmail.com
@@ -308,7 +307,7 @@ export default function AppLayout() {
                       aria-hidden="true"
                       className="px-3 text-sm leading-none text-left font-semibold text-gray-900"
                     >
-                      {auth.user} <br />
+                      {user?.name || "Admin User"}
                     </span>
                     {userNavigation.map((item, idx) => (
                       <MenuItem key={item.name}>
@@ -317,7 +316,7 @@ export default function AppLayout() {
                             idx === userNavigation.length - 1
                               ? () => setLogoutOpen(true)
                               : () => {
-                                  navigate({ to: item.href });
+                                  navigate({ to: item.href, search: true });
                                 }
                           }
                           className={`block w-full text-left px-3 py-1 text-sm/6 ${

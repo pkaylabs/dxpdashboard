@@ -1,16 +1,14 @@
 import Input from "@/components/elements/input";
 import Select, { SelectOption } from "@/components/elements/select";
 import { ButtonLoader } from "@/components/loaders";
-import { sleep } from "@/utils";
-import {
-  createFileRoute,
-  useRouter,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import { VenueSearch } from ".";
+import { MainImageSection } from "@/components/elements/MainImageSection";
+import { AdditionalImagesSection } from "@/components/elements/AdditionalImagesSection";
+import { useCreateTouristSiteMutation } from "@/redux/features/touristSites/touristSiteApiSlice";
+import toast from "react-hot-toast";
 
 export const Route = createFileRoute("/_app/tourist-attraction/add")({
   validateSearch: (search) => VenueSearch.parse(search),
@@ -18,11 +16,12 @@ export const Route = createFileRoute("/_app/tourist-attraction/add")({
 });
 
 const categoryOptions: SelectOption[] = [
-  { label: "Leisure/Entertainment", value: "Leisure/Entertainment" },
-  { label: "Culture/Nature", value: "Culture/Nature" },
-  { label: "Entertainment", value: "Entertainment" },
-  { label: "Sports", value: "Sports" },
-  { label: "Business", value: "Business", disabled: true }, // Disabled option
+  { label: "HISTORICAL", value: "HISTORICAL" },
+  { label: "CULTURAL", value: "CULTURAL" },
+  { label: "ENTERTAINMENT", value: "ENTERTAINMENT" },
+  { label: "LEISURE", value: "LEISURE" },
+  { label: "NATURE", value: "NATURE" },
+  { label: "OTHERS", value: "OTHERS", disabled: true }, // Disabled option
 ];
 
 const validationSchema = Yup.object({
@@ -31,38 +30,76 @@ const validationSchema = Yup.object({
     .required("Name is required"),
   category: Yup.string().required("Category is required"),
   address: Yup.string().required("Address is required"),
+  description: Yup.string().required("Description is required"),
+  phone: Yup.string()
+    .matches(/^\d{10}$/, "Phone number must be 10 digits")
+    .required("Phone number is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  landmark: Yup.string().required("Landmark is required"),
 });
 
 function RouteComponent() {
   const router = useRouter();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isLoading = useRouterState({ select: (s) => s.isLoading });
+
+  const [createSite, { isLoading: isCreating }] =
+    useCreateTouristSiteMutation();
 
   const initialValues = {
+    id: search?.id ?? "",
     name: search?.name ?? "",
     category: search?.category ?? "",
     address: search?.address ?? "",
+    description: search?.description ?? "",
+    phone: search?.phone ?? "",
+    email: search?.email ?? "",
+    landmark: search?.landmark ?? "",
+    mainImage: search?.mainImage ?? (null as File | null),
+    additionalImages: [] as File[],
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
     console.log("Form submitted:", values);
 
-    setIsSubmitting(true);
-    try {
-      await router.invalidate();
+    // build FormData object
+    const formData = new FormData();
 
-      await sleep(1);
+    if (search?.id) {
+      formData.append("id", values.id);
+    }
+
+    formData.append("name", values.name);
+    formData.append("category", values.category);
+    formData.append("address", values.address);
+    formData.append("description", values.description);
+    formData.append("phone", values.phone);
+    formData.append("email", values.email);
+    formData.append("landmark", values.landmark);
+
+    if (values.mainImage) {
+      formData.append("image", values.mainImage);
+    }
+    if (values.additionalImages.length > 0) {
+      formData.append("second_image", values?.additionalImages[1]);
+      formData.append("third_image", values?.additionalImages[2]);
+    }
+    try {
+      await createSite(formData).unwrap();
+      toast(
+        JSON.stringify({ title: "Tourist attraction added successfully!" })
+      );
+
+      await router.invalidate();
 
       await navigate({ to: ".." });
     } catch (error) {
       console.error("Error logging in: ", error);
-    } finally {
-      setIsSubmitting(false);
+      toast(JSON.stringify({ title: "Error adding tourist attraction!" }));
     }
   };
-  const isLoggingIn = isLoading || isSubmitting;
 
   return (
     <main className="font-inter">
@@ -81,7 +118,7 @@ function RouteComponent() {
             <div className="flex justify-between items-start gap-6">
               <div className="flex-1">
                 <Field name="name">
-                  {({ field }: any) => (
+                  {({ field }: import("formik").FieldProps) => (
                     <Input
                       {...field}
                       label="Name"
@@ -98,7 +135,7 @@ function RouteComponent() {
 
               <div className="flex-1">
                 <Field name="category">
-                  {({ field }: any) => (
+                  {({ field }: import("formik").FieldProps) => (
                     <Select
                       {...field}
                       label="Category"
@@ -122,8 +159,39 @@ function RouteComponent() {
               </div>
             </div>
 
+            <Field name="email">
+              {({ field }: import("formik").FieldProps) => (
+                <Input
+                  {...field}
+                  label="Email"
+                  placeholder="Enter email"
+                  type="email"
+                  error={
+                    touched.email && errors.email ? errors.email : undefined
+                  }
+                  required
+                  fullWidth
+                />
+              )}
+            </Field>
+
+            <Field name="phone">
+              {({ field }: import("formik").FieldProps) => (
+                <Input
+                  {...field}
+                  label="Phone"
+                  placeholder="Enter phone number"
+                  error={
+                    touched.phone && errors.phone ? errors.phone : undefined
+                  }
+                  required
+                  fullWidth
+                />
+              )}
+            </Field>
+
             <Field name="address">
-              {({ field }: any) => (
+              {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
                   label="Address"
@@ -139,6 +207,64 @@ function RouteComponent() {
               )}
             </Field>
 
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                value={values.description}
+                onChange={(e) => setFieldValue("description", e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
+              />
+              {touched.description && errors.description && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.description}
+                </p>
+              )}
+            </div>
+            <Field name="landmark">
+              {({ field }: import("formik").FieldProps) => (
+                <Input
+                  {...field}
+                  label="Landmark"
+                  placeholder="Enter landmark"
+                  error={
+                    touched.landmark && errors.landmark
+                      ? errors.landmark
+                      : undefined
+                  }
+                  required
+                  fullWidth
+                />
+              )}
+            </Field>
+
+            <div>
+              <div className="mt-1">
+                <MainImageSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="mt-1">
+                <AdditionalImagesSection
+                  values={values}
+                  setFieldValue={setFieldValue}
+                  touched={touched}
+                  errors={errors}
+                />
+              </div>
+            </div>
             <div className="flex justify-end">
               <div className="flex items-center gap-3">
                 <button
@@ -152,7 +278,7 @@ function RouteComponent() {
                   type="submit"
                   className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white cursor-pointer rounded-md hover:bg-[#06105a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold "
                 >
-                  {isLoggingIn ? <ButtonLoader title="Saving..." /> : "Save"}
+                  {isCreating ? <ButtonLoader title="Saving..." /> : "Save"}
                 </button>
               </div>
             </div>

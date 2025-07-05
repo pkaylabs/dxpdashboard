@@ -2,34 +2,80 @@ import { z } from "zod";
 import Swal from "sweetalert2";
 import Table from "@/components/table";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { generateVenueData } from "@/constants";
 import { ActionButtons } from "../-components";
+import { store } from "@/app/store";
+import {
+  hotelApiSlice,
+  useDeleteHotelMutation,
+  useGetHotelsQuery,
+} from "@/redux/features/hotels/hotelApiSlice";
+import { useEffect } from "react";
+import moment from "moment";
 
 export const HotelSearch = z.object({
+  id: z.string().catch("").optional(),
   name: z.string().catch("").optional(),
   address: z.string().catch("").optional(),
+  description: z.string().catch("").optional(),
+  category: z.string().catch("").optional(),
+  email: z.string().email("Enter a valid email").catch("").optional(),
+  phone: z.string().catch("").optional(),
+  website: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/hotels/")({
   validateSearch: (search) => HotelSearch.parse(search),
+  loader: async () => {
+    const result = await store.dispatch(
+      hotelApiSlice.endpoints.getHotels.initiate(undefined)
+    );
+    if ("error" in result) {
+      throw new Error("Failed to load hotels");
+    }
+    return result.data;
+  },
   component: RouteComponent,
 });
 
+interface HotelItem {
+  id: number;
+  name: string;
+  address: string;
+  description: string;
+  email: string;
+  phone: string;
+  website: string;
+  category: string;
+  updated_at: string;
+}
+
 function RouteComponent() {
-  const hotelData = generateVenueData();
+  const hotelData = Route.useLoaderData();
+  const { data = hotelData, refetch } = useGetHotelsQuery(undefined);
+  const [deleteHotel] = useDeleteHotelMutation();
   const navigate = useNavigate();
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: HotelItem) => {
     navigate({
       to: "/hotels/add",
       search: {
+        id: String(item.id),
         name: item.name,
         address: item.address,
+        category: item.category,
+        email: item.email,
+        description: item.description,
+        phone: item.phone,
+        website: item.website,
       },
     });
   };
 
-  const handleDelete = (item: any) => {
+  useEffect(() => {
+    refetch();
+  }, [data, refetch]);
+
+  const handleDelete = (id: number) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -42,34 +88,48 @@ function RouteComponent() {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            await deleteHotel({ id }).unwrap();
+            refetch();
             Swal.fire({
               title: "Deleted!",
               text: "Hotel has been deleted.",
               icon: "success",
             });
-          } catch (error: any) {
+          } catch (error: unknown) {
             console.error(error);
             Swal.fire({
               title: "Error!",
               text:
-                error?.data?.message ??
-                "An error occurred while deleting the reconciliation.",
+                typeof error === "object" &&
+                error !== null &&
+                "data" in error &&
+                typeof (error as { data?: { message?: string } }).data
+                  ?.message === "string"
+                  ? (error as { data?: { message?: string } }).data!.message
+                  : "An error occurred while deleting the reconciliation.",
               icon: "error",
             });
           }
         }
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: error?.data?.message ?? "An error occurred. Please try again.",
+        text:
+          typeof error === "object" &&
+          error !== null &&
+          "data" in error &&
+          typeof (error as { data?: { message?: string } }).data?.message ===
+            "string"
+            ? (error as { data?: { message?: string } }).data!.message
+            : "An error occurred. Please try again.",
         icon: "error",
       });
     }
   };
 
-  const tableData = hotelData.map((item) => ({
+  const tableData = data?.map((item: HotelItem) => ({
     id: item.id,
     name: (
       <div className="font-inter flex items-center ">
@@ -85,13 +145,13 @@ function RouteComponent() {
     ),
     lastUpdated: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.lastUpdated}
+        {moment(item.updated_at).format("MMM Do YY")}
       </span>
     ),
     actions: (
       <ActionButtons
         onEdit={() => handleEdit(item)}
-        onDelete={() => handleDelete(item)}
+        onDelete={() => handleDelete(Number(item.id))}
       />
     ),
     // Raw data for filtering
@@ -115,8 +175,13 @@ function RouteComponent() {
     navigate({ to: "/hotels/add" });
   };
 
-  const handleRowClick = (row: any, index: number) => {
+  const handleRowClick = (
+    row: { [key: string]: React.ReactNode },
+    index: number
+  ) => {
     console.log("Row clicked: ", row, "Index:", index);
+    // If you need HotelItem, you can map back using hotelData if 'id' is present:
+    // const hotel = hotelData.find(h => h.id === row.id);
   };
 
   return (

@@ -19,6 +19,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["./src"],
+  "include": ["./src", "src/types/redux-persist-storage.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

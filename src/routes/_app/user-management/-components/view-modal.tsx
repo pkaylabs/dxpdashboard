@@ -9,9 +9,10 @@ interface View {
 
 const ViewModal = ({ open, setOpen }: View) => {
   const navigate = useNavigate();
-  const { name, email, phone, location, avatar } = useSearch({
+  const { name, email, phone, address, avatar } = useSearch({
     from: "/_app/user-management/",
   });
+
 
   const confirmActions: ModalAction[] = [
     {
@@ -51,8 +52,8 @@ const ViewModal = ({ open, setOpen }: View) => {
             <h4 className="text-lg text-[#06275A]">{phone}</h4>
           </div>
           <div className="flex-1">
-            <p className="text-gray-400 text-sm mb-1">Locatioin:</p>
-            <h4 className="text-lg text-[#06275A]">{location}</h4>
+            <p className="text-gray-400 text-sm mb-1">Address:</p>
+            <h4 className="text-lg text-[#06275A]">{address}</h4>
           </div>
         </div>
       </div>

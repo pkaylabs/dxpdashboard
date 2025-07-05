@@ -2,6 +2,7 @@ import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
 import { createFileRoute } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 export const Route = createFileRoute("/_app/settings/_settings/preferences")({
@@ -23,6 +24,12 @@ function RouteComponent() {
     phone: "",
   };
 
+   const [submit, setSubmit] = useState(false)
+  
+    useEffect(() => {
+      setSubmit(false)
+    },[])
+
   const handleSubmit = (values: typeof initialValues) => {
     console.log("Form submitted:", values);
   };
@@ -42,7 +49,7 @@ function RouteComponent() {
               <div className="flex justify-between items-start gap-6">
                 <div className="flex-1">
                   <Field name="email">
-                    {({ field }: any) => (
+                    {({ field }: import("formik").FieldProps) => (
                       <Input
                         {...field}
                         type="email"
@@ -62,7 +69,7 @@ function RouteComponent() {
 
                 <div className="flex-1">
                   <Field name="phone">
-                    {({ field }: any) => (
+                    {({ field }: import("formik").FieldProps) => (
                       <Input
                         {...field}
                         label="Preferred Notification Phone"
@@ -86,7 +93,7 @@ function RouteComponent() {
                     type="submit"
                     className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white cursor-pointer rounded-md hover:bg-[#06105a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold "
                   >
-                    {false ? (
+                    {submit ? (
                       <ButtonLoader title="Saving..." />
                     ) : (
                       "Save Changes"

@@ -414,19 +414,36 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
 
 export default ActionDropdown;
 
+export interface User {
+  id: string;
+  email: string;
+  phone: string;
+  name: string;
+  address?: string;
+  avatar?: string;
+  bio: string;
+  last_login?: string;
+  password: string;
+}
+
+type ProfilePictureSectionProps = {
+  values: {
+    profilePicture?: File | string | null;
+    [key: string]: unknown;
+  };
+  setFieldValue: (field: string, value: unknown) => void;
+  touched: Record<string, unknown>;
+  errors: Record<string, unknown>;
+  user?: User;
+};
+
 export const ProfilePictureSection = ({
   values,
   setFieldValue,
   touched,
   errors,
-  auth,
-}: {
-  values: any;
-  setFieldValue: (field: string, value: any) => void;
-  touched: any;
-  errors: any;
-  auth?: any;
-}) => {
+  user,
+}: ProfilePictureSectionProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -450,7 +467,8 @@ export const ProfilePictureSection = ({
     }
   }, [values.profilePicture]);
 
-  const handleFileChange = (file: File | null) => {
+  const handleFileChange = (files: File[] | null) => {
+    const file = files && files.length > 0 ? files[0] : null;
     if (file) {
       setIsLoading(true);
     }
@@ -473,7 +491,11 @@ export const ProfilePictureSection = ({
   return (
     <div className="flex gap-4 lg:max-w-[70%] mt-3">
       <div className="relative size-20">
-        <Avatar src={getAvatarSrc()} alt={auth?.user ?? "NA"} size="lg" />
+        <Avatar
+          src={getAvatarSrc() ?? undefined}
+          alt={typeof user?.name === "string" ? user.name : "NA"}
+          size="lg"
+        />
 
         {/* Loading overlay */}
         {isLoading && (
@@ -525,10 +547,13 @@ export const ProfilePictureSection = ({
           acceptedFileTypes="image/jpeg,image/png,image/gif"
           maxFileSize={5}
           filePreview
+          fileValue={
+            values.profilePicture instanceof File ? values.profilePicture : null
+          }
           onFileChange={handleFileChange}
           error={
             touched.profilePicture && errors.profilePicture
-              ? errors.profilePicture
+              ? String(errors.profilePicture)
               : undefined
           }
           helperText="Upload a profile picture (max 5MB)."
