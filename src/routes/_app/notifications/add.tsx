@@ -4,7 +4,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { NotificationSearch } from ".";
-import { useAddNotificationsMutation } from "@/redux/features/notifications/notificationApiSlice";
+import {
+  useAddNotificationsMutation,
+  useUpdateNotificationsMutation,
+} from "@/redux/features/notifications/notificationApiSlice";
 import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
@@ -26,6 +29,7 @@ function RouteComponent() {
   const navigate = useNavigate();
   const [addNotification, { isLoading: isAdding }] =
     useAddNotificationsMutation();
+  const [updateNotification] = useUpdateNotificationsMutation();
 
   const initialValues = {
     id: search?.id ?? "",
@@ -35,13 +39,24 @@ function RouteComponent() {
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
-      await addNotification(values).unwrap();
-      toast(
+      if (values && values.id) {
+        await updateNotification(values).unwrap();
+        toast(
+          JSON.stringify({
+            type: "success",
+            title: "Notification updated successfully",
+          })
+        );
+      } else {
+        await addNotification(values).unwrap();
+         toast(
         JSON.stringify({
           type: "success",
           title: "Added Notification successfully",
         })
       );
+      }
+     
       await navigate({ to: ".." });
     } catch (error) {
       console.error(error);

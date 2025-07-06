@@ -1,5 +1,4 @@
 import Input from "@/components/elements/input";
-import Select from "@/components/elements/select";
 import { ButtonLoader } from "@/components/loaders";
 import { createFileRoute } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
@@ -26,7 +25,15 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .min(10, "Phone must be at least 10 characters")
     .required("Phone is required"),
-  role: Yup.string().required("Role is required"),
+  avatar: Yup.mixed<File | string>().test(
+    "fileType",
+    "Unsupported file type",
+    (value) => {
+      if (!value || typeof value === "string") return true;
+      return ["image/jpeg", "image/png"].includes(value.type);
+    }
+  ),
+  // role: Yup.string().required("Role is required"),
   // profilePicture: Yup.mixed()
   //   .test("fileSize", "File too large", (value: any) => {
   //     if (!value) return true;
@@ -45,17 +52,26 @@ function RouteComponent() {
   const [updateProfile, { isLoading: updating }] = useUpdateProfileMutation();
 
   const initialValues = {
-    name: "",
-    email: "",
-    phone: "",
-    // role: "",
-    profilePicture: null as File | null,
+    name: data?.name ?? "",
+    email: data?.email ?? "",
+    phone: data?.phone ?? "",
+    avatar: data?.avatar ?? null,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
+    console.log(values);
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("email", values.email);
+    formData.append("phone", values.phone);
+    if (values.avatar instanceof File) {
+      formData.append("avatar", values.avatar);
+    } else if (typeof values.avatar === "string") {
+      formData.append("avatar", values.avatar);
+    }
     try {
-      await updateProfile(values).unwrap();
-      refetch()
+      await updateProfile(formData).unwrap();
+      refetch();
       toast(
         JSON.stringify({
           type: "success",
@@ -64,7 +80,12 @@ function RouteComponent() {
       );
     } catch (error) {
       console.error("Error updating profile:", error);
-      alert("Failed to update profile. Please try again.");
+      toast(
+        JSON.stringify({
+          type: "error",
+          title: "Failed to update profile",
+        })
+      );
     }
   };
 
@@ -167,37 +188,6 @@ function RouteComponent() {
                       )}
                     </Field>
                   </div>
-
-                  {/* <div className="flex-1">
-                    <Field name="role">
-                      {({ field }: import("formik").FieldProps) => (
-                        <Select
-                          {...field}
-                          label="Role"
-                          name="role"
-                          placeholder="Select your role"
-                          options={[
-                            { label: "Administrator", value: "admin" },
-                            { label: "Super User", value: "super" },
-                            { label: "Regular User", value: "user" },
-                            { label: "Guest User", value: "guest" },
-                          ]}
-                          value={values.role}
-                          onChange={(value, option) => {
-                            setFieldValue("role", value);
-                            console.log("Role selected:", option);
-                          }}
-                          error={
-                            touched.role && errors.role
-                              ? errors.role
-                              : undefined
-                          }
-                          required
-                          clearable
-                        />
-                      )}
-                    </Field>
-                  </div> */}
                 </div>
               </div>
 
@@ -206,7 +196,7 @@ function RouteComponent() {
                   <button
                     type="submit"
                     disabled={updating}
-                    className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white rounded-md hover:bg-[#051f4a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-48 h-12 flex justify-center cursor-pointer items-center bg-[#06275A] text-white rounded-md hover:bg-[#051f4a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {updating ? (
                       <ButtonLoader title="Saving..." />

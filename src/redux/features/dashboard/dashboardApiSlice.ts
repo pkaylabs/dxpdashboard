@@ -8,7 +8,13 @@ export const dashboardApiSlice = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    getWebDashboardData: builder.query({
+      query: () => ({
+        url: "/webdashboard/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetDashboardDataQuery } = dashboardApiSlice;
+export const { useGetDashboardDataQuery, useGetWebDashboardDataQuery } = dashboardApiSlice;

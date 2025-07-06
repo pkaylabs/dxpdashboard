@@ -1,4 +1,3 @@
-import { formatNumber } from "@/utils";
 import { ComponentType } from "react";
 import { IconBaseProps } from "react-icons";
 
@@ -25,7 +24,7 @@ const AnalyticsCard = ({
       </div>
       <div className="flex justify-center">
         <h2 className="font-bold text-[#06275A] text-3xl">
-          {formatNumber(value)}
+          {value}
         </h2>
       </div>
       <div className="w-full h-3 rounded-full bg-gray-200 mt-3">

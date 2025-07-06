@@ -14,7 +14,7 @@ const List: FC<ListProps> = ({ data, renderItem, renderEmptyComponent }) => {
 
   return (
     <>
-      {data.map((item, index) => (
+      {data?.map((item, index) => (
         <div className="w-full flex flex-col " key={index}>
           {renderItem(item)}
         </div>

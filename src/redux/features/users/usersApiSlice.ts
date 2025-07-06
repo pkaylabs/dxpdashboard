@@ -29,10 +29,10 @@ export const usersApiSlice = api.injectEndpoints({
       }),
     }),
     updateProfile: builder.mutation({
-      query: (credentials) => ({
+      query: (formData: FormData) => ({
         url: "/userprofile/",
         method: "PUT",
-        body: { ...credentials },
+        body: formData,
       }),
     }),
     changePassword: builder.mutation({
