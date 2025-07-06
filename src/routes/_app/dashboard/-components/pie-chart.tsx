@@ -173,8 +173,8 @@ import type { ComputedDatum } from "@nivo/pie";
 const WritersPieChart: React.FC<WritersPieChartProps> = ({
   data = writersData,
   title = "Blogs by Category",
-  timeFrame = "Weekly",
-  timeFrameOptions = ["Daily", "Weekly", "Monthly", "Yearly"],
+  timeFrame = "Daily",
+  timeFrameOptions = ["Daily"],
   onTimeFrameChange,
   className = "",
 }) => {
@@ -450,72 +450,45 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
 const WritersDemo: React.FC = () => {
   const [currentData, setCurrentData] = useState(writersData);
 
-  const weeklyData = [
-    {
-      id: "tourist-bloggers",
-      label: "Tourist Blogs",
-      value: 15,
-      color: "#B83FD4",
-    },
-    {
-      id: "hotel-bloggers",
-      label: "Hotel Blogs",
-      value: 30,
-      color: "#F4C542",
-    },
-    {
-      id: "travel-bloggers",
-      label: "Travel Blogs",
-      value: 35,
-      color: "#5BA8C7",
-    },
-    {
-      id: "political-writers",
-      label: "Political writers",
-      value: 20,
-      color: "#EF4444",
-    },
-  ];
+  // const weeklyData = [
+  //   {
+  //     id: "tourist-bloggers",
+  //     label: "Tourist Blogs",
+  //     value: 15,
+  //     color: "#B83FD4",
+  //   },
+  //   {
+  //     id: "hotel-bloggers",
+  //     label: "Hotel Blogs",
+  //     value: 30,
+  //     color: "#F4C542",
+  //   },
+  //   {
+  //     id: "travel-bloggers",
+  //     label: "Travel Blogs",
+  //     value: 35,
+  //     color: "#5BA8C7",
+  //   },
+  //   {
+  //     id: "political-writers",
+  //     label: "Political writers",
+  //     value: 20,
+  //     color: "#EF4444",
+  //   },
+  // ];
 
-  const monthlyData = [
-    {
-      id: "tourist-bloggers",
-      label: "Tourist Blogs",
-      value: 125,
-      color: "#B83FD4",
-    },
-    {
-      id: "hotel-bloggers",
-      label: "Hotel Blogs",
-      value: 240,
-      color: "#F4C542",
-    },
-    {
-      id: "travel-bloggers",
-      label: "Travel Blogs",
-      value: 285,
-      color: "#5BA8C7",
-    },
-    {
-      id: "political-writers",
-      label: "Political writers",
-      value: 150,
-      color: "#EF4444",
-    },
-  ];
-
-  const handleTimeFrameChange = (timeFrame: string) => {
-    switch (timeFrame) {
-      case "Weekly":
-        setCurrentData(weeklyData);
-        break;
-      case "Monthly":
-        setCurrentData(monthlyData);
-        break;
-      default:
-        setCurrentData(weeklyData);
-    }
-    console.log("Time frame changed to:", timeFrame);
+  const handleTimeFrameChange = () => {
+    // switch (timeFrame) {
+    //   case "Weekly":
+    //     setCurrentData(weeklyData);
+    //     break;
+    //   case "Monthly":
+    //     setCurrentData(monthlyData);
+    //     break;
+    //   default:
+    //     setCurrentData(weeklyData);
+    // }
+    // console.log("Time frame changed to:", timeFrame);
   };
 
   return (

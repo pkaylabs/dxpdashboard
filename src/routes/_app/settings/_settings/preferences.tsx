@@ -1,8 +1,12 @@
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
+import {
+  useGetUserProfileQuery,
+  useUpdateProfileMutation,
+} from "@/redux/features/users/usersApiSlice";
 import { createFileRoute } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
-import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
 
 export const Route = createFileRoute("/_app/settings/_settings/preferences")({
@@ -19,19 +23,37 @@ const validationSchema = Yup.object({
 });
 
 function RouteComponent() {
+  const { data, refetch } = useGetUserProfileQuery(undefined);
+  const [update, { isLoading: updating }] = useUpdateProfileMutation();
+
   const initialValues = {
-    email: "",
-    phone: "",
+    email: data?.preferred_notification_email ?? "",
+    phone: data?.preferred_notification_phone ?? "",
   };
 
-   const [submit, setSubmit] = useState(false)
-  
-    useEffect(() => {
-      setSubmit(false)
-    },[])
+  // useEffect(() => {
+  //   refetch();
+  // }, [data, refetch]);
 
-  const handleSubmit = (values: typeof initialValues) => {
-    console.log("Form submitted:", values);
+  const handleSubmit = async (values: typeof initialValues) => {
+    const formData = new FormData();
+    formData.append("preferred_notification_email", values.email);
+    formData.append("preferred_notification_phone", values.phone);
+    try {
+      await update(formData).unwrap();
+      refetch();
+      toast(
+        JSON.stringify({
+          type: "success",
+          title: "Preferences updated successfully!",
+        })
+      );
+    } catch (error) {
+      toast(
+        JSON.stringify({ type: "error", title: "Failed to update preferences" })
+      );
+      console.log(error);
+    }
   };
   return (
     <section className="font-inter w-full">
@@ -93,7 +115,7 @@ function RouteComponent() {
                     type="submit"
                     className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white cursor-pointer rounded-md hover:bg-[#06105a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold "
                   >
-                    {submit ? (
+                    {updating ? (
                       <ButtonLoader title="Saving..." />
                     ) : (
                       "Save Changes"

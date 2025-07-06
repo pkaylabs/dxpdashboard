@@ -55,14 +55,26 @@ const LoginForm: React.FC = () => {
         );
         navigate({ to: search.redirect || fallback });
       } else {
-        toast.error("Failed to login");
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: "Faied to login",
+          })
+        );
+        navigate({ to: "/login" });
       }
 
       // Force‐revalidate any protected data
       // await router.invalidate();
     } catch (error: any) {
       console.error("Error logging in: ", error);
-      toast.error("Login Failed");
+      toast(
+        JSON.stringify({
+          type: "error",
+          title: "Faied to login",
+        })
+      );
+      navigate({ to: "/login" });
     }
   };
 

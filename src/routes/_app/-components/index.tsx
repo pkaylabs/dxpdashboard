@@ -428,7 +428,7 @@ export interface User {
 
 type ProfilePictureSectionProps = {
   values: {
-    profilePicture?: File | string | null;
+    avatar?: File | string | null;
     [key: string]: unknown;
   };
   setFieldValue: (field: string, value: unknown) => void;
@@ -448,10 +448,10 @@ export const ProfilePictureSection = ({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (values.profilePicture instanceof File) {
+    if (values.avatar instanceof File) {
       setIsLoading(true);
-      const url = URL.createObjectURL(values.profilePicture);
-      setPreviewUrl(url);
+      const url = URL.createObjectURL(values.avatar);
+      setPreviewUrl(`${url}`);
 
       const timer = setTimeout(() => {
         setIsLoading(false);
@@ -465,25 +465,26 @@ export const ProfilePictureSection = ({
       setPreviewUrl(null);
       setIsLoading(false);
     }
-  }, [values.profilePicture]);
+  }, [values.avatar]);
 
   const handleFileChange = (files: File[] | null) => {
     const file = files && files.length > 0 ? files[0] : null;
     if (file) {
       setIsLoading(true);
     }
-    setFieldValue("profilePicture", file);
+    setFieldValue("avatar", file);
   };
 
   const handleRemovePicture = () => {
-    setFieldValue("profilePicture", null);
+    setFieldValue("avatar", null);
     setPreviewUrl(null);
   };
 
   const getAvatarSrc = () => {
     if (isLoading) return null;
     if (previewUrl) return previewUrl;
-    if (typeof values.profilePicture === "string") return values.profilePicture;
+    if (typeof values.avatar === "string")
+      return `https://api.bayelsaxp.com/api-v1/${values.avatar}`;
     // if (auth.user?.avatar) return auth.user.avatar;
     return null;
   };
@@ -522,7 +523,7 @@ export const ProfilePictureSection = ({
         )}
 
         {/* Upload status indicator */}
-        {values.profilePicture && (
+        {values.avatar && (
           <div className="absolute -top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
             <svg
               className="w-2 h-2 text-white"
@@ -541,20 +542,16 @@ export const ProfilePictureSection = ({
 
       <div className="flex-1">
         <Input
-          name="profilePicture"
+          name="avatar"
           type="file"
           label="Profile Picture"
           acceptedFileTypes="image/jpeg,image/png,image/gif"
           maxFileSize={5}
           filePreview
-          fileValue={
-            values.profilePicture instanceof File ? values.profilePicture : null
-          }
+          fileValue={values.avatar instanceof File ? values.avatar : null}
           onFileChange={handleFileChange}
           error={
-            touched.profilePicture && errors.profilePicture
-              ? String(errors.profilePicture)
-              : undefined
+            touched.avatar && errors.avatar ? String(errors.avatar) : undefined
           }
           helperText="Upload a profile picture (max 5MB)."
           fullWidth
@@ -562,7 +559,7 @@ export const ProfilePictureSection = ({
 
         {/* Action buttons */}
         <div className="flex items-center gap-3 mt-3">
-          {values.profilePicture && (
+          {values.avatar && (
             <button
               type="button"
               onClick={handleRemovePicture}
@@ -580,13 +577,13 @@ export const ProfilePictureSection = ({
         </div>
 
         {/* Image info */}
-        {values.profilePicture instanceof File && (
+        {values.avatar instanceof File && (
           <div className="mt-2 p-2 bg-blue-50 rounded-md">
             <div className="text-xs text-blue-800">
-              <div className="font-medium">{values.profilePicture.name}</div>
+              <div className="font-medium">{values.avatar.name}</div>
               <div className="text-blue-600">
-                {(values.profilePicture.size / 1024 / 1024).toFixed(2)} MB •{" "}
-                {values.profilePicture.type}
+                {(values.avatar.size / 1024 / 1024).toFixed(2)} MB •{" "}
+                {values.avatar.type}
               </div>
             </div>
           </div>

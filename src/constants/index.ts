@@ -8,10 +8,6 @@ import { GiCargoShip } from "react-icons/gi";
 import { IoIosBed } from "react-icons/io";
 import { ImBell, ImUsers } from "react-icons/im";
 import { IoSettings } from "react-icons/io5";
-import { DashboardCardProps } from "@/routes/_app/dashboard/-components/analytics-card";
-import { TbWorldPin } from "react-icons/tb";
-import { HiOutlineSquare3Stack3D, HiMiniUsers } from "react-icons/hi2";
-import { SiAirplayvideo } from "react-icons/si";
 
 export const navigations = [
   {
@@ -85,36 +81,7 @@ export const navigations = [
   },
 ];
 
-export const dashboardData: DashboardCardProps[] = [
-  {
-    icon: TbWorldPin,
-    title: "Content Upload",
-    value: 26,
-    progress: 60,
-    progressColor: "bg-[#0ECC44]",
-  },
-  {
-    icon: HiOutlineSquare3Stack3D,
-    title: "Blog Posts",
-    value: 1204,
-    progress: 85,
-    progressColor: "bg-[#FFCC00] ",
-  },
-  {
-    icon: SiAirplayvideo,
-    title: "Total Views",
-    value: 5847,
-    progress: 75,
-    progressColor: "bg-[#FF3B30] ",
-  },
-  {
-    icon: HiMiniUsers,
-    title: "Users",
-    value: 2300,
-    progress: 45,
-    progressColor: "bg-[#AF52DE] ",
-  },
-];
+
 
 export const tooltipStyle = {
   fontSize: "12px",
