@@ -251,7 +251,8 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
   // Placement classes
   const placementClasses = {
     "bottom-left": "top-full left-0 mt-1",
-    "bottom-right": "top-full right-0 mt-1",
+    // "bottom-right": "top-full right-0 mt-1",
+    "bottom-right": "top-0 right-0 mt-0",
     "top-left": "bottom-full left-0 mb-1",
     "top-right": "bottom-full right-0 mb-1",
   };
@@ -312,7 +313,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.15 }}
               className={`
-                absolute z-20 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1
+                absolute z-30 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1
                 ${placementClasses[placement]}
               `}
             >

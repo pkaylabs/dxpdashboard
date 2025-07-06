@@ -292,7 +292,7 @@ export default function AppLayout() {
                         {user?.name || "Admin User"}
                       </p>
                       <p className="font-medium text-sm text-[#06275A] -mt-0.5 ">
-                        admin@gmail.com
+                        {user?.email}
                       </p>
                     </div>
                     <span className="hidden lg:flex lg:items-start">

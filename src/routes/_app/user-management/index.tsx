@@ -140,7 +140,7 @@ function RouteComponent() {
     name: (
       <div className="font-inter flex items-center gap-2">
         <div className="size-10 rounded-full overflow-hidden">
-          <Avatar src={item.avatar} alt={item.name} size="sm" />
+          <Avatar src={`https://api.bayelsaxp.com${item.avatar}`} alt={item.name} size="sm" />
         </div>
         <span className=" text-[#06275A] text-base text-nowrap">
           {item.name}
@@ -224,6 +224,7 @@ function RouteComponent() {
   // const handleRowClick = (row: User, index: number) => {
   //   console.log("Row clicked: ", row, "Index:", index);
   // };
+  console.log(tableData)
   return (
     <>
       <Table
