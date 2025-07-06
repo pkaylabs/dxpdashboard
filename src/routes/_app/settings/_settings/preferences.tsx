@@ -6,7 +6,6 @@ import {
 } from "@/redux/features/users/usersApiSlice";
 import { createFileRoute } from "@tanstack/react-router";
 import { Formik, Form, Field } from "formik";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -42,7 +41,7 @@ function RouteComponent() {
     formData.append("preferred_notification_phone", values.phone);
     try {
       await update(formData).unwrap();
-      refetch()
+      refetch();
       toast(
         JSON.stringify({
           type: "success",

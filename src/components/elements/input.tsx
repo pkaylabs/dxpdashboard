@@ -5,6 +5,7 @@ import React, {
   useEffect,
 } from "react";
 import { Eye, EyeSlash } from "iconsax-reactjs";
+import { FormikErrors } from "formik";
 
 // File icon for file inputs
 const FileIcon = ({ className }: { className?: string }) => (
@@ -27,7 +28,7 @@ const FileIcon = ({ className }: { className?: string }) => (
 export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "value"> {
   label?: string;
-  error?: string;
+  error?: string | string[] | FormikErrors<unknown> | FormikErrors<unknown>[] | undefined;
   helperText?: string;
   variant?: "outlined" | "filled";
   size?: "small" | "medium" | "large";
@@ -263,7 +264,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {/* Error Message */}
         {(error || fileError) && (
-          <p className="mt-2 text-sm text-red-600">{error || fileError}</p>
+          <p className="mt-2 text-sm text-red-600">
+            {Array.isArray(error)
+              ? error.join(", ")
+              : typeof error === "object" && error !== null
+              ? JSON.stringify(error)
+              : error || fileError}
+          </p>
         )}
 
         {/* Helper Text */}
