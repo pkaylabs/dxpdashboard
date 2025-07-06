@@ -198,7 +198,7 @@ const Table: React.FC<TableProps> = ({
       ) : (
         <div className="bg-white rounded-b-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="table-auto w-full">
+            <table className="table-auto w-full relative">
               {/* Header */}
               {displayHeader && (
                 <thead className={stickyHeader ? "sticky top-0 z-10" : ""}>
@@ -247,7 +247,7 @@ const Table: React.FC<TableProps> = ({
                       } ${onRowClick ? "hover:bg-blue-50 cursor-pointer" : ""}`}
                     >
                       {headers.map((header) => (
-                        <td key={header.value} className="px-6 py-2.5 text-sm ">
+                        <td key={header.value} className="px-6 py-2.5 text-sm">
                           {row[header.value]}
                         </td>
                       ))}

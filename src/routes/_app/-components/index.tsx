@@ -252,7 +252,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
   const placementClasses = {
     "bottom-left": "top-full left-0 mt-1",
     // "bottom-right": "top-full right-0 mt-1",
-    "bottom-right": "top-0 right-0 mt-0",
+    "bottom-right": "-top-30  right-1 mt-1",
     "top-left": "bottom-full left-0 mb-1",
     "top-right": "bottom-full right-0 mb-1",
   };
@@ -276,7 +276,7 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
   }
 
   return (
-    <div className={`relative inline-block ${className}`}>
+    <div className={`relative ${className}`}>
       {/* Trigger Button */}
       <button
         ref={buttonRef}
@@ -301,28 +301,27 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-10"
+              className="relative inset-0 z-10"
               onClick={() => setIsOpen(false)}
-            />
-
-            {/* Menu */}
-            <motion.div
-              ref={dropdownRef}
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ duration: 0.15 }}
-              className={`
-                absolute z-30 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1
+            >
+              {/* Menu */}
+              <motion.div
+                ref={dropdownRef}
+                initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                transition={{ duration: 0.15 }}
+                className={`
+                absolute z-30 w-48 bg-white border text-center border-gray-200 rounded-lg shadow-lg py-1 overflow-hidden
                 ${placementClasses[placement]}
               `}
-            >
-              {finalActions.map((action, index) => (
-                <div key={action.id}>
-                  <button
-                    onClick={() => handleActionClick(action)}
-                    disabled={action.disabled}
-                    className={`
+              >
+                {finalActions.map((action, index) => (
+                  <div key={action.id}>
+                    <button
+                      onClick={() => handleActionClick(action)}
+                      disabled={action.disabled}
+                      className={`
                       w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors duration-150
                       ${
                         action.disabled
@@ -330,20 +329,21 @@ const ActionDropdown: React.FC<ActionDropdownProps> = ({
                           : `text-gray-700 cursor-pointer ${getActionVariantClasses(action.variant)}`
                       }
                     `}
-                  >
-                    {action.icon && (
-                      <span className="flex-shrink-0">{action.icon}</span>
-                    )}
-                    <span className="flex-1">{action.label}</span>
-                  </button>
+                    >
+                      {action.icon && (
+                        <span className="flex-shrink-0">{action.icon}</span>
+                      )}
+                      <span className="flex-1">{action.label}</span>
+                    </button>
 
-                  {/* Divider */}
-                  {action.divider && index < finalActions.length - 1 && (
-                    <div className="border-t border-gray-100 my-1" />
-                  )}
-                </div>
-              ))}
-            </motion.div>
+                    {/* Divider */}
+                    {action.divider && index < finalActions.length - 1 && (
+                      <div className="border-t border-gray-100 my-1" />
+                    )}
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>
@@ -427,167 +427,256 @@ export interface User {
   password: string;
 }
 
-type ProfilePictureSectionProps = {
+// type ProfilePictureSectionProps = {
+//   values: {
+//     avatar?: File | string | null;
+//     [key: string]: unknown;
+//   };
+//   setFieldValue: (field: string, value: unknown) => void;
+//   touched: Record<string, unknown>;
+//   errors: Record<string, unknown>;
+//   user?: User;
+// };
+
+// export const ProfilePictureSection = ({
+//   values,
+//   setFieldValue,
+//   touched,
+//   errors,
+//   user,
+// }: ProfilePictureSectionProps) => {
+//   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   useEffect(() => {
+//     if (values.avatar instanceof File) {
+//       setIsLoading(true);
+//       const url = URL.createObjectURL(values.avatar);
+//       setPreviewUrl(`${url}`);
+
+//       const timer = setTimeout(() => {
+//         setIsLoading(false);
+//       }, 500);
+
+//       return () => {
+//         URL.revokeObjectURL(url);
+//         clearTimeout(timer);
+//       };
+//     } else {
+//       setPreviewUrl(null);
+//       setIsLoading(false);
+//     }
+//   }, [values.avatar]);
+
+//   const handleFileChange = (files: File[] | null) => {
+//     const file = files && files.length > 0 ? files[0] : null;
+//     if (file) {
+//       setIsLoading(true);
+//     }
+//     setFieldValue("avatar", file);
+//   };
+
+//   const handleRemovePicture = () => {
+//     setFieldValue("avatar", null);
+//     setPreviewUrl(null);
+//   };
+
+//   const getAvatarSrc = () => {
+//     if (isLoading) return null;
+//     if (previewUrl) return previewUrl;
+//     if (typeof values.avatar === "string")
+//       return `https://api.bayelsaxp.com${values.avatar}`;
+//     // if (auth.user?.avatar) return auth.user.avatar;
+//     return null;
+//   };
+
+//   return (
+//     <div className="flex gap-4 lg:max-w-[70%] mt-3">
+//       <div className="relative size-20">
+//         <Avatar
+//           src={getAvatarSrc() ?? undefined}
+//           alt={typeof user?.name === "string" ? user.name : "NA"}
+//           size="lg"
+//         />
+
+//         {/* Loading overlay */}
+//         {isLoading && (
+//           <div className="absolute inset-0 bg-[#0000001f] rounded-full flex items-center justify-center">
+//             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+//           </div>
+//         )}
+
+//         {/* Change indicator */}
+//         {previewUrl && !isLoading && (
+//           <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+//             <svg
+//               className="w-3 h-3 text-white"
+//               fill="currentColor"
+//               viewBox="0 0 20 20"
+//             >
+//               <path
+//                 fillRule="evenodd"
+//                 d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+//                 clipRule="evenodd"
+//               />
+//             </svg>
+//           </div>
+//         )}
+
+//         {/* Upload status indicator */}
+//         {values.avatar && (
+//           <div className="absolute -top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+//             <svg
+//               className="w-2 h-2 text-white"
+//               fill="currentColor"
+//               viewBox="0 0 20 20"
+//             >
+//               <path
+//                 fillRule="evenodd"
+//                 d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+//                 clipRule="evenodd"
+//               />
+//             </svg>
+//           </div>
+//         )}
+//       </div>
+
+//       <div className="flex-1">
+//         <Input
+//           name="avatar"
+//           type="file"
+//           label="Profile Picture"
+//           acceptedFileTypes="image/jpeg,image/png,image/gif"
+//           maxFileSize={5}
+//           filePreview
+//           fileValue={values.avatar instanceof File ? values.avatar : null}
+//           onFileChange={handleFileChange}
+//           error={
+//             touched.avatar && errors.avatar ? String(errors.avatar) : undefined
+//           }
+//           helperText="Upload a profile picture (max 5MB)."
+//           fullWidth
+//         />
+
+//         {/* Action buttons */}
+//         <div className="flex items-center gap-3 mt-3">
+//           {values.avatar && (
+//             <button
+//               type="button"
+//               onClick={handleRemovePicture}
+//               className="text-sm text-red-600 hover:text-red-800 transition-colors duration-200 font-medium"
+//             >
+//               Remove picture
+//             </button>
+//           )}
+
+//           {previewUrl && (
+//             <span className="text-sm text-green-600 font-medium">
+//               ✓ New image selected
+//             </span>
+//           )}
+//         </div>
+
+//         {/* Image info */}
+//         {values.avatar instanceof File && (
+//           <div className="mt-2 p-2 bg-blue-50 rounded-md">
+//             <div className="text-xs text-blue-800">
+//               <div className="font-medium">{values.avatar.name}</div>
+//               <div className="text-blue-600">
+//                 {(values.avatar.size / 1024 / 1024).toFixed(2)} MB •{" "}
+//                 {values.avatar.type}
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+type Props = {
   values: {
-    avatar?: File | string | null;
-    [key: string]: unknown;
+    avatarUrl: string;
+    avatarFile: File | null;
+    [k: string]: unknown;
   };
-  setFieldValue: (field: string, value: unknown) => void;
+  setFieldValue: (f: string, v: unknown) => void;
   touched: Record<string, unknown>;
   errors: Record<string, unknown>;
   user?: User;
 };
 
-export const ProfilePictureSection = ({
+/**
+ * Expects Formik values with:
+ *   avatarUrl: string    // existing image path
+ *   avatarFile: File|null // newly selected file
+ */
+export const ProfilePictureSection: React.FC<Props> = ({
   values,
   setFieldValue,
   touched,
   errors,
   user,
-}: ProfilePictureSectionProps) => {
+}) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
+  // Generate blob URL when a new file is selected
   useEffect(() => {
-    if (values.avatar instanceof File) {
-      setIsLoading(true);
-      const url = URL.createObjectURL(values.avatar);
-      setPreviewUrl(`${url}`);
-
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-
-      return () => {
-        URL.revokeObjectURL(url);
-        clearTimeout(timer);
-      };
-    } else {
-      setPreviewUrl(null);
-      setIsLoading(false);
+    if (values.avatarFile instanceof File) {
+      const url = URL.createObjectURL(values.avatarFile);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
     }
-  }, [values.avatar]);
-
-  const handleFileChange = (files: File[] | null) => {
-    const file = files && files.length > 0 ? files[0] : null;
-    if (file) {
-      setIsLoading(true);
-    }
-    setFieldValue("avatar", file);
-  };
-
-  const handleRemovePicture = () => {
-    setFieldValue("avatar", null);
     setPreviewUrl(null);
-  };
+  }, [values.avatarFile]);
 
-  const getAvatarSrc = () => {
-    if (isLoading) return null;
-    if (previewUrl) return previewUrl;
-    if (typeof values.avatar === "string")
-      return `https://api.bayelsaxp.com/api-v1/${values.avatar}`;
-    // if (auth.user?.avatar) return auth.user.avatar;
-    return null;
-  };
-
+  // Determine which src to render
+  let src: string | undefined;
+  if (previewUrl) {
+    src = previewUrl;
+  } else if (values.avatarUrl) {
+    // If it's already an absolute URL, use it directly
+    if (/^https?:\/\//.test(values.avatarUrl)) {
+      src = values.avatarUrl;
+    } else {
+      // Prepend your API base for relative paths
+      src = `https://api.bayelsaxp.com${values.avatarUrl}`;
+    }
+  }
   return (
-    <div className="flex gap-4 lg:max-w-[70%] mt-3">
-      <div className="relative size-20">
-        <Avatar
-          src={getAvatarSrc() ?? undefined}
-          alt={typeof user?.name === "string" ? user.name : "NA"}
-          size="lg"
-        />
-
-        {/* Loading overlay */}
-        {isLoading && (
-          <div className="absolute inset-0 bg-[#0000001f] rounded-full flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
-
-        {/* Change indicator */}
-        {previewUrl && !isLoading && (
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
-            <svg
-              className="w-3 h-3 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        )}
-
-        {/* Upload status indicator */}
-        {values.avatar && (
-          <div className="absolute -top-1 right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-            <svg
-              className="w-2 h-2 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-        )}
-      </div>
+    <div className="flex gap-4 items-start">
+      <Avatar src={src} alt={user?.name || "User"} size="lg" />
 
       <div className="flex-1">
         <Input
-          name="avatar"
+          name="avatarFile"
           type="file"
           label="Profile Picture"
           acceptedFileTypes="image/jpeg,image/png,image/gif"
           maxFileSize={5}
           filePreview
-          fileValue={values.avatar instanceof File ? values.avatar : null}
-          onFileChange={handleFileChange}
+          fileValue={values.avatarFile}
+          onFileChange={(files) => {
+            const file = files?.[0] ?? null;
+            setFieldValue("avatarFile", file);
+          }}
           error={
-            touched.avatar && errors.avatar ? String(errors.avatar) : undefined
+            touched.avatarFile && errors.avatarFile
+              ? String(errors.avatarFile)
+              : undefined
           }
-          helperText="Upload a profile picture (max 5MB)."
+          helperText="Upload a new profile picture (max 5MB)."
           fullWidth
         />
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-3 mt-3">
-          {values.avatar && (
-            <button
-              type="button"
-              onClick={handleRemovePicture}
-              className="text-sm text-red-600 hover:text-red-800 transition-colors duration-200 font-medium"
-            >
-              Remove picture
-            </button>
-          )}
-
-          {previewUrl && (
-            <span className="text-sm text-green-600 font-medium">
-              ✓ New image selected
-            </span>
-          )}
-        </div>
-
-        {/* Image info */}
-        {values.avatar instanceof File && (
-          <div className="mt-2 p-2 bg-blue-50 rounded-md">
-            <div className="text-xs text-blue-800">
-              <div className="font-medium">{values.avatar.name}</div>
-              <div className="text-blue-600">
-                {(values.avatar.size / 1024 / 1024).toFixed(2)} MB •{" "}
-                {values.avatar.type}
-              </div>
-            </div>
-          </div>
+        {values.avatarFile && (
+          <button
+            type="button"
+            onClick={() => setFieldValue("avatarFile", null)}
+            className="mt-2 text-sm text-red-600 hover:text-red-800"
+          >
+            Remove new upload
+          </button>
         )}
       </div>
     </div>
