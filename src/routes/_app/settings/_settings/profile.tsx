@@ -25,24 +25,21 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .min(10, "Phone must be at least 10 characters")
     .required("Phone is required"),
-  avatar: Yup.mixed<File | string>().test(
-    "fileType",
-    "Unsupported file type",
-    (value) => {
-      if (!value || typeof value === "string") return true;
-      return ["image/jpeg", "image/png"].includes(value.type);
-    }
-  ),
-  // role: Yup.string().required("Role is required"),
-  // profilePicture: Yup.mixed()
-  //   .test("fileSize", "File too large", (value: any) => {
-  //     if (!value) return true;
-  //     return value.size <= 5 * 1024 * 1024;
-  //   })
-  //   .test("fileType", "Unsupported file type", (value: any) => {
-  //     if (!value) return true;
-  //     return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-  //   }),
+  avatarUrl: Yup.string().url().notRequired(),
+  avatarFile: Yup.mixed()
+    .test(
+      "fileType",
+      "Unsupported file type",
+      (f) =>
+        !f ||
+        (f instanceof File &&
+          ["image/jpeg", "image/png", "image/gif"].includes(f.type))
+    )
+    .test(
+      "fileSize",
+      "File too large",
+      (f) => !f || (f instanceof File && f.size <= 5 * 1024 * 1024)
+    ),
 });
 
 function RouteComponent() {
@@ -55,7 +52,8 @@ function RouteComponent() {
     name: data?.name ?? "",
     email: data?.email ?? "",
     phone: data?.phone ?? "",
-    avatar: data?.avatar ?? null,
+    avatarUrl: data?.avatar ?? "",
+    avatarFile: null as File | null,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -64,10 +62,10 @@ function RouteComponent() {
     formData.append("name", values.name);
     formData.append("email", values.email);
     formData.append("phone", values.phone);
-    if (values.avatar instanceof File) {
-      formData.append("avatar", values.avatar);
-    } else if (typeof values.avatar === "string") {
-      formData.append("avatar", values.avatar);
+    if (values.avatarFile) {
+      formData.append("avatar", values.avatarFile);
+    } else{
+      formData.append("avatar", values.avatarUrl);
     }
     try {
       await updateProfile(formData).unwrap();

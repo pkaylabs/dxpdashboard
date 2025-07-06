@@ -55,14 +55,13 @@ function RouteComponent() {
     navigate({
       to: "/user-management/add",
       search: {
-        id: item.id,
+        id: String(item.id),
         name: item.name,
         email: item.email,
         phone: item.phone,
         // role: item.role,
-        password: "",
         address: item.address,
-        avatar: item.avatar,
+        avatar: `https://api.bayelsaxp.com${item.avatar}`,
         bio: item.bio,
       },
     });
@@ -71,11 +70,12 @@ function RouteComponent() {
     navigate({
       to: ".",
       search: {
+        id: item.id,
         name: item.name,
         email: item.email,
         address: item.address,
         phone: item.phone,
-        avatar: item.avatar,
+        avatar: `https://api.bayelsaxp.com${item.avatar}`,
       },
     });
     setOpenView(true);
@@ -103,7 +103,8 @@ function RouteComponent() {
             });
           } catch (error: unknown) {
             console.error(error);
-            let errorMessage = "An error occurred while deleting the reconciliation.";
+            let errorMessage =
+              "An error occurred while deleting the reconciliation.";
             if (
               typeof error === "object" &&
               error !== null &&
@@ -112,7 +113,8 @@ function RouteComponent() {
               (error as { data?: unknown }).data !== null &&
               "message" in (error as { data?: { message?: unknown } }).data!
             ) {
-              const message = (error as { data: { message?: unknown } }).data.message;
+              const message = (error as { data: { message?: unknown } }).data
+                .message;
               if (typeof message === "string") {
                 errorMessage = message;
               }
@@ -129,7 +131,9 @@ function RouteComponent() {
       console.log(error);
       Swal.fire({
         title: "Error!",
-        text: (error as { data?: { message?: string } })?.data?.message ?? "An error occurred. Please try again.",
+        text:
+          (error as { data?: { message?: string } })?.data?.message ??
+          "An error occurred. Please try again.",
         icon: "error",
       });
     }
@@ -140,7 +144,11 @@ function RouteComponent() {
     name: (
       <div className="font-inter flex items-center gap-2">
         <div className="size-10 rounded-full overflow-hidden">
-          <Avatar src={`https://api.bayelsaxp.com${item.avatar}`} alt={item.name} size="sm" />
+          <Avatar
+            src={`https://api.bayelsaxp.com${item.avatar}`}
+            alt={item.name}
+            size="sm"
+          />
         </div>
         <span className=" text-[#06275A] text-base text-nowrap">
           {item.name}
@@ -155,7 +163,7 @@ function RouteComponent() {
     ),
     address: (
       <span className="text-[#06275A] text-base text-nowrap">
-        {item.address ? item.address : "No location specified"}
+        {item.address === null ? "No Address specified" : item.address}
       </span>
     ),
     lastLogin: (
@@ -205,7 +213,7 @@ function RouteComponent() {
       sortable: true,
       width: "300px",
     },
-    { name: "Location", value: "location", sortable: true, width: "200px" },
+    { name: "Address", value: "address", sortable: true, width: "200px" },
     { name: "Last Login", value: "lastLogin", sortable: true, width: "200px" },
     { name: "Actions", value: "actions", width: "200px" },
   ];
@@ -224,7 +232,7 @@ function RouteComponent() {
   // const handleRowClick = (row: User, index: number) => {
   //   console.log("Row clicked: ", row, "Index:", index);
   // };
-  console.log(tableData)
+  console.log(tableData);
   return (
     <>
       <Table

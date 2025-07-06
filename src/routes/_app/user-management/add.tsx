@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { UserSearch } from ".";
 import { Formik, Form, Field } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import { ButtonLoader } from "@/components/loaders";
 // import Select from "@/components/elements/select";
 import Input from "@/components/elements/input";
 import { ProfilePictureSection } from "../-components";
-import { useCreateUserMutation } from "@/redux/features/users/usersApiSlice";
+import {
+  useCreateUserMutation,
+  useUpdateUserMutation,
+} from "@/redux/features/users/usersApiSlice";
 import toast from "react-hot-toast";
 
 export const Route = createFileRoute("/_app/user-management/add")({
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/_app/user-management/add")({
 });
 
 const validationSchema = Yup.object({
+  id: Yup.string(),
   name: Yup.string()
     .min(3, "Name must be at least 3 characters")
     .required("Name is required"),
@@ -28,36 +31,48 @@ const validationSchema = Yup.object({
   // role: Yup.string().required("Role is required"),
   bio: Yup.string().required("Bio is required"),
   password: Yup.string()
-    .min(4, "Password must be atleast 4 characters")
-    .required("Password is required"),
+    .min(4, "Password must be at least 4 characters")
+    // only require a password on “create” (no search.id)
+    .when("id", {
+      is: (id: string) => !id,
+      then: (schema) => schema.required("Password is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
   address: Yup.string().required("Location is required"),
-  // profilePicture: Yup.mixed()
-  //   .test("fileSize", "File too large", (value: any) => {
-  //     if (!value) return true;
-  //     return value.size <= 5 * 1024 * 1024;
-  //   })
-  //   .test("fileType", "Unsupported file type", (value: any) => {
-  //     if (!value) return true;
-  //     return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-  //   }),
+  avatarUrl: Yup.string().url().notRequired(),
+  avatarFile: Yup.mixed()
+    .test(
+      "fileType",
+      "Unsupported file type",
+      (f) =>
+        !f ||
+        (f instanceof File &&
+          ["image/jpeg", "image/png", "image/gif"].includes(f.type))
+    )
+    .test(
+      "fileSize",
+      "File too large",
+      (f) => !f || (f instanceof File && f.size <= 5 * 1024 * 1024)
+    ),
 });
 
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [addUser, { isLoading: adding }] = useCreateUserMutation();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updateUser, { isLoading: updating }] = useUpdateUserMutation();
+
 
   const initialValues = {
     id: search?.id ?? "",
     name: search?.name ?? "",
     email: search?.email ?? "",
     phone: search?.phone ?? "",
-    // role: search.role ?? "",
     bio: search?.bio ?? "",
-    password: "",
+    password: "" as string,
     address: search.address ?? "",
-    profilePicture: search?.avatar ?? (null as File | null),
+    avatarUrl: search.avatar ?? "",
+    avatarFile: null as File | null,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -68,30 +83,56 @@ function RouteComponent() {
     formData.append("phone", values.phone);
     formData.append("address", values.address);
     formData.append("bio", values.bio);
-    if (values.password) {
+    if (values.avatarFile) {
+      formData.append("avatar", values.avatarFile);
+    } else {
+      // Otherwise send the URL so the backend keeps it
+      formData.append("avatar", values.avatarUrl);
+    }
+    if (!search.id && values.password) {
       formData.append("password", values.password);
     }
-    if (values.profilePicture) {
-      formData.append("avatar", values.profilePicture);
-    }
-
-    if (search.id) {
+    if (values.id) {
       formData.append("id", values.id);
-    }
-
-    try {
-      await addUser(formData).unwrap();
-      toast(
-        JSON.stringify({
-          type: "success",
-          title: "User Added successfully",
-        })
-      );
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Failed to update profile. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      try {
+        await updateUser(formData).unwrap();
+         navigate({to: ".."})
+        toast(
+          JSON.stringify({
+            type: "success",
+            title: "User updated successfully",
+          })
+        );
+       
+      } catch (error) {
+        console.log(error);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: "Failed to update user",
+          })
+        );
+      }
+    } else {
+      try {
+        await addUser(formData).unwrap();
+         navigate({to: ".."})
+        toast(
+          JSON.stringify({
+            type: "success",
+            title: "User created successfully",
+          })
+        );
+       
+      } catch (error) {
+        console.log(error);
+        toast(
+          JSON.stringify({
+            type: "error",
+            title: "Failed to add user",
+          })
+        );
+      }
     }
   };
 
@@ -277,14 +318,13 @@ function RouteComponent() {
                   <button
                     type="button"
                     onClick={() => navigate({ to: ".." })}
-                    disabled={isSubmitting}
                     className="w-48 h-12 flex justify-center items-center bg-white border border-gray-200 text-[#051f4a] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    disabled={adding}
+                    disabled={adding || updating}
                     className="w-48 h-12 flex justify-center items-center bg-[#06275A] text-white rounded-md hover:bg-[#051f4a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {adding ? (

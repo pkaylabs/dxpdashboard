@@ -15,6 +15,13 @@ export const usersApiSlice = api.injectEndpoints({
         body: formData,
       }),
     }),
+    updateUser: builder.mutation({
+      query: (formData: FormData) => ({
+        url: "/users/",
+        method: "PUT",
+        body: formData,
+      }),
+    }),
     deleteUser: builder.mutation({
       query: (credentials) => ({
         url: "/users/",
@@ -51,5 +58,6 @@ export const {
   useGetUserProfileQuery,
   useUpdateProfileMutation,
   useDeleteUserMutation,
-  useChangePasswordMutation
+  useChangePasswordMutation,
+  useUpdateUserMutation
 } = usersApiSlice;
