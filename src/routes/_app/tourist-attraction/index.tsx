@@ -259,7 +259,7 @@ function RouteComponent() {
             Entertainment
           </h3>
           <p className="text-3xl font-bold text-purple-600">
-            {data.filter((v: Venue) => v.category === "Entertainment").length}
+            {data.filter((v: Venue) => v.category === "ENTERTAINMENT").length}
           </p>
         </div>
 
