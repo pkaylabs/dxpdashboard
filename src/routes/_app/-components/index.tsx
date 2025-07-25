@@ -620,6 +620,26 @@ export const ProfilePictureSection: React.FC<Props> = ({
 }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+   useEffect(() => {
+    if (values.avatarUrl && !values.avatarFile) {
+      (async () => {
+        try {
+          const res = await fetch(
+            /^https?:\/\//.test(values.avatarUrl)
+              ? values.avatarUrl
+              : `https://api.bayelsaxp.com${values.avatarUrl}`
+          );
+          const blob = await res.blob();
+          const filename = values.avatarUrl.split("/").pop() || "avatar.png";
+          const file = new File([blob], filename, { type: blob.type });
+          setFieldValue("avatarFile", file);
+        } catch (err) {
+          console.error("Failed to fetch existing avatar:", err);
+        }
+      })();
+    }
+  }, [values.avatarUrl, values.avatarFile, setFieldValue]);
+
   // Generate blob URL when a new file is selected
   useEffect(() => {
     if (values.avatarFile instanceof File) {
