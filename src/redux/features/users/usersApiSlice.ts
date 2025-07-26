@@ -49,6 +49,13 @@ export const usersApiSlice = api.injectEndpoints({
         body: { ...credentials },
       }),
     }),
+    accountDeletion: builder.mutation({
+      query: () => ({
+        url: "/accountdeletion/",
+        method: "POST",
+        // body: { ...credentials },
+      })
+    })
   }),
 });
 
@@ -59,5 +66,6 @@ export const {
   useUpdateProfileMutation,
   useDeleteUserMutation,
   useChangePasswordMutation,
-  useUpdateUserMutation
+  useUpdateUserMutation,
+  useAccountDeletionMutation,
 } = usersApiSlice;

@@ -54,7 +54,7 @@ const InteractivePerformanceDemo: React.FC = () => {
           target: raw.min_max_views.max_views,
         }))
       );
-      setYLabels(raw.yaxis_labels.map((n) => `${n}%`));
+      setYLabels(raw.yaxis_labels.map((n) => `${n}`));
     } else {
       setChartData([]);
       setYLabels(DEFAULT_Y_LABELS);
