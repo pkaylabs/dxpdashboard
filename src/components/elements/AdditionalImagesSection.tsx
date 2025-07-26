@@ -1,143 +1,115 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./input";
-import { FormikErrors, FormikTouched } from "formik";
+import Avatar from "@/components/core/avatar";
 
-export const AdditionalImagesSection = ({
-  values,
+interface Props {
+  /** existing URLs for slot1 and slot2 */
+  imageUrls: [string | null, string | null];
+  /** newly-picked Files for slot1 and slot2 */
+  imageFiles: [File | null, File | null];
+  /** Formik setter */
+  setFieldValue: (field: string, value: File | null) => void;
+  /** Formik touched/errors keyed by imageFiles */
+  touched: Record<string, any>;
+  errors: Record<string, any>;
+}
+
+/**
+ * A component to handle two images with preview, remove, and initial URL fetch.
+ * Expects Formik values with:
+ *   imageUrls: [url1, url2]
+ *   imageFiles: [file1, file2]
+ */
+export const MultiImageSection: React.FC<Props> = ({
+  imageUrls,
+  imageFiles,
   setFieldValue,
   touched,
   errors,
-}: {
-  values: { additionalImages?: File[] | null };
-  setFieldValue: (field: string, value: File[] | null) => void;
-  touched: FormikTouched<{
-    name: string;
-    category: string;
-    address: string;
-    description: string;
-    mainImage: File | null;
-    additionalImages: File[];
-  }>;
-  errors: FormikErrors<{
-    name: string;
-    category: string;
-    address: string;
-    description: string;
-    mainImage: File | null;
-    additionalImages: File[];
-  }>;
 }) => {
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [previews, setPreviews] = useState<[string | null, string | null]>([null, null]);
 
+  // If existing URL but no File, fetch and convert to File
   useEffect(() => {
-    if (
-      Array.isArray(values.additionalImages) &&
-      values.additionalImages.length
-    ) {
-      setIsLoading(true);
-      const urls = values.additionalImages.map((file: File) =>
-        URL.createObjectURL(file)
-      );
-      setPreviewUrls(urls);
-      const timer = setTimeout(() => setIsLoading(false), 500);
-      return () => {
-        urls.forEach((url: string) => URL.revokeObjectURL(url));
-        clearTimeout(timer);
-      };
-    } else {
-      setPreviewUrls([]);
-      setIsLoading(false);
-    }
-  }, [values.additionalImages]);
+    imageUrls.forEach((url, idx) => {
+      if (url && !imageFiles[idx]) {
+        (async () => {
+          try {
+            const fetchUrl = /^https?:\/\//.test(url)
+              ? url
+              : `https://api.bayelsaxp.com${url}`;
+            const res = await fetch(fetchUrl);
+            const blob = await res.blob();
+            const name = url.split("/").pop() || `image${idx + 1}.png`;
+            const file = new File([blob], name, { type: blob.type });
+            setFieldValue(`imageFiles.${idx}`, file);
+          } catch (e) {
+            console.error("Failed to fetch image:", e);
+          }
+        })();
+      }
+    });
+  }, [imageUrls, imageFiles, setFieldValue]);
 
-  const handleFilesChange = (files: File[] | null) => {
-    setFieldValue("additionalImages", files);
-  };
-
-  const handleRemovePicture = () => {
-    setFieldValue("additionalImages", []);
-    setPreviewUrls([]);
-  };
-
-  const removeImage = (index: number) => {
-    const updated = [...(values.additionalImages || [])];
-    updated.splice(index, 1);
-    setFieldValue("additionalImages", updated.length ? updated : null);
-  };
+  // Generate previews for any File
+  useEffect(() => {
+    const urls: [string | null, string | null] = [null, null];
+    imageFiles.forEach((file, idx) => {
+      if (file instanceof File) urls[idx] = URL.createObjectURL(file);
+    });
+    setPreviews(urls);
+    return () => {
+      urls.forEach((u) => u && URL.revokeObjectURL(u));
+    };
+  }, [imageFiles]);
 
   return (
-    <div className="flex gap-4 flex-wrap lg:max-w-[70%] mt-3">
-      {previewUrls.map((url, i) => (
-        <div key={i} className="relative inline-block">
-          <img
-            src={url}
-            alt={`Additional ${i + 1}`}
-            className="w-22 h-22 rounded-full shadow"
-          />
-          <button
-            type="button"
-            onClick={() => removeImage(i)}
-            className="absolute top-1 right-1 h-8 w-8 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
-            title="Remove Image"
-          >
-            ✕
-          </button>
-        </div>
-      ))}
+    <div className="space-y-6">
+      {[0, 1].map((idx) => {
+        const preview = previews[idx];
+        const url = imageUrls[idx];
+        const field = `imageFiles.${idx}`;
+        const touchedField = touched.imageFiles?.[idx];
+        const errorField = errors.imageFiles?.[idx];
+        const label = `Image ${idx + 1}`;
 
-      {isLoading && (
-        <div className="absolute inset-0 bg-[#0000001f] rounded-full flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
+        // Decide Avatar src
+        let src: string | undefined;
+        if (preview) src = preview;
+        else if (url) src = /^https?:\/\//.test(url) ? url : `https://api.bayelsaxp.com${url}`;
 
-      {(values.additionalImages?.length || 0) < 3 && (
-        <div className="flex-1 min-w-[200px]">
-          <Input
-            name="additionalImages"
-            type="file"
-            label={`Additional Images (${values.additionalImages?.length || 0}/3)`}
-            acceptedFileTypes="image/jpeg,image/png,image/gif"
-            maxFileSize={5}
-            filePreview={false}
-            fileValue={values.additionalImages}
-            multiple
-            onFileChange={(files) => handleFilesChange(files)}
-            error={
-              touched.additionalImages && errors.additionalImages
-                ? Array.isArray(errors.additionalImages)
-                  ? errors.additionalImages.join(", ")
-                  : typeof errors.additionalImages === "string"
-                    ? errors.additionalImages
-                    : undefined
-                : undefined
-            }
-            helperText="Upload up to 3 images (max 5MB each)."
-            fullWidth
-          />
-          {/* Action buttons */}
-          {(values.additionalImages?.length || 0) > 0 && (
-            <div className="flex items-center gap-3 mt-3">
-              {values.additionalImages && (
+        return (
+          <div key={idx} className="flex gap-4 items-start">
+            <Avatar src={src} alt={label} size="lg" />
+            <div className="flex-1">
+              <Input
+                name={field}
+                type="file"
+                label={label}
+                acceptedFileTypes="image/jpeg,image/png,image/gif"
+                maxFileSize={5}
+                fileValue={imageFiles[idx] ?? null}
+                onFileChange={(files) => {
+                  const file = Array.isArray(files) ? files[0] ?? null : files;
+                  setFieldValue(field, file as File | null);
+                }}
+                error={touchedField && errorField ? String(errorField) : undefined}
+                helperText="Max 5 MB"
+                fullWidth
+              />
+              {imageFiles[idx] && (
                 <button
                   type="button"
-                  onClick={handleRemovePicture}
-                  className="text-sm text-red-600 hover:text-red-800 transition-colors duration-200 font-medium"
+                  onClick={() => setFieldValue(field, null)}
+                  className="mt-2 text-sm text-red-600 hover:text-red-800"
                 >
-                  Remove picture
+                  Remove
                 </button>
               )}
-
-              {previewUrls && (
-                <span className="text-sm text-green-600 font-medium">
-                  ✓ New image selected
-                </span>
-              )}
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        );
+      })}
     </div>
   );
 };

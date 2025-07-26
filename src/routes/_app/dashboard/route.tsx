@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_app/dashboard")({
 function RouteComponent() {
   const { data } = useGetWebDashboardDataQuery(undefined);
 
-  console.log(data);
+  console.log("data", data);
 
   const dashboardData: DashboardCardProps[] = [
     {

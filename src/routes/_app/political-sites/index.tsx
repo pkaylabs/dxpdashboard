@@ -21,6 +21,9 @@ export const PoliticalSearch = z.object({
   landmark: z.string().catch("").optional(),
   custodian: z.string().catch("").optional(),
   category: z.string().catch("").optional(),
+  image: z.string().catch("").optional(),
+  second_image: z.string().catch("").optional(),
+  third_image: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/political-sites/")({
@@ -77,6 +80,9 @@ function RouteComponent() {
         landmark: item.landmark,
         custodian: item.custodian,
         category: item.category,
+        image: `https://api.bayelsaxp.com${item.image}`,
+        second_image: `https://api.bayelsaxp.com${item.second_image}`,
+        third_image: `https://api.bayelsaxp.com${item.third_image}`,
       },
     });
   };

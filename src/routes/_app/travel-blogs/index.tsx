@@ -16,9 +16,9 @@ export const TravelSearch = z.object({
   title: z.string().catch("").optional(),
   content: z.string().catch("").optional(),
   category: z.string().catch("").optional(),
-  feature_image: z.string().catch("").optional(),
+  image: z.string().catch("").optional(),
   is_published: z.boolean().catch(false).optional(),
-  description: z.string().catch("").optional(),
+  subtitle: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/travel-blogs/")({
@@ -53,6 +53,7 @@ function RouteComponent() {
     datePosted?: string;
     updated_at: string;
     description?: string;
+    subtitle?: string;
   };
 
   useEffect(() => {
@@ -70,8 +71,9 @@ function RouteComponent() {
         title: item.title,
         content: item.content,
         category: item.category,
-        description: item.description,
-        is_published: item.is_published
+        subtitle: item.subtitle,
+        is_published: item.is_published,
+        image: `https://api.bayelsaxp.com${item.feature_image}`,
       },
     });
   };

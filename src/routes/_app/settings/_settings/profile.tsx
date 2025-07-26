@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .min(10, "Phone must be at least 10 characters")
     .required("Phone is required"),
-  avatarUrl: Yup.string().url().notRequired(),
+  // avatarUrl: Yup.string().url().notRequired(),
   avatarFile: Yup.mixed()
     .test(
       "fileType",
@@ -104,6 +104,7 @@ function RouteComponent() {
           enableReinitialize
         >
           {({ errors, touched, setFieldValue, values }) => (
+          
             <Form className="space-y-6">
               <div className="pb-6 border-b border-gray-200">
                 <ProfilePictureSection
@@ -131,7 +132,7 @@ function RouteComponent() {
                       {({ field }: import("formik").FieldProps) => (
                         <Input
                           {...field}
-                          type="name"
+                        
                           label="Full Name"
                           placeholder="Enter your full name"
                           error={
