@@ -4,11 +4,13 @@ import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
-import { MainImageSection } from "@/components/elements/MainImageSection";
-import { AdditionalImagesSection } from "@/components/elements/AdditionalImagesSection";
+import {
+  MultiImageSection,
+} from "@/components/elements/AdditionalImagesSection";
 import Select, { SelectOption } from "@/components/elements/select";
 import { useAddHotelMutation } from "@/redux/features/hotels/hotelApiSlice";
 import toast from "react-hot-toast";
+import { ProfilePictureSection } from "../-components";
 
 export const Route = createFileRoute("/_app/hotels/add")({
   validateSearch: (search) => HotelSearch.parse(search),
@@ -38,6 +40,51 @@ const validationSchema = Yup.object({
     .required("Email is required"),
   website: Yup.string().url("Invalid URL").required("Website is required"),
   description: Yup.string().required("Description is required"),
+  avatarUrl: Yup.string().url().notRequired(),
+  avatarFile: Yup.mixed()
+    .test(
+      "fileType",
+      "Unsupported file type",
+      (f) =>
+        !f ||
+        (f instanceof File &&
+          ["image/jpeg", "image/png", "image/gif"].includes(f.type))
+    )
+    .test(
+      "fileSize",
+      "File too large",
+      (f) => !f || (f instanceof File && f.size <= 5 * 1024 * 1024)
+    ),
+  second_image_url: Yup.string().url().notRequired(),
+  second_image_file: Yup.mixed()
+    .test(
+      "fileType",
+      "Unsupported file type",
+      (f) =>
+        !f ||
+        (f instanceof File &&
+          ["image/jpeg", "image/png", "image/gif"].includes(f.type))
+    )
+    .test(
+      "fileSize",
+      "File too large",
+      (f) => !f || (f instanceof File && f.size <= 5 * 1024 * 1024)
+    ),
+  third_image_url: Yup.string().url().notRequired(),
+  third_image_file: Yup.mixed()
+    .test(
+      "fileType",
+      "Unsupported file type",
+      (f) =>
+        !f ||
+        (f instanceof File &&
+          ["image/jpeg", "image/png", "image/gif"].includes(f.type))
+    )
+    .test(
+      "fileSize",
+      "File too large",
+      (f) => !f || (f instanceof File && f.size <= 5 * 1024 * 1024)
+    ),
 });
 
 function RouteComponent() {
@@ -54,8 +101,13 @@ function RouteComponent() {
     website: search?.website ?? "",
     category: search?.category ?? "",
     description: search?.description ?? "",
-    mainImage: null as File | null,
-    additionalImages: [] as File[],
+    avatarUrl: search?.image ?? "",
+    avatarFile: null as File | null,
+    imageUrls: [search?.second_image ?? null, search?.third_image ?? null] as [
+      string | null,
+      string | null,
+    ],
+    imageFiles: [null, null] as [File | null, File | null],
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -71,14 +123,17 @@ function RouteComponent() {
     formData.append("website", values.website);
     formData.append("category", values.category);
     formData.append("description", values.description);
-    if (values.mainImage) {
-      formData.append("mainImage", values.mainImage);
+    if (values.avatarFile) {
+      formData.append("image", values.avatarFile);
+    } else if (values.avatarUrl) {
+      formData.append("image", values.avatarUrl);
     }
-    if (values.additionalImages.length > 0) {
-      formData.append("second_image", values.additionalImages[1]);
-      formData.append("third_image", values.additionalImages[2]);
-    }
-
+    values.imageFiles.forEach((file, i) => {
+      if (file) {
+        const key = i === 0 ? "second_image" : "third_image";
+        formData.append(key, file);
+      }
+    });
     try {
       await addHotel(formData).unwrap();
       toast(
@@ -234,7 +289,7 @@ function RouteComponent() {
 
             <div>
               <div className="mt-1">
-                <MainImageSection
+                <ProfilePictureSection
                   values={values}
                   setFieldValue={setFieldValue}
                   touched={touched}
@@ -244,11 +299,12 @@ function RouteComponent() {
             </div>
             <div>
               <div className="mt-1">
-                <AdditionalImagesSection
-                  values={values}
+                <MultiImageSection
+                  imageUrls={values.imageUrls}
+                  imageFiles={values.imageFiles}
                   setFieldValue={setFieldValue}
-                  touched={touched}
                   errors={errors}
+                  touched={touched}
                 />
               </div>
             </div>

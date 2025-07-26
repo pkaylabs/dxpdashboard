@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ResponsivePie } from "@nivo/pie";
-import { ChevronDownIcon } from "../../-components/charts/bar";
+// import { ChevronDownIcon } from "../../-components/charts/bar";
 import { formatCompactNumber } from "@/utils";
 
 const writersData = [
@@ -9,24 +9,28 @@ const writersData = [
     label: "Tourist Blogs",
     value: 15,
     color: "#B83FD4",
+    category: "Tourist Blogs",
   },
   {
     id: "hotel-bloggers",
     label: "Hotel Blogs",
     value: 30,
     color: "#F4C542",
+    category: "Hotel Blogs",
   },
   {
     id: "travel-bloggers",
     label: "Travel Blogs",
     value: 35,
     color: "#5BA8C7",
+    category: "Travel Blogs",
   },
   {
     id: "political-writers",
     label: "Political writers",
     value: 20,
     color: "#EF4444",
+    category: "Political writers",
   },
 ];
 
@@ -55,9 +59,9 @@ const writersLegend = [
 
 interface PieDataItem {
   id: string;
-  label: string;
   value: number;
   color: string;
+  category: string; // Optional for compatibility with existing data
 }
 
 interface MyResponsivePieProps {
@@ -89,9 +93,10 @@ const MyResponsivePie = ({ data, onSliceClick }: MyResponsivePieProps) => (
     animate={true}
     // Custom tooltip
     tooltip={({ datum }) => (
+     
       <div className="bg-white text-[#06275A] p-2 rounded-md shadow-lg">
         <div className="font-semibold text-xs mb-1 text-nowrap ">
-          {datum.label}
+         
         </div>
         <div className="flex items-center gap-2">
           <div
@@ -99,7 +104,7 @@ const MyResponsivePie = ({ data, onSliceClick }: MyResponsivePieProps) => (
             style={{ backgroundColor: datum.color }}
           />
           <span className="text-xs">
-            {datum.value} writers (
+            {datum.value} Blogs (
             {(
               (datum.value /
                 data.reduce(
@@ -169,12 +174,14 @@ interface WritersPieChartProps {
 }
 
 import type { ComputedDatum } from "@nivo/pie";
+import { useGetWebDashboardDataQuery } from "@/redux/features/dashboard/dashboardApiSlice";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const WritersPieChart: React.FC<WritersPieChartProps> = ({
   data = writersData,
   title = "Blogs by Category",
-  timeFrame = "Daily",
-  timeFrameOptions = ["Daily"],
+  timeFrame = "All",
+  timeFrameOptions = ["All"],
   onTimeFrameChange,
   className = "",
 }) => {
@@ -191,22 +198,22 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
 
   const handleSliceClick = (slice: ComputedDatum<PieDataItem>) => {
     setSelectedSlice(selectedSlice === slice.data.id ? null : slice.data.id);
-    console.log("Slice clicked:", slice);
   };
 
   interface WritersLegendItem {
-    name: string;
     value: number;
     color: string;
+    category: string; // Optional for compatibility with existing data
   }
 
   const handleLegendClick = (item: WritersLegendItem) => {
     setSelectedSlice(
-      selectedSlice === item.name.toLowerCase().replace(/\s+/g, "-")
+      selectedSlice === item.category.toLowerCase().replace(/\s+/g, "-")
         ? null
-        : item.name.toLowerCase().replace(/\s+/g, "-")
+        : item.category.toLowerCase().replace(/\s+/g, "-")
     );
   };
+
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -283,7 +290,7 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
         {/* Center content overlay */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
           <div className="text-center">
-            <p className="text-xs text-gray-500 mb-1">Total Writers</p>
+            <p className="text-xs text-gray-500 mb-1">Total Blogs</p>
             <h3 className="text-2xl font-bold text-primary-800">{total}</h3>
           </div>
         </div>
@@ -296,8 +303,8 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
 
       {/* Interactive Legend */}
       <div className="mt-6 space-y-2">
-        {writersLegend.map((item, index) => {
-          const itemId = item.name.toLowerCase().replace(/\s+/g, "-");
+        {data.map((item, index) => {
+          const itemId = item.id?.toLowerCase().replace(/\s+/g, "-");
           const isSelected = selectedSlice === itemId;
           const isHovered = hoveredItem === itemId;
 
@@ -325,7 +332,7 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
                     isSelected ? "text-[#06275A] " : "text-gray-800"
                   }`}
                 >
-                  {item.name}
+                  {item.category}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -448,7 +455,7 @@ const WritersPieChart: React.FC<WritersPieChartProps> = ({
 };
 
 const WritersDemo: React.FC = () => {
-  const [currentData, setCurrentData] = useState(writersData);
+  const { data } = useGetWebDashboardDataQuery(undefined);
 
   // const weeklyData = [
   //   {
@@ -493,7 +500,7 @@ const WritersDemo: React.FC = () => {
 
   return (
     <WritersPieChart
-      data={currentData}
+      data={data?.blogs_by_category}
       onTimeFrameChange={handleTimeFrameChange}
     />
   );

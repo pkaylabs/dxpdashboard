@@ -1,58 +1,89 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  defaultData,
   PerformanceChart,
   PerformanceData,
 } from "../../-components/charts/bar";
+import { useGetWebDashboardDataQuery } from "@/redux/features/dashboard/dashboardApiSlice";
+
+export interface ViewByDay {
+  day: string;
+  percentage: number;
+  status: string;
+  views: number;
+  target?: number; // Optional target value for comparison
+}
+
+interface DashboardPayload {
+  views_by_day: ViewByDay[];
+  min_max_views: { min_views: number; max_views: number };
+  yaxis_labels: number[];
+}
+
+export interface PerformanceChartProps {
+  data: PerformanceData[]; // our bars
+  title?: string;
+  timeFrame: string; // “Weekly”, etc.
+  timeFrameOptions: string[];
+  onTimeFrameChange: (f: string) => void;
+  onBarClick: (d: ViewByDay, i: number) => void;
+  yAxisLabels: string[]; // e.g. ["0","1","2"]
+  showTargets?: boolean;
+  showComparison?: boolean;
+  animated?: boolean;
+}
+
+const DEFAULT_Y_LABELS = ["0%", "20%", "40%", "60%", "80%", "100%"];
+const TIME_FRAMES = ["Daily"];
 
 const InteractivePerformanceDemo: React.FC = () => {
-  const [currentData, setCurrentData] = useState(defaultData);
+  const { data } = useGetWebDashboardDataQuery(undefined);
+  const raw = data as DashboardPayload | undefined;
 
-  const weeklyData = [
-    { day: "Monday", value: 65, target: 70, previous: 58 },
-    { day: "Tuesday", value: 45, target: 60, previous: 52 },
-    { day: "Wednesday", value: 100, target: 85, previous: 88 },
-    { day: "Thursday", value: 80, target: 75, previous: 72 },
-    { day: "Friday", value: 55, target: 65, previous: 48 },
-    { day: "Saturday", value: 80, target: 70, previous: 75 },
-    { day: "Sunday", value: 28, target: 40, previous: 35 },
-  ];
+  const [chartData, setChartData] = useState<ViewByDay[]>([]);
+  const [yLabels, setYLabels] = useState<string[]>(DEFAULT_Y_LABELS);
+  const [timeFrame, setTimeFrame] = useState<string>(TIME_FRAMES[0]);
 
-  const monthlyData = [
-    { day: "Jan", value: 75, target: 80, previous: 68 },
-    { day: "Feb", value: 85, target: 80, previous: 78 },
-    { day: "Mar", value: 65, target: 75, previous: 72 },
-    { day: "Apr", value: 90, target: 85, previous: 82 },
-    { day: "May", value: 70, target: 75, previous: 65 },
-    { day: "Jun", value: 95, target: 85, previous: 88 },
-    { day: "Jul", value: 60, target: 70, previous: 55 },
-  ];
-
-  const handleTimeFrameChange = (timeFrame: string) => {
-    switch (timeFrame) {
-      case "Weekly":
-        setCurrentData(weeklyData);
-        break;
-      case "Monthly":
-        setCurrentData(monthlyData);
-        break;
-      default:
-        setCurrentData(weeklyData);
+  useEffect(() => {
+    if (raw) {
+      setChartData(
+        raw.views_by_day.map((d) => ({
+          day: d.day,
+          percentage: d.percentage,
+          status: d.status,
+          views: d.views,
+          target: raw.min_max_views.max_views,
+        }))
+      );
+      setYLabels(raw.yaxis_labels.map((n) => `${n}%`));
+    } else {
+      setChartData([]);
+      setYLabels(DEFAULT_Y_LABELS);
     }
+  }, [raw, timeFrame]);
+
+  const handleTimeFrameChange = (newFrame: string) => {
+    // setTimeFrame(newFrame);
+    console.log("Time frame switched to", newFrame);
   };
 
-  const handleBarClick = (data: PerformanceData, index: number) => {
-    console.log("Bar clicked:", data, index);
+  const handleBarClick = (item: ViewByDay, idx: number) => {
+    console.log("Bar clicked:", item, idx);
   };
+
   return (
     <div className="flex-1">
       <PerformanceChart
-        data={currentData}
+        data={chartData}
+        title="User Views Performance"
+        timeFrame={timeFrame}
+        timeFrameOptions={TIME_FRAMES}
         onTimeFrameChange={handleTimeFrameChange}
         onBarClick={handleBarClick}
-        showTargets={true}
-        showComparison={true}
-        animated={true}
+        showTargets
+        showComparison
+        animated
+        yAxisLabels={yLabels}
+        className="h-full"
       />
     </div>
   );

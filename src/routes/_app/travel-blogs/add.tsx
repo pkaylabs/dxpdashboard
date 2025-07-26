@@ -5,10 +5,10 @@ import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import Input from "@/components/elements/input";
 import { ButtonLoader } from "@/components/loaders";
-import { MainImageSection } from "@/components/elements/MainImageSection";
 import { useCreateTravelBlogMutation } from "@/redux/features/travelBlogs/travelBlogsApiSlice";
 import Select, { SelectOption } from "@/components/elements/select";
 import toast from "react-hot-toast";
+import { ProfilePictureSection } from "../-components";
 
 export const Route = createFileRoute("/_app/travel-blogs/add")({
   validateSearch: (search) => TravelSearch.parse(search),
@@ -18,7 +18,9 @@ export const Route = createFileRoute("/_app/travel-blogs/add")({
 const categoryOptions: SelectOption[] = [
   { label: "TRAVEL", value: "TRAVEL BLOG" },
   { label: "FUNFACT", value: "FUN FACT" },
-  { label: "OTHER", value: "OTHER BLOG" }, // Disabled option
+  { label: "EDUCATIONAL", value: "EDUCATIONAL" },
+  { label: "ENTERTAINMENT", value: "ENTERTAINMENT" },
+  { label: "OTHERS", value: "OTHERS" },
 ];
 
 const validationSchema = Yup.object({
@@ -27,9 +29,23 @@ const validationSchema = Yup.object({
     .required("Title is required"),
   content: Yup.string().required("Writer is required"),
   category: Yup.string().required("Category is required"),
-  mainImage: Yup.mixed().required("Feature image is required"),
+  avatarUrl: Yup.string().url().notRequired(),
+  avatarFile: Yup.mixed()
+    .test(
+      "fileType",
+      "Unsupported file type",
+      (f) =>
+        !f ||
+        (f instanceof File &&
+          ["image/jpeg", "image/png", "image/gif"].includes(f.type))
+    )
+    .test(
+      "fileSize",
+      "File too large",
+      (f) => !f || (f instanceof File && f.size <= 5 * 1024 * 1024)
+    ),
   is_published: Yup.boolean().required("Publication status is required"),
-  description: Yup.string().required("Description is required"),
+  subtitle: Yup.string().required("Subtitle is required"),
 });
 
 function RouteComponent() {
@@ -41,11 +57,11 @@ function RouteComponent() {
     id: search?.id ?? "",
     title: search?.title ?? "",
     content: search?.content ?? "",
-    description: search?.description ?? "",
+    subtitle: search?.subtitle ?? "",
     category: search?.category ?? "",
     is_published: search?.is_published ?? false,
-    mainImage: null as File | null,
-    // additionalImages: [] as File[],
+    avatarUrl: search?.image ?? "",
+    avatarFile: null as File | null,
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -57,11 +73,11 @@ function RouteComponent() {
 
     formData.append("title", values.title);
     formData.append("content", values.content);
-    formData.append("description", values.description);
+    formData.append("subtitle", values.subtitle);
     formData.append("category", values.category);
     formData.append("is_published", String(values.is_published));
-    if (values.mainImage) {
-      formData.append("feature_image", values.mainImage);
+    if (values.avatarFile) {
+      formData.append("feature_image", values.avatarFile);
     }
 
     try {
@@ -108,15 +124,15 @@ function RouteComponent() {
               )}
             </Field>
 
-            <Field name="content">
+            <Field name="subtitle">
               {({ field }: import("formik").FieldProps) => (
                 <Input
                   {...field}
-                  label="Content"
-                  placeholder="Enter content"
+                  label="Subtitle"
+                  placeholder="Enter subtitle"
                   error={
-                    touched.content && errors.content
-                      ? errors.content
+                    touched.subtitle && errors.subtitle
+                      ? errors.subtitle
                       : undefined
                   }
                   required
@@ -169,27 +185,25 @@ function RouteComponent() {
 
             <div>
               <label
-                htmlFor="description"
+                htmlFor="content"
                 className="block text-sm font-medium text-gray-700"
               >
-                Description
+                Content
               </label>
               <textarea
-                id="description"
-                name="description"
-                value={values.description}
+                id="content"
+                name="content"
+                value={values.content}
                 onChange={handleChange}
                 className="mt-1 h-32 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 bg-white"
               />
-              {touched.description && errors.description && (
-                <p className="mt-2 text-sm text-red-600">
-                  {errors.description}
-                </p>
+              {touched.content && errors.content && (
+                <p className="mt-2 text-sm text-red-600">{errors.content}</p>
               )}
             </div>
             <div>
               <div className="mt-1">
-                <MainImageSection
+                <ProfilePictureSection
                   values={values}
                   setFieldValue={setFieldValue}
                   touched={touched}

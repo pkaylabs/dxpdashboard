@@ -62,7 +62,6 @@ function RouteComponent() {
   const [addUser, { isLoading: adding }] = useCreateUserMutation();
   const [updateUser, { isLoading: updating }] = useUpdateUserMutation();
 
-
   const initialValues = {
     id: search?.id ?? "",
     name: search?.name ?? "",
@@ -85,8 +84,7 @@ function RouteComponent() {
     formData.append("bio", values.bio);
     if (values.avatarFile) {
       formData.append("avatar", values.avatarFile);
-    } else {
-      // Otherwise send the URL so the backend keeps it
+    } else if (values.avatarUrl) {
       formData.append("avatar", values.avatarUrl);
     }
     if (!search.id && values.password) {
@@ -96,14 +94,13 @@ function RouteComponent() {
       formData.append("id", values.id);
       try {
         await updateUser(formData).unwrap();
-         navigate({to: ".."})
+        navigate({ to: ".." });
         toast(
           JSON.stringify({
             type: "success",
             title: "User updated successfully",
           })
         );
-       
       } catch (error) {
         console.log(error);
         toast(
@@ -116,14 +113,13 @@ function RouteComponent() {
     } else {
       try {
         await addUser(formData).unwrap();
-         navigate({to: ".."})
+        navigate({ to: ".." });
         toast(
           JSON.stringify({
             type: "success",
             title: "User created successfully",
           })
         );
-       
       } catch (error) {
         console.log(error);
         toast(
@@ -139,7 +135,9 @@ function RouteComponent() {
   return (
     <main className="font-inter">
       <div className="mb-5">
-        <h1 className="font-medium text-2xl text-[#06275A] ">Add/Edit User</h1>
+        <h1 className="font-medium text-2xl text-[#06275A] ">
+          {initialValues.id ? "Edit User" : "Add User"}
+        </h1>
       </div>
 
       <div className="">
@@ -230,26 +228,28 @@ function RouteComponent() {
                       )}
                     </Field>
                   </div>
-                  <div className="flex-1">
-                    <Field name="password">
-                      {({ field }: import("formik").FieldProps) => (
-                        <Input
-                          {...field}
-                          type="password"
-                          label="Password"
-                          name="password"
-                          placeholder="Enter your password"
-                          error={
-                            touched.password && errors.password
-                              ? errors.password
-                              : undefined
-                          }
-                          required
-                          fullWidth
-                        />
-                      )}
-                    </Field>
-                  </div>
+                  {!initialValues.id && (
+                    <div className="flex-1">
+                      <Field name="password">
+                        {({ field }: import("formik").FieldProps) => (
+                          <Input
+                            {...field}
+                            type="password"
+                            label="Password"
+                            name="password"
+                            placeholder="Enter your password"
+                            error={
+                              touched.password && errors.password
+                                ? errors.password
+                                : undefined
+                            }
+                            required
+                            fullWidth
+                          />
+                        )}
+                      </Field>
+                    </div>
+                  )}
 
                   {/* <div className="flex-1">
                     <Field name="role">

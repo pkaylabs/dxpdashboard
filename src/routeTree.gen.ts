@@ -36,6 +36,7 @@ import { Route as AppHotelsAddRouteImport } from './routes/_app/hotels/add'
 import { Route as AppSettingsSettingsProfileRouteImport } from './routes/_app/settings/_settings/profile'
 import { Route as AppSettingsSettingsPreferencesRouteImport } from './routes/_app/settings/_settings/preferences'
 import { Route as AppSettingsSettingsPasswordRouteImport } from './routes/_app/settings/_settings/password'
+import { Route as AppSettingsSettingsDeleteRouteImport } from './routes/_app/settings/_settings/delete'
 
 const AppSettingsRouteImport = createFileRoute('/_app/settings')()
 
@@ -170,6 +171,12 @@ const AppSettingsSettingsPasswordRoute =
     path: '/password',
     getParentRoute: () => AppSettingsSettingsRoute,
   } as any)
+const AppSettingsSettingsDeleteRoute =
+  AppSettingsSettingsDeleteRouteImport.update({
+    id: '/delete',
+    path: '/delete',
+    getParentRoute: () => AppSettingsSettingsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
   '/travel-blogs': typeof AppTravelBlogsIndexRoute
   '/user-management': typeof AppUserManagementIndexRoute
+  '/settings/delete': typeof AppSettingsSettingsDeleteRoute
   '/settings/password': typeof AppSettingsSettingsPasswordRoute
   '/settings/preferences': typeof AppSettingsSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsSettingsProfileRoute
@@ -216,6 +224,7 @@ export interface FileRoutesByTo {
   '/tourist-attraction': typeof AppTouristAttractionIndexRoute
   '/travel-blogs': typeof AppTravelBlogsIndexRoute
   '/user-management': typeof AppUserManagementIndexRoute
+  '/settings/delete': typeof AppSettingsSettingsDeleteRoute
   '/settings/password': typeof AppSettingsSettingsPasswordRoute
   '/settings/preferences': typeof AppSettingsSettingsPreferencesRoute
   '/settings/profile': typeof AppSettingsSettingsProfileRoute
@@ -245,6 +254,7 @@ export interface FileRoutesById {
   '/_app/tourist-attraction/': typeof AppTouristAttractionIndexRoute
   '/_app/travel-blogs/': typeof AppTravelBlogsIndexRoute
   '/_app/user-management/': typeof AppUserManagementIndexRoute
+  '/_app/settings/_settings/delete': typeof AppSettingsSettingsDeleteRoute
   '/_app/settings/_settings/password': typeof AppSettingsSettingsPasswordRoute
   '/_app/settings/_settings/preferences': typeof AppSettingsSettingsPreferencesRoute
   '/_app/settings/_settings/profile': typeof AppSettingsSettingsProfileRoute
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/tourist-attraction'
     | '/travel-blogs'
     | '/user-management'
+    | '/settings/delete'
     | '/settings/password'
     | '/settings/preferences'
     | '/settings/profile'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/tourist-attraction'
     | '/travel-blogs'
     | '/user-management'
+    | '/settings/delete'
     | '/settings/password'
     | '/settings/preferences'
     | '/settings/profile'
@@ -324,6 +336,7 @@ export interface FileRouteTypes {
     | '/_app/tourist-attraction/'
     | '/_app/travel-blogs/'
     | '/_app/user-management/'
+    | '/_app/settings/_settings/delete'
     | '/_app/settings/_settings/password'
     | '/_app/settings/_settings/preferences'
     | '/_app/settings/_settings/profile'
@@ -519,16 +532,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsSettingsPasswordRouteImport
       parentRoute: typeof AppSettingsSettingsRoute
     }
+    '/_app/settings/_settings/delete': {
+      id: '/_app/settings/_settings/delete'
+      path: '/delete'
+      fullPath: '/settings/delete'
+      preLoaderRoute: typeof AppSettingsSettingsDeleteRouteImport
+      parentRoute: typeof AppSettingsSettingsRoute
+    }
   }
 }
 
 interface AppSettingsSettingsRouteChildren {
+  AppSettingsSettingsDeleteRoute: typeof AppSettingsSettingsDeleteRoute
   AppSettingsSettingsPasswordRoute: typeof AppSettingsSettingsPasswordRoute
   AppSettingsSettingsPreferencesRoute: typeof AppSettingsSettingsPreferencesRoute
   AppSettingsSettingsProfileRoute: typeof AppSettingsSettingsProfileRoute
 }
 
 const AppSettingsSettingsRouteChildren: AppSettingsSettingsRouteChildren = {
+  AppSettingsSettingsDeleteRoute: AppSettingsSettingsDeleteRoute,
   AppSettingsSettingsPasswordRoute: AppSettingsSettingsPasswordRoute,
   AppSettingsSettingsPreferencesRoute: AppSettingsSettingsPreferencesRoute,
   AppSettingsSettingsProfileRoute: AppSettingsSettingsProfileRoute,

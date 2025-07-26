@@ -20,7 +20,9 @@ export const VenueSearch = z.object({
   phone: z.string().catch("").optional(),
   description: z.string().catch("").optional(),
   landmark: z.string().catch("").optional(),
-  mainImage: z.string().catch("").optional(),
+  image: z.string().catch("").optional(),
+  second_image: z.string().catch("").optional(),
+  third_image: z.string().catch("").optional(),
   // additionalImages: z.string().array().catch("").optional(),
 });
 
@@ -71,8 +73,9 @@ function RouteComponent() {
     phone: string;
     description: string;
     landmark: string;
-    mainImage: string;
-    additionalImages: string[];
+    image: string;
+    second_image: string;
+    third_image: string;
     updated_at: string;
   };
   const preLoadedData = Route.useLoaderData() as Venue[];
@@ -90,7 +93,6 @@ function RouteComponent() {
     refetch();
   }, [data, refetch]);
 
-  console.log("Preloaded Data:", preLoadedData);
 
   const navigate = useNavigate();
 
@@ -106,8 +108,9 @@ function RouteComponent() {
         phone: item.phone,
         description: item.description,
         landmark: item.landmark,
-        mainImage: item.mainImage,
-        // additionalImages: item.additionalImages,
+        image: `https://api.bayelsaxp.com${item.image}`,
+        second_image: `https://api.bayelsaxp.com${item.second_image}`,
+        third_image: `https://api.bayelsaxp.com${item.third_image}`,
       },
     });
   };
@@ -246,7 +249,7 @@ function RouteComponent() {
   return (
     <div className="">
       {/* Statistics Cards */}
-      <div className="mb-5 grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* <div className="mb-5 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Total Venues
@@ -259,7 +262,7 @@ function RouteComponent() {
             Entertainment
           </h3>
           <p className="text-3xl font-bold text-purple-600">
-            {data.filter((v: Venue) => v.category === "Entertainment").length}
+            {data.filter((v: Venue) => v.category === "ENTERTAINMENT").length}
           </p>
         </div>
 
@@ -271,7 +274,7 @@ function RouteComponent() {
             {data.filter((v: Venue) => v.category === "Culture/Nature").length}
           </p>
         </div>
-      </div>
+      </div> */}
 
       <Table
         headers={headers}

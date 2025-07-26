@@ -21,6 +21,9 @@ export const HotelSearch = z.object({
   email: z.string().email("Enter a valid email").catch("").optional(),
   phone: z.string().catch("").optional(),
   website: z.string().catch("").optional(),
+  image: z.string().catch("").optional(),
+  second_image: z.string().catch("").optional(),
+  third_image: z.string().catch("").optional(),
 });
 
 export const Route = createFileRoute("/_app/hotels/")({
@@ -47,6 +50,9 @@ interface HotelItem {
   website: string;
   category: string;
   updated_at: string;
+  image: string;
+  second_image: string;
+  third_image: string;
 }
 
 function RouteComponent() {
@@ -67,6 +73,9 @@ function RouteComponent() {
         description: item.description,
         phone: item.phone,
         website: item.website,
+        image: `https://api.bayelsaxp.com${item.image}`,
+        second_image: `https://api.bayelsaxp.com${item.second_image}`,
+        third_image: `https://api.bayelsaxp.com${item.third_image}`,
       },
     });
   };

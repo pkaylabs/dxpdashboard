@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ViewByDay } from "../../dashboard/-components/bar-chart";
 
 // Chevron Down Icon for dropdown
 export const ChevronDownIcon = ({ className }: { className?: string }) => (
@@ -60,38 +61,31 @@ export interface PerformanceData {
 }
 
 export interface PerformanceChartProps {
-  data?: PerformanceData[];
+  data: ViewByDay[];
   title?: string;
   timeFrame?: string;
   timeFrameOptions?: string[];
   onTimeFrameChange?: (timeFrame: string) => void;
-  onBarClick?: (data: PerformanceData, index: number) => void;
+  onBarClick?: (data: ViewByDay, index: number) => void;
   className?: string;
+  yAxisLabels?: string[]; // e.g. ["0%", "20%", "40%", "60%", "80%", "100%"]
   showTargets?: boolean;
   showComparison?: boolean;
   animated?: boolean;
 }
 
-export const defaultData: PerformanceData[] = [
-  { day: "Monday", value: 65, target: 70, previous: 58 },
-  { day: "Tuesday", value: 45, target: 60, previous: 52 },
-  { day: "Wednesday", value: 100, target: 85, previous: 88 },
-  { day: "Thursday", value: 80, target: 75, previous: 72 },
-  { day: "Friday", value: 55, target: 65, previous: 48 },
-  { day: "Saturday", value: 80, target: 70, previous: 75 },
-  { day: "Sunday", value: 28, target: 40, previous: 35 },
-];
 
 export const PerformanceChart: React.FC<PerformanceChartProps> = ({
-  data = defaultData,
+  data,
   title = "Performance",
   timeFrame = "Weekly",
   timeFrameOptions = ["Daily", "Weekly", "Monthly", "Yearly"],
   onTimeFrameChange,
   onBarClick,
   className = "",
+  yAxisLabels,
   showTargets = true,
-  showComparison = true,
+  // showComparison = true,
   animated = true,
 }) => {
   const [selectedTimeFrame, setSelectedTimeFrame] = useState(timeFrame);
@@ -103,9 +97,10 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
   const chartRef = useRef<HTMLDivElement>(null);
 
   const maxValue = Math.max(
-    ...data.map((item) => Math.max(item.value, item.target || 0))
+    ...data.map((item) => item.views)
   );
-  const yAxisLabels = ["0%", "20%", "40%", "60%", "80%", "100%"];
+
+  // const yAxisLabels = ["0%", "20%", "40%", "60%", "80%", "100%"];
 
   // Animation effect
   useEffect(() => {
@@ -114,13 +109,13 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
       setAnimatedHeights(data.map(() => 0));
 
       const timer = setTimeout(() => {
-        setAnimatedHeights(data.map((item) => item.value));
+        setAnimatedHeights(data.map((item) => item.views));
         setIsAnimating(false);
       }, 100);
 
       return () => clearTimeout(timer);
     } else {
-      setAnimatedHeights(data.map((item) => item.value));
+      setAnimatedHeights(data.map((item) => item.views));
     }
   }, [data, animated]);
 
@@ -131,7 +126,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
     onTimeFrameChange?.(newTimeFrame);
   };
 
-  const handleBarClick = (item: PerformanceData, index: number) => {
+  const handleBarClick = (item: ViewByDay, index: number) => {
     setSelectedBar(selectedBar === index ? null : index);
     onBarClick?.(item, index);
   };
@@ -144,21 +139,24 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
     return "bg-[#06275A]";
   };
 
-  const getBarHeight = (value: number, index: number) => {
-    const animatedValue = animated ? animatedHeights[index] : value;
-    return (animatedValue / 100) * 320;
-  };
+  // interface GetBarHeightParams {
+  //   value: number;
+  //   i: number;
+  // }
+
+  const getBarHeight = (value: number, i: number): number =>
+    ((animated ? animatedHeights[i] : value) / maxValue) * 320;
 
   // Calculate performance metrics
-  const totalPerformance =
-    data.reduce((sum, item) => sum + item.value, 0) / data.length;
-  const previousTotal =
-    showComparison && data.every((item) => item.previous)
-      ? data.reduce((sum, item) => sum + (item.previous || 0), 0) / data.length
-      : 0;
-  const performanceChange = previousTotal
-    ? ((totalPerformance - previousTotal) / previousTotal) * 100
-    : 0;
+  // const totalPerformance =
+  //   data.reduce((sum, item) => sum + item.views, 0) / data.length;
+  // const previousTotal =
+  //   showComparison && data.every((item) => item.previous)
+  //     ? data.reduce((sum, item) => sum + (item.previous || 0), 0) / data.length
+  //     : 0;
+  // const performanceChange = previousTotal
+  //   ? ((totalPerformance - previousTotal) / previousTotal) * 100
+  //   : 0;
 
   return (
     <div
@@ -171,13 +169,13 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
 
           {/* Performance Summary */}
           <div className="flex items-center gap-3 text-sm">
-            <div className="px-3 py-1 bg-primary-50 rounded-full">
+            {/* <div className="px-3 py-1 bg-primary-50 rounded-full">
               <span className="text-[#06275A] font-medium">
                 Avg: {totalPerformance.toFixed(1)}%
               </span>
-            </div>
+            </div> */}
 
-            {showComparison && previousTotal > 0 && (
+            {/* {showComparison && previousTotal > 0 && (
               <div
                 className={`flex items-center gap-1 px-3 py-1 rounded-full ${
                   performanceChange >= 0
@@ -192,7 +190,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                   {Math.abs(performanceChange).toFixed(1)}%
                 </span>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -249,16 +247,19 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
       <div className="relative" ref={chartRef}>
         {/* Y-axis labels */}
         <div className="absolute left-0 top-0 h-100 flex flex-col justify-between text-right pr-4 text-sm text-[#06275A] font-medium">
-          {yAxisLabels.reverse().map((label, index) => (
-            <div
-              key={index}
-              className="flex items-center h-0 transition-all duration-300"
-            >
-              <span className="hover:text-primary-800 cursor-default">
-                {label}
-              </span>
-            </div>
-          ))}
+          {(yAxisLabels ?? ["0%", "20%", "40%", "60%", "80%", "100%"])
+            .slice()
+            .reverse()
+            .map((label, index) => (
+              <div
+                key={index}
+                className="flex items-center h-0 transition-all duration-300"
+              >
+                <span className="hover:text-primary-800 cursor-default">
+                  {label}
+                </span>
+              </div>
+            ))}
         </div>
 
         {/* Chart area */}
@@ -300,7 +301,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                   {/* Bar Container */}
                   <div className="relative w-full max-w-8 group cursor-pointer">
                     {/* Previous period bar (comparison) */}
-                    {showComparison && item.previous && (
+                    {/* {showComparison && item.previous && (
                       <div
                         className="absolute w-full bg-gray-300 rounded-t-md opacity-40 transition-all duration-300"
                         style={{
@@ -308,14 +309,14 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                           right: "2px",
                         }}
                       />
-                    )}
+                    )} */}
 
                     {/* Main Bar */}
                     <div
-                      className={`w-full rounded-t-lg transition-all duration-500 ease-out cursor-pointer transform hover:scale-105 active:scale-95 ${getBarColor(index, item.value, item.target)}`}
+                      className={`w-full rounded-t-lg transition-all duration-500 ease-out cursor-pointer transform hover:scale-105 active:scale-95 ${getBarColor(index, item.views, item.target)}`}
                       style={{
-                        height: `${getBarHeight(item.value, index)}px`,
-                        minHeight: animatedHeights[index] > 0 ? "4px" : "0px",
+                        height: `${getBarHeight(item.views, index)}px`,
+                        // minHeight: animatedHeights[index] > 0 ? "4px" : "0px",
                         boxShadow:
                           selectedBar === index
                             ? "0 8px 25px rgba(6, 39, 90, 0.3)"
@@ -337,14 +338,14 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                       <div className="bg-primary-900 text-[#06275A] text-xs px-3 py-2 whitespace-nowrap shadow-lg">
                         <div className="font-semibold">{item.day}</div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span>Current: {item.value}%</span>
+                          <span>Views: {item.views}</span>
                           {item.target && (
                             <span className="text-secondary-200">
                               Target: {item.target}%
                             </span>
                           )}
                         </div>
-                        {showComparison && item.previous && (
+                        {/* {showComparison && item.previous && (
                           <div className="text-gray-300 text-xs mt-1">
                             Previous: {item.previous}%
                             <span
@@ -354,7 +355,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                               {(item.value - item.previous).toFixed(1)}%)
                             </span>
                           </div>
-                        )}
+                        )} */}
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-t-4 border-t-[#06275A] border-l-4 border-l-transparent border-r-4 border-r-transparent" />
                       </div>
                     </div>
@@ -397,9 +398,9 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">Current</span>
+              <span className="text-gray-600">Views</span>
               <div className="font-bold text-[#06275A]">
-                {data[selectedBar].value}%
+                {data[selectedBar].views}
               </div>
             </div>
             {data[selectedBar].target && (
@@ -410,28 +411,28 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                 </div>
               </div>
             )}
-            {showComparison && data[selectedBar].previous && (
+            {/* {showComparison && data[selectedBar].previous && (
               <div>
                 <span className="text-gray-600">Previous</span>
                 <div className="font-bold text-[#06275A]">
                   {data[selectedBar].previous}%
                 </div>
               </div>
-            )}
+            )} */}
             <div>
               <span className="text-gray-600">Status</span>
               <div
                 className={`font-bold ${
                   data[selectedBar].target &&
-                  data[selectedBar].value >= data[selectedBar].target!
+                  data[selectedBar].views >= data[selectedBar].target!
                     ? "text-[#0ECC44]"
                     : "text-[#FF3B30]"
                 }`}
               >
                 {data[selectedBar].target &&
-                data[selectedBar].value >= data[selectedBar].target!
-                  ? "On Target"
-                  : "Below Target"}
+                data[selectedBar].views >= data[selectedBar].target!
+                  ? data[selectedBar].status || "On Target"
+                  : data[selectedBar].status || "Below Target"}
               </div>
             </div>
           </div>
@@ -453,3 +454,4 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
     </div>
   );
 };
+
