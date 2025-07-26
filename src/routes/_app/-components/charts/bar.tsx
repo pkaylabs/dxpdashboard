@@ -402,7 +402,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
                 {data[selectedBar].views}
               </div>
             </div>
-            {data[selectedBar].percentage && (
+            {data[selectedBar].percentage !== 0 && (
               <div>
                 <span className="text-gray-600">Percentage</span>
                 <div className="font-bold text-[#06275A]">
