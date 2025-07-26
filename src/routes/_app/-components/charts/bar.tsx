@@ -263,7 +263,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
         {/* Chart area */}
         <div className="ml-16">
           {/* Horizontal grid lines */}
-          <div className="relative h-100 border-l-2 border-b-2 border-gray-200">
+          <div className="relative h-[320px] border-l-2 border-b-2 border-gray-200">
             {[0, 1, 2, 3, 4, 5].map((index) => (
               <div
                 key={index}
