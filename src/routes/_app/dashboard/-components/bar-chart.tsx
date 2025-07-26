@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
-  defaultData,
   PerformanceChart,
   PerformanceData,
 } from "../../-components/charts/bar";
 import { useGetWebDashboardDataQuery } from "@/redux/features/dashboard/dashboardApiSlice";
 
-interface ViewByDay {
+export interface ViewByDay {
   day: string;
   percentage: number;
   status: string;
   views: number;
+  target?: number; // Optional target value for comparison
 }
 
 interface DashboardPayload {
@@ -19,25 +19,44 @@ interface DashboardPayload {
   yaxis_labels: number[];
 }
 
+export interface PerformanceChartProps {
+  data: PerformanceData[]; // our bars
+  title?: string;
+  timeFrame: string; // “Weekly”, etc.
+  timeFrameOptions: string[];
+  onTimeFrameChange: (f: string) => void;
+  onBarClick: (d: ViewByDay, i: number) => void;
+  yAxisLabels: string[]; // e.g. ["0","1","2"]
+  showTargets?: boolean;
+  showComparison?: boolean;
+  animated?: boolean;
+}
+
 const DEFAULT_Y_LABELS = ["0%", "20%", "40%", "60%", "80%", "100%"];
-const TIME_FRAMES = ["All"];
+const TIME_FRAMES = ["Daily"];
 
 const InteractivePerformanceDemo: React.FC = () => {
   const { data } = useGetWebDashboardDataQuery(undefined);
   const raw = data as DashboardPayload | undefined;
 
-  const [chartData, setChartData] = useState<PerformanceData[]>(defaultData);
+  const [chartData, setChartData] = useState<ViewByDay[]>([]);
   const [yLabels, setYLabels] = useState<string[]>(DEFAULT_Y_LABELS);
   const [timeFrame, setTimeFrame] = useState<string>(TIME_FRAMES[0]);
 
   useEffect(() => {
     if (raw) {
       setChartData(
-        raw.views_by_day.map(d => ({ day: d.day, value: d.percentage, target: raw.min_max_views.max_views, status: d.status}))
+        raw.views_by_day.map((d) => ({
+          day: d.day,
+          percentage: d.percentage,
+          status: d.status,
+          views: d.views,
+          target: raw.min_max_views.max_views,
+        }))
       );
-      setYLabels(raw.yaxis_labels.map(n => `${n}%`));
+      setYLabels(raw.yaxis_labels.map((n) => `${n}%`));
     } else {
-      setChartData(defaultData);
+      setChartData([]);
       setYLabels(DEFAULT_Y_LABELS);
     }
   }, [raw, timeFrame]);
@@ -47,7 +66,7 @@ const InteractivePerformanceDemo: React.FC = () => {
     console.log("Time frame switched to", newFrame);
   };
 
-  const handleBarClick = (item: PerformanceData, idx: number) => {
+  const handleBarClick = (item: ViewByDay, idx: number) => {
     console.log("Bar clicked:", item, idx);
   };
 

@@ -2,7 +2,7 @@ import classNames from "@/utils/classnames";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
-import { MdLock } from "react-icons/md";
+import { MdDeleteOutline, MdLock } from "react-icons/md";
 
 export const Route = createFileRoute("/_app/settings/_settings")({
   component: RouteComponent,
@@ -23,6 +23,11 @@ const links = [
     icon: MdLock,
     label: "Change Password",
     href: "/settings/password",
+  },
+  {
+    icon: MdDeleteOutline,
+    label: "Delete Account",
+    href: "/settings/delete",
   },
 ];
 
