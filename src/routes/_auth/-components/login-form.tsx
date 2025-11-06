@@ -66,7 +66,7 @@ const LoginForm: React.FC = () => {
 
       // Force‐revalidate any protected data
       // await router.invalidate();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error logging in: ", error);
       toast(
         JSON.stringify({
