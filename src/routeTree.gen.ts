@@ -15,9 +15,11 @@ import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthVerifyOtpRouteImport } from './routes/_auth/verify-otp'
+import { Route as AuthSupportRouteImport } from './routes/_auth/support'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AuthDeleteAccountRouteImport } from './routes/_auth/delete-account'
 import { Route as AppDashboardRouteRouteImport } from './routes/_app/dashboard/route'
 import { Route as AppUserManagementIndexRouteImport } from './routes/_app/user-management/index'
 import { Route as AppTravelBlogsIndexRouteImport } from './routes/_app/travel-blogs/index'
@@ -63,6 +65,11 @@ const AuthVerifyOtpRoute = AuthVerifyOtpRouteImport.update({
   path: '/verify-otp',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthSupportRoute = AuthSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -76,6 +83,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
 const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthDeleteAccountRoute = AuthDeleteAccountRouteImport.update({
+  id: '/delete-account',
+  path: '/delete-account',
   getParentRoute: () => AuthRoute,
 } as any)
 const AppDashboardRouteRoute = AppDashboardRouteRouteImport.update({
@@ -181,9 +193,11 @@ const AppSettingsSettingsDeleteRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof AppDashboardRouteRoute
+  '/delete-account': typeof AuthDeleteAccountRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/support': typeof AuthSupportRoute
   '/verify-otp': typeof AuthVerifyOtpRoute
   '/hotels/add': typeof AppHotelsAddRoute
   '/notifications/add': typeof AppNotificationsAddRoute
@@ -207,9 +221,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof AppDashboardRouteRoute
+  '/delete-account': typeof AuthDeleteAccountRoute
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/reset-password': typeof AuthResetPasswordRoute
+  '/support': typeof AuthSupportRoute
   '/verify-otp': typeof AuthVerifyOtpRoute
   '/hotels/add': typeof AppHotelsAddRoute
   '/notifications/add': typeof AppNotificationsAddRoute
@@ -235,9 +251,11 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRouteRoute
+  '/_auth/delete-account': typeof AuthDeleteAccountRoute
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/reset-password': typeof AuthResetPasswordRoute
+  '/_auth/support': typeof AuthSupportRoute
   '/_auth/verify-otp': typeof AuthVerifyOtpRoute
   '/_app/hotels/add': typeof AppHotelsAddRoute
   '/_app/notifications/add': typeof AppNotificationsAddRoute
@@ -264,9 +282,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/delete-account'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
+    | '/support'
     | '/verify-otp'
     | '/hotels/add'
     | '/notifications/add'
@@ -290,9 +310,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/delete-account'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
+    | '/support'
     | '/verify-otp'
     | '/hotels/add'
     | '/notifications/add'
@@ -317,9 +339,11 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/_app/dashboard'
+    | '/_auth/delete-account'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/reset-password'
+    | '/_auth/support'
     | '/_auth/verify-otp'
     | '/_app/hotels/add'
     | '/_app/notifications/add'
@@ -385,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthVerifyOtpRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/support': {
+      id: '/_auth/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof AuthSupportRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/reset-password': {
       id: '/_auth/reset-password'
       path: '/reset-password'
@@ -404,6 +435,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/delete-account': {
+      id: '/_auth/delete-account'
+      path: '/delete-account'
+      fullPath: '/delete-account'
+      preLoaderRoute: typeof AuthDeleteAccountRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_app/dashboard': {
@@ -610,16 +648,20 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
+  AuthDeleteAccountRoute: typeof AuthDeleteAccountRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSupportRoute: typeof AuthSupportRoute
   AuthVerifyOtpRoute: typeof AuthVerifyOtpRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthDeleteAccountRoute: AuthDeleteAccountRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSupportRoute: AuthSupportRoute,
   AuthVerifyOtpRoute: AuthVerifyOtpRoute,
 }
 
