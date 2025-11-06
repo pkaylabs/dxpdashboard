@@ -32,11 +32,9 @@ const validationSchema = Yup.object({
   address: Yup.string().required("Address is required"),
   description: Yup.string().required("Description is required"),
   phone: Yup.string()
-    .matches(/^\d{10}$/, "Phone number must be 10 digits")
     .required("Phone number is required"),
   email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
+    .email("Invalid email format"),
   landmark: Yup.string().optional(),
   custodian: Yup.string().optional(),
   category: Yup.string().optional(),
@@ -227,7 +225,7 @@ function RouteComponent() {
                   error={
                     touched.email && errors.email ? errors.email : undefined
                   }
-                  required
+                  
                   fullWidth
                 />
               )}
