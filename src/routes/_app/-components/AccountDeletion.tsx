@@ -47,10 +47,10 @@ const AccountDeletionRequestPage: React.FC<AccountDeletionRequestPageProps> = ({
         />
         <span className="text-2xl font-bold text-gray-800">{appName}</span>
       </div>
-      <h1 className="text-2xl font-semibold mb-4 text-gray-800">
+      <h1 className="text-2xl flex items-center justify-center font-semibold mb-4 text-gray-800">
         Request Account Deletion
       </h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="px-16">
         <fieldset className="mb-4">
           <legend className="text-lg font-medium text-gray-700 mb-2">
             What would you like to delete?
