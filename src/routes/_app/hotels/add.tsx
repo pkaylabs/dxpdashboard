@@ -33,12 +33,10 @@ const validationSchema = Yup.object({
     .required("Category is required"),
   address: Yup.string().required("Address is required"),
   phone: Yup.string()
-    .matches(/^\d{10}$/, "Phone number must be 10 digits")
     .required("Phone number is required"),
   email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  website: Yup.string().url("Invalid URL").required("Website is required"),
+    .email("Invalid email address"),
+  website: Yup.string().url("Invalid URL"),
   description: Yup.string().required("Description is required"),
   avatarUrl: Yup.string().url().notRequired(),
   avatarFile: Yup.mixed()
@@ -210,7 +208,7 @@ function RouteComponent() {
                   error={
                     touched.email && errors.email ? errors.email : undefined
                   }
-                  required
+                 
                   fullWidth
                 />
               )}
@@ -242,7 +240,7 @@ function RouteComponent() {
                       ? errors.website
                       : undefined
                   }
-                  required
+                  
                   fullWidth
                 />
               )}

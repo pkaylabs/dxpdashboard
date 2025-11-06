@@ -20,6 +20,7 @@ const deletionOptions = [
 const AccountDeletionRequestPage: React.FC<AccountDeletionRequestPageProps> = ({
   appName,
   onSubmit,
+  
 }) => {
   const [requestType, setRequestType] =
     useState<DeletionRequest["type"]>("all_data");
